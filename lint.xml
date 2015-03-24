@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lint>
+    <issue id="ContentDescription" severity="ignore" />
+    <issue id="DefaultLocale">
+        <ignore path="src/com/yale/qcxxandroid/AdrebookActivity.java" />
+    </issue>
+    <issue id="HandlerLeak">
+        <ignore path="src/com/yale/qcxxandroid/MyClassActivityOther.java" />
+    </issue>
+    <issue id="HardcodedText" severity="ignore" />
+    <issue id="NewApi">
+        <ignore path="src/com/yale/qcxxandroid/MyClasslActivityDepar.java" />
+        <ignore path="src/com/yale/qcxxandroid/ShowActivity.java" />
+        <ignore path="src/com/yale/qcxxandroid/YouthActivity.java" />
+        <ignore path="src/com/yale/qcxxandroid/YouthXxhdActivity.java" />
+        <ignore path="src/com/yale/qcxxandroid/base/ShowMainTabActivity.java" />
+    </issue>
+    <issue id="ResourceAsColor" severity="ignore" />
+    <issue id="ShowToast" severity="ignore" />
+</lint>

@@ -1,0 +1,505 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LinearLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" 
+    android:background="@color/bg_color"
+    android:orientation="vertical" 
+    >
+    <RelativeLayout 
+        android:layout_width="fill_parent"
+        android:layout_height="45dp"
+        android:background="@drawable/title_bar">
+        <Button
+            android:id="@+id/back"
+            android:layout_width="70dp"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="@string/back"
+            android:textSize="18sp"
+            android:textColor="@color/white"
+            android:onClick="backClick"
+            android:background="@android:color/transparent" 
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:textSize="20sp"
+            android:textColor="@color/white"
+            android:text="@string/my_mp"
+           />        
+        <Button
+            android:id="@+id/ok"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dip"
+            android:textSize="16.0sp" 
+            android:text="@string/ok"
+            android:textColor="@color/white"
+            android:onClick="saveClick"
+            android:background="@android:color/transparent" />
+    </RelativeLayout>
+		<ScrollView 
+    		android:layout_width="fill_parent"
+    		android:layout_height="fill_parent"
+    		android:scrollbarStyle="outsideOverlay" 
+    		 >
+        	<LinearLayout
+            	android:layout_width="fill_parent"
+            	android:layout_height="wrap_content"
+            	android:orientation="vertical" >
+            		<RelativeLayout
+            			android:layout_width="fill_parent"
+            			android:layout_height="60sp"
+            			android:layout_marginTop="14dp"
+            			android:gravity="center_vertical"
+            			android:background="@drawable/preference_first_item" 
+            			android:clickable="true"
+            			>
+            			<TextView
+        					android:layout_width="wrap_content" 
+        					android:layout_height="50dip"
+        					android:layout_centerVertical="true"
+        					android:gravity="center"
+        					android:text="@string/tx"
+        					android:textSize="18sp"		
+							android:textColor="#000" />            			
+					    <com.yale.qcxxandroid.base.CircularImage
+					        android:id="@+id/mypic"
+					        android:scaleType="centerCrop"
+					        android:layout_width="50dip"
+					        android:layout_height="50dip"
+					        android:layout_centerVertical="true"
+					        android:layout_toLeftOf="@+id/piccho"
+					        android:layout_marginRight="10dip"
+					        android:src="@drawable/demo5"/> 
+            			<ImageView
+            			    android:id="@+id/piccho"
+            				android:layout_width="wrap_content"
+        					android:layout_height="wrap_content"        	     	
+        					android:scaleType="matrix"
+        					android:layout_centerVertical="true"
+        					android:layout_alignParentRight="true"
+        					android:clickable="true"
+        					android:src="@drawable/mm_submenu" 
+        					/>    
+      				</RelativeLayout>
+      				
+      				<RelativeLayout
+            			android:layout_width="fill_parent"
+            			android:layout_height="50sp"
+            			android:clickable="true"
+            			android:background="@drawable/preference_item" >
+            			<TextView
+        					android:layout_width="wrap_content" 
+        					android:layout_height="50dip"
+        					android:layout_centerVertical="true"
+        					android:gravity="center"
+        					android:text="@string/nc"
+        					android:textSize="18sp"		
+							android:textColor="#000" />
+            			<TextView
+        					android:layout_width="wrap_content" 
+        					android:layout_height="50dip"
+        					android:layout_centerVertical="true"
+        					android:text="yale"
+        					android:layout_toLeftOf="@+id/nccho"
+        					android:gravity="center"
+        					android:layout_marginRight="10dip"
+        					android:textSize="18sp"		
+							android:textColor="#000" />            			
+            			<ImageView
+            			    android:id="@+id/nccho"
+            				android:layout_width="wrap_content"
+        					android:layout_height="wrap_content"  
+        					android:scaleType="matrix"
+        					android:gravity="center"
+        					android:layout_centerVertical="true"
+        					android:layout_alignParentRight="true"
+        					android:src="@drawable/mm_submenu" />      					
+      				</RelativeLayout>
+      				<RelativeLayout
+            			android:layout_width="fill_parent"
+            			android:layout_height="50sp"
+            			android:gravity="center_vertical"
+            			android:clickable="true"
+            			android:background="@drawable/preference_item" >
+            			<TextView
+        					android:layout_width="wrap_content" 
+        					android:layout_height="50dip"
+        					android:gravity="center"
+        					android:layout_centerVertical="true"
+        					android:text="@string/zh"
+        					android:textSize="18sp"		
+							android:textColor="#000" />
+            			<TextView
+        					android:layout_width="wrap_content" 
+        					android:layout_height="50dip"
+        					android:text="1009009"
+        					android:gravity="center"
+        					android:layout_marginRight="5dip"
+        					android:layout_alignParentRight="true"
+        					android:textSize="18sp"		
+							android:textColor="#000" />            			
+      				</RelativeLayout>
+      				<RelativeLayout
+            			android:layout_width="fill_parent"
+            			android:layout_height="50sp"
+            			android:gravity="center_vertical"
+            			android:clickable="true"
+            			android:background="@drawable/preference_item" >
+            			<TextView
+        					android:layout_width="wrap_content" 
+        					android:layout_height="50dip"
+        					android:gravity="center"
+        					android:layout_centerVertical="true"
+        					android:text="@string/xb"
+        					android:textSize="18sp"		
+							android:textColor="#000" />
+            			<TextView
+        					android:layout_width="wrap_content" 
+        					android:layout_height="50dip"
+        					android:text="男"
+        					android:gravity="center"
+        					android:layout_marginRight="5dip"
+        					android:layout_alignParentRight="true"
+        					android:textSize="18sp"		
+							android:textColor="#000" />            			
+      				</RelativeLayout>      				
+      				<RelativeLayout
+            			android:layout_width="fill_parent"
+            			android:layout_height="50sp"
+            			android:clickable="true"
+            			android:background="@drawable/preference_item" >
+            			<TextView
+        					android:layout_width="wrap_content" 
+        					android:layout_height="50dip"
+        					android:layout_centerVertical="true"
+        					android:gravity="center"
+        					android:text="@string/qm"
+        					android:textSize="18sp"		
+							android:textColor="#000" />
+            			<TextView
+        					android:layout_width="wrap_content" 
+        					android:layout_height="50dip"
+        					android:layout_centerVertical="true"
+        					android:text="@string/wtx"
+        					android:layout_toLeftOf="@+id/qmcho"
+        					android:gravity="center"
+        					android:layout_marginRight="10dip"
+        					android:textSize="18sp"		
+							android:textColor="#000" />            			
+            			<ImageView
+            			    android:id="@+id/qmcho"
+            				android:layout_width="wrap_content"
+        					android:layout_height="wrap_content"  
+        					android:scaleType="matrix"
+        					android:gravity="center"
+        					android:layout_centerVertical="true"
+        					android:layout_alignParentRight="true"
+        					android:src="@drawable/mm_submenu" />      					
+      				</RelativeLayout>
+      				<RelativeLayout
+            			android:layout_width="fill_parent"
+            			android:layout_height="50sp"
+            			android:clickable="true"
+            			android:background="@drawable/preference_item" >
+            			<TextView
+        					android:layout_width="wrap_content" 
+        					android:layout_height="50dip"
+        					android:layout_centerVertical="true"
+        					android:gravity="center"
+        					android:text="@string/verity_name"
+        					android:textSize="18sp"		
+							android:textColor="#000" />
+            			<TextView
+        					android:layout_width="wrap_content" 
+        					android:layout_height="50dip"
+        					android:layout_centerVertical="true"
+        					android:text="邱金勇"
+        					android:layout_toLeftOf="@+id/zsxmcho"
+        					android:gravity="center"
+        					android:layout_marginRight="10dip"
+        					android:textSize="18sp"		
+							android:textColor="#000" />            			
+            			<ImageView
+            			    android:id="@+id/zsxmcho"
+            				android:layout_width="wrap_content"
+        					android:layout_height="wrap_content"  
+        					android:scaleType="matrix"
+        					android:gravity="center"
+        					android:layout_centerVertical="true"
+        					android:layout_alignParentRight="true"
+        					android:src="@drawable/mm_submenu" />      					
+      				</RelativeLayout>
+      				<RelativeLayout
+            			android:layout_width="fill_parent"
+            			android:layout_height="50sp"
+            			android:clickable="true"
+            			android:onClick="viewSchoolOnclick"
+            			android:background="@drawable/preference_item" >
+            			<TextView
+        					android:layout_width="wrap_content" 
+        					android:layout_height="50dip"
+        					android:layout_centerVertical="true"
+        					android:gravity="center"
+        					android:text="@string/school"
+        					android:textSize="18sp"		
+							android:textColor="#000" />
+            			<TextView
+        					android:layout_width="wrap_content" 
+        					android:layout_height="50dip"
+        					android:layout_centerVertical="true"
+        					android:text="@string/xxi"
+        					android:layout_toLeftOf="@+id/xxcho"
+        					android:gravity="center"
+        					android:layout_marginRight="10dip"
+        					android:textSize="18sp"		
+							android:textColor="#000" />            			
+            			<ImageView
+            			    android:id="@+id/xxcho"
+            				android:layout_width="wrap_content"
+        					android:layout_height="wrap_content"  
+        					android:scaleType="matrix"
+        					android:gravity="center"
+        					android:layout_centerVertical="true"
+        					android:layout_alignParentRight="true"
+        					android:src="@drawable/mm_submenu" />      					
+      				</RelativeLayout>  
+      				<RelativeLayout
+            			android:layout_width="fill_parent"
+            			android:layout_height="50sp"
+            			android:clickable="true"
+            			android:background="@drawable/preference_item" >
+            			<TextView
+        					android:layout_width="wrap_content" 
+        					android:layout_height="50dip"
+        					android:layout_centerVertical="true"
+        					android:gravity="center"
+        					android:text="@string/laqk"
+        					android:textSize="18sp"		
+							android:textColor="#000" />
+            			<TextView
+        					android:layout_width="wrap_content" 
+        					android:layout_height="50dip"
+        					android:layout_centerVertical="true"
+        					android:text="保密"
+        					android:layout_toLeftOf="@+id/lazkmcho"
+        					android:gravity="center"
+        					android:layout_marginRight="10dip"
+        					android:textSize="18sp"		
+							android:textColor="#000" />            			
+            			<ImageView
+            			    android:id="@+id/lazkmcho"
+            				android:layout_width="wrap_content"
+        					android:layout_height="wrap_content"  
+        					android:scaleType="matrix"
+        					android:gravity="center"
+        					android:layout_centerVertical="true"
+        					android:layout_alignParentRight="true"
+        					android:src="@drawable/mm_submenu" />      					
+      				</RelativeLayout>  
+      				<RelativeLayout
+            			android:layout_width="fill_parent"
+            			android:layout_height="50sp"
+            			android:clickable="true"
+            			android:background="@drawable/preference_item" >
+            			<TextView
+        					android:layout_width="wrap_content" 
+        					android:layout_height="50dip"
+        					android:layout_centerVertical="true"
+        					android:gravity="center"
+        					android:text="@string/jx"
+        					android:textSize="18sp"		
+							android:textColor="#000" />
+            			<TextView
+        					android:layout_width="wrap_content" 
+        					android:layout_height="50dip"
+        					android:layout_centerVertical="true"
+        					android:text="武汉"
+        					android:layout_toLeftOf="@+id/jxmcho"
+        					android:gravity="center"
+        					android:layout_marginRight="10dip"
+        					android:textSize="18sp"		
+							android:textColor="#000" />            			
+            			<ImageView
+            			    android:id="@+id/jxmcho"
+            				android:layout_width="wrap_content"
+        					android:layout_height="wrap_content"  
+        					android:scaleType="matrix"
+        					android:gravity="center"
+        					android:layout_centerVertical="true"
+        					android:layout_alignParentRight="true"
+        					android:src="@drawable/mm_submenu" />      					
+      				</RelativeLayout>  
+      				<RelativeLayout
+            			android:layout_width="fill_parent"
+            			android:layout_height="50sp"
+            			android:clickable="true"
+            			android:background="@drawable/preference_item" >
+            			<TextView
+        					android:layout_width="wrap_content" 
+        					android:layout_height="50dip"
+        					android:layout_centerVertical="true"
+        					android:gravity="center"
+        					android:text="@string/szd"
+        					android:textSize="18sp"		
+							android:textColor="#000" />
+            			<TextView
+        					android:layout_width="wrap_content" 
+        					android:layout_height="50dip"
+        					android:layout_centerVertical="true"
+        					android:text="武汉"
+        					android:layout_toLeftOf="@+id/szdmcho"
+        					android:gravity="center"
+        					android:layout_marginRight="10dip"
+        					android:textSize="18sp"		
+							android:textColor="#000" />            			
+            			<ImageView
+            			    android:id="@+id/szdmcho"
+            				android:layout_width="wrap_content"
+        					android:layout_height="wrap_content"  
+        					android:scaleType="matrix"
+        					android:gravity="center"
+        					android:layout_centerVertical="true"
+        					android:layout_alignParentRight="true"
+        					android:src="@drawable/mm_submenu" />      					
+      				</RelativeLayout>     
+      				<RelativeLayout
+            			android:layout_width="fill_parent"
+            			android:layout_height="50sp"
+            			android:clickable="true"
+            			android:background="@drawable/preference_item" >
+            			<TextView
+        					android:layout_width="wrap_content" 
+        					android:layout_height="50dip"
+        					android:layout_centerVertical="true"
+        					android:gravity="center"
+        					android:text="@string/szd"
+        					android:textSize="18sp"		
+							android:textColor="#000" />
+            			<TextView
+        					android:layout_width="wrap_content" 
+        					android:layout_height="50dip"
+        					android:layout_centerVertical="true"
+        					android:text="武汉"
+        					android:layout_toLeftOf="@+id/szdmcho"
+        					android:gravity="center"
+        					android:layout_marginRight="10dip"
+        					android:textSize="18sp"		
+							android:textColor="#000" />            			
+            			<ImageView
+            			    android:id="@+id/szdmcho"
+            				android:layout_width="wrap_content"
+        					android:layout_height="wrap_content"  
+        					android:scaleType="matrix"
+        					android:gravity="center"
+        					android:layout_centerVertical="true"
+        					android:layout_alignParentRight="true"
+        					android:src="@drawable/mm_submenu" />      					
+      				</RelativeLayout> 
+      				<RelativeLayout
+            			android:layout_width="fill_parent"
+            			android:layout_height="50sp"
+            			android:clickable="true"
+            			android:background="@drawable/preference_item" >
+            			<TextView
+        					android:layout_width="wrap_content" 
+        					android:layout_height="50dip"
+        					android:layout_centerVertical="true"
+        					android:gravity="center"
+        					android:text="@string/xuex"
+        					android:textSize="18sp"		
+							android:textColor="#000" />
+            			<TextView
+        					android:layout_width="wrap_content" 
+        					android:layout_height="50dip"
+        					android:layout_centerVertical="true"
+        					android:text="O型"
+        					android:layout_toLeftOf="@+id/xuexmcho"
+        					android:gravity="center"
+        					android:layout_marginRight="10dip"
+        					android:textSize="18sp"		
+							android:textColor="#000" />            			
+            			<ImageView
+            			    android:id="@+id/xuexmcho"
+            				android:layout_width="wrap_content"
+        					android:layout_height="wrap_content"  
+        					android:scaleType="matrix"
+        					android:gravity="center"
+        					android:layout_centerVertical="true"
+        					android:layout_alignParentRight="true"
+        					android:src="@drawable/mm_submenu" />      					
+      				</RelativeLayout> 
+      				<RelativeLayout
+            			android:layout_width="fill_parent"
+            			android:layout_height="50sp"
+            			android:clickable="true"
+            			android:background="@drawable/preference_item" >
+            			<TextView
+        					android:layout_width="wrap_content" 
+        					android:layout_height="50dip"
+        					android:layout_centerVertical="true"
+        					android:gravity="center"
+        					android:text="@string/dh"
+        					android:textSize="18sp"		
+							android:textColor="#000" />
+            			<TextView
+        					android:layout_width="wrap_content" 
+        					android:layout_height="50dip"
+        					android:layout_centerVertical="true"
+        					android:text="15071166378"
+        					android:layout_toLeftOf="@+id/dhmcho"
+        					android:gravity="center"
+        					android:layout_marginRight="10dip"
+        					android:textSize="18sp"		
+							android:textColor="#000" />            			
+            			<ImageView
+            			    android:id="@+id/dhmcho"
+            				android:layout_width="wrap_content"
+        					android:layout_height="wrap_content"  
+        					android:scaleType="matrix"
+        					android:gravity="center"
+        					android:layout_centerVertical="true"
+        					android:layout_alignParentRight="true"
+        					android:src="@drawable/mm_submenu" />      					
+      				</RelativeLayout>  
+     				<RelativeLayout
+            			android:layout_width="fill_parent"
+            			android:layout_height="50sp"
+            			android:clickable="true"
+            			android:background="@drawable/preference_last_item" >
+            			<TextView
+        					android:layout_width="wrap_content" 
+        					android:layout_height="50dip"
+        					android:layout_centerVertical="true"
+        					android:gravity="center"
+        					android:text="@string/csny"
+        					android:textSize="18sp"		
+							android:textColor="#000" />
+            			<TextView
+        					android:layout_width="wrap_content" 
+        					android:layout_height="50dip"
+        					android:layout_centerVertical="true"
+        					android:text="2008年10月11日"
+        					android:layout_toLeftOf="@+id/csnycho"
+        					android:gravity="center"
+        					android:layout_marginRight="10dip"
+        					android:textSize="18sp"		
+							android:textColor="#000" />            			
+            			<ImageView
+            			    android:id="@+id/csnycho"
+            				android:layout_width="wrap_content"
+        					android:layout_height="wrap_content"  
+        					android:scaleType="matrix"
+        					android:gravity="center"
+        					android:layout_centerVertical="true"
+        					android:layout_alignParentRight="true"
+        					android:src="@drawable/mm_submenu" />      					
+      				</RelativeLayout>       				         	     				  				
+        	</LinearLayout>
+    </ScrollView>
+</LinearLayout>

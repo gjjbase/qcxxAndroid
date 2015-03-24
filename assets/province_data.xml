@@ -1,0 +1,107 @@
+<root>
+	<province name="湖北省">
+		<city name="武汉市">
+			<district name="江汉大学" zipcode="430000" />
+			<district name="江岸大学" zipcode="430000" />
+			<district name="硚口大学" zipcode="430000" />
+			<district name="汉阳大学" zipcode="430000" />
+			<district name="武昌大学" zipcode="430000" />
+			<district name="青山大学" zipcode="430000" />
+			<district name="洪山大学" zipcode="430000" />
+			<district name="东西湖大学" zipcode="430000" />
+			<district name="汉南大学" zipcode="430000" />
+			<district name="蔡甸大学" zipcode="430000" />
+			<district name="江夏大学" zipcode="430000" />
+			<district name="黄陂大学" zipcode="430000" />
+			<district name="新洲大学" zipcode="430000" />
+		</city>
+		<city name="鄂州市">
+			<district name="梁子湖大学" zipcode="436000" />
+			<district name="鄂城大学" zipcode="436000" />
+			<district name="华容大学" zipcode="436000" />
+		</city>
+		<city name="孝感市">
+			<district name="孝南大学" zipcode="432100" />
+			<district name="应城市" zipcode="432100" />
+			<district name="安陆市" zipcode="432100" />
+			<district name="汉川市" zipcode="432100" />
+			<district name="孝昌大学" zipcode="432100" />
+			<district name="大悟大学" zipcode="432100" />
+			<district name="云梦大学" zipcode="432100" />
+		</city>
+		<city name="十堰市">
+			<district name="张湾大学" zipcode="442000" />
+			<district name="丹江口" zipcode="442000" />
+			<district name="郧大学" zipcode="442000" />
+			<district name="郧西大学" zipcode="442000" />
+			<district name="竹山大学" zipcode="442000" />
+			<district name="竹溪大学" zipcode="442000" />
+			<district name="房大学" zipcode="442000" />
+		</city>
+		<city name="咸宁市">
+			<district name="咸安大学" zipcode="437000" />
+			<district name="赤壁市" zipcode="437000" />
+			<district name="嘉鱼大学" zipcode="437000" />
+			<district name="通城大学" zipcode="437000" />
+			<district name="崇阳大学" zipcode="437000" />
+			<district name="通山大学" zipcode="437000" />
+		</city>
+		<city name="随州市">
+			<district name="广水市" zipcode="441300" />
+			<district name="曾都大学" zipcode="441300" />
+		</city>
+		<city name="黄石市">
+			<district name="黄石港" zipcode="435000" />
+			<district name="西塞山" zipcode="435000" />
+			<district name="下陆大学" zipcode="435000" />
+			<district name="铁山大学" zipcode="435000" />
+			<district name="大冶市" zipcode="435000" />
+			<district name="阳新大学" zipcode="435000" />
+		</city>
+		<city name="黄冈市">
+			<district name="黄州大学" zipcode="435000" />
+			<district name="麻城市" zipcode="435000" />
+			<district name="武穴市" zipcode="435000" />
+			<district name="团风大学" zipcode="435000" />
+			<district name="红安大学" zipcode="435000" />
+			<district name="罗田大学" zipcode="435000" />
+			<district name="英山大学" zipcode="435000" />
+			<district name="浠水大学" zipcode="435000" />
+			<district name="蕲春大学" zipcode="435000" />
+			<district name="黄梅大学" zipcode="435000" />
+		</city>
+		<city name="宜昌市">
+			<district name="西陵大学" zipcode="443000" />
+			<district name="伍家岗" zipcode="443000" />
+			<district name="点军大学" zipcode="443000" />
+			<district name="猇亭大学" zipcode="443000" />
+			<district name="宜都市" zipcode="443000" />
+			<district name="当阳市" zipcode="443000" />
+			<district name="枝江市" zipcode="443000" />
+			<district name="远安大学" zipcode="443000" />
+			<district name="兴山大学" zipcode="443000" />
+			<district name="五峰自治大学" zipcode="443000" />
+			<district name="秭归大学" zipcode="443000" />
+			<district name="长阳自治大学" zipcode="443000" />
+		</city>
+		<city name="荆州市">
+			<district name="荆州大学" zipcode="434000" />
+			<district name="沙市大学" zipcode="434000" />
+		</city>
+	</province>
+	<province name="湖南省">
+		<city name="长沙市">
+			<district name="芙蓉大学" zipcode="410000" />
+			<district name="天心大学" zipcode="410000" />
+			<district name="开福大学" zipcode="410000" />
+			<district name="雨花大学" zipcode="410000" />
+			<district name="长沙大学" zipcode="410000" />
+		</city>
+		<city name="株洲市">
+			<district name="天元大学" zipcode="412000" />
+			<district name="荷塘大学" zipcode="412000" />
+			<district name="芦淞大学" zipcode="412000" />
+			<district name="石峰大学" zipcode="412000" />
+		</city>
+	</province>
+</root>

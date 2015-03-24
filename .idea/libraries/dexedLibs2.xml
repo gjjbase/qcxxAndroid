@@ -1,0 +1,21 @@
+<component name="libraryTable">
+  <library name="dexedLibs">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/bin/dexedLibs/commons-lang-2.6-17b850cae59c3d61b3bf1d89f80f233e.jar!/" />
+      <root url="jar://$PROJECT_DIR$/bin/dexedLibs/pinyin4j-2.5.0-de4c826d6ffa9edf2ed773105ae5ddf4.jar!/" />
+      <root url="jar://$PROJECT_DIR$/bin/dexedLibs/json-lib-2.4-jdk15-0f802eff965d0a4ab10315256a02dc1e.jar!/" />
+      <root url="jar://$PROJECT_DIR$/bin/dexedLibs/jredis-1.0-rc2-b4f16494eea782686f8908cf78c576a3.jar!/" />
+      <root url="jar://$PROJECT_DIR$/bin/dexedLibs/locSDK_5.01-46e2f551c267f93cb174dddfa2bc89f1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/bin/dexedLibs/commons-logging-1.1.1-8bb77e47fabee73e995c36110586f434.jar!/" />
+      <root url="jar://$PROJECT_DIR$/bin/dexedLibs/nineoldandroids-2.4.0-ed187e3d9cbfa5191468810b0f3bd3b5.jar!/" />
+      <root url="jar://$PROJECT_DIR$/bin/dexedLibs/ormlite-android-4.48-b534f16ff798b9368d631c1a2210e03e.jar!/" />
+      <root url="jar://$PROJECT_DIR$/bin/dexedLibs/commons-beanutils-1.8.2-18da0eaebd5ffa716f0dd58e3679f26c.jar!/" />
+      <root url="jar://$PROJECT_DIR$/bin/dexedLibs/cordova-2.9.0-850729a04a2909e4174f5e2b6d8620c8.jar!/" />
+      <root url="jar://$PROJECT_DIR$/bin/dexedLibs/android-support-v4-66288f1f5c3a76ba7062c7a42e3ce83f.jar!/" />
+      <root url="jar://$PROJECT_DIR$/bin/dexedLibs/ksoap2-android-assembly-2.4-jar-with-dependencies-94af66f9bba05464e1b483dcdbad3a4c.jar!/" />
+      <root url="jar://$PROJECT_DIR$/bin/dexedLibs/ormlite-core-4.48-939868dcd351effce05493300c6b249d.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

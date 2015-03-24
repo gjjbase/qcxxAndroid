@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LinearLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" 
+    android:orientation="vertical" 
+    android:background="@color/bg_color"
+    >
+ <RelativeLayout
+     android:layout_width="fill_parent"
+     android:layout_height="45.0dp"
+     android:orientation="horizontal" 
+     android:background="@drawable/title_bar"
+     >
+     <Button
+         android:id="@+id/back"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_marginLeft="10sp"
+         android:layout_centerVertical="true"
+         android:textColor="@color/white"
+         android:textSize="18.0sp"
+         android:text="@string/back"
+         android:background="@android:color/transparent" 
+         android:onClick="backOnclick"
+         />
+     <TextView
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_centerInParent="true"
+         android:text="相关评论"
+         android:textColor="@color/white"
+         android:textSize="20.0sp" />
+ </RelativeLayout>    
+<FrameLayout 
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" 
+    android:orientation="vertical" 
+    android:background="@color/bg_color"
+    >    
+    <ListView  
+        android:id="@+id/listView"  
+        android:layout_width="fill_parent"  
+        android:layout_height="wrap_content"  
+        android:divider="@color/comm_color"
+        android:layout_marginBottom="45sp"        
+        android:scrollbars="none" >  
+    </ListView>  				        
+  <LinearLayout
+      android:layout_width="fill_parent"
+      android:layout_height="45.0dip"
+      android:layout_gravity="bottom"
+      android:background="@color/comm_color"
+      android:orientation="horizontal">	  
+	<EditText 
+	    android:id="@+id/comment"
+	    android:layout_weight="5"
+	    android:layout_width="fill_parent"
+	    android:layout_height="45sp"
+	    android:textColor="@color/black"
+	    android:textSize="16sp"
+	    android:singleLine="true"
+	    android:background="@drawable/login_editbox"
+	    android:hint="@string/plscomment"/>
+      <Button
+          android:id="@+id/pl"
+          android:layout_width="70dip"
+          android:layout_weight="1"
+          android:layout_height="45.0dip"
+          android:layout_gravity="center"
+          android:gravity="center"
+          android:text="@string/pl"
+          android:background="@drawable/btn_style_green"           
+          />
+     </LinearLayout>	
+  </FrameLayout>
+</LinearLayout>

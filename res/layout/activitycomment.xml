@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/chat_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <RelativeLayout
+        android:id="@+id/base_header"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/top_color" >
+
+        <TextView
+            android:id="@+id/txt_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="评论"
+            android:textColor="@color/black"
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/txt_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:drawableLeft="@drawable/mm_submenu"
+            android:gravity="center"
+            android:onClick="myback"
+            android:text="秀秀榜"
+            android:textColor="@color/black"
+            android:textSize="18sp" />
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="0.5dp"
+            android:layout_alignParentBottom="true"
+            android:background="#a3a3a3" />
+    </RelativeLayout>
+
+    <com.yale.qcxxandroid.base.MyBaseListView
+        android:id="@+id/list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/bottom"
+        android:layout_below="@id/base_header"
+        android:background="@color/white"
+        android:cacheColorHint="@color/transparent"
+        android:divider="@null"
+        android:listSelector="@color/transparent"
+        android:scrollbars="none" />
+
+    <LinearLayout
+        android:id="@+id/bottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical" >
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:background="@color/top_color" >
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="0.5dp"
+                android:layout_alignParentTop="true"
+                android:background="#a3a3a3" />
+
+            <EditText
+                android:id="@+id/num"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:digits="01"
+                android:gravity="center"
+                android:textSize="10sp"
+                android:visibility="gone" />
+
+            <ImageView
+                android:id="@+id/img_adder"
+                android:layout_width="35dip"
+                android:layout_height="35dip"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:scaleType="fitCenter"
+                android:src="@drawable/img_chattianjia" />
+
+            <ImageView
+                android:id="@+id/image_face"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="4dip"
+                android:layout_toLeftOf="@id/img_adder"
+                android:scaleType="fitCenter"
+                android:src="@drawable/img_biaoqing" />
+
+            <ImageView
+                android:id="@+id/send_sms"
+                android:layout_width="33dp"
+                android:layout_height="40dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:paddingBottom="5dp"
+                android:paddingTop="5dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/img_fasong"
+                android:visibility="gone" />
+
+            <LinearLayout
+                android:id="@+id/input_ll"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_marginBottom="2dip"
+                android:layout_marginLeft="5dip"
+                android:layout_marginTop="2dip"
+                android:layout_toLeftOf="@id/image_face"
+                android:gravity="center_vertical|bottom"
+                android:orientation="vertical" >
+
+                <!-- com.example.tst.view.MyEditText -->
+
+                <com.yale.qcxxandroid.chat.MyEditText
+                    android:id="@+id/input_sms"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_gravity="bottom"
+                    android:gravity="bottom"
+                    android:hint="请输入发送评论"
+                    android:paddingLeft="3dp"
+                    android:textSize="18sp" />
+
+                <ImageView
+                    android:id="@+id/inputer"
+                    android:layout_width="match_parent"
+                    android:layout_height="fill_parent"
+                    android:background="@drawable/chat"
+                    android:visibility="gone" />
+            </LinearLayout>
+        </RelativeLayout>
+
+        <include
+            android:id="@+id/chat_face_container"
+            layout="@layout/chat_face_container" />
+    </LinearLayout>
+
+</RelativeLayout>

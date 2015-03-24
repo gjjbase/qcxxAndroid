@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="horizontal"
+    android:background="@drawable/welcome" >
+		<Button
+		    android:id="@+id/login"
+		    android:layout_gravity="bottom|left"
+		    android:layout_marginBottom="10dp"
+		    android:layout_weight="1"
+		    android:layout_height="50dp"
+		    android:layout_width="140dp"  
+		    android:layout_marginLeft="20dp"
+		    android:layout_marginRight="10dp"
+		    android:background="@drawable/btn_style_white"
+		    android:onClick="toLogin"
+		    android:text="@string/login"
+		    android:textColor="@color/black"
+		    android:textSize="18sp" />
+
+		<Button
+		    android:id="@+id/regdit"
+		    android:layout_weight="1"
+		    android:layout_width="140dp"  
+		    android:layout_gravity="bottom|right"
+		    android:layout_marginBottom="10dp"
+		    android:layout_height="50dp"
+		    android:layout_marginRight="20dp"
+		    android:background="@drawable/btn_style_green"
+		    android:onClick="toRegdit"
+		    android:text="@string/regdit"
+		    android:textColor="@color/white"
+		    android:textSize="18sp" />
+</LinearLayout>

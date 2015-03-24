@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TabHost xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@android:id/tabhost"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/bg_color" >
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical" >
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="50.0dp"
+            android:orientation="horizontal" >
+
+            <Button
+                android:id="@+id/chose"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="10sp"
+                android:background="@android:color/transparent"
+                android:text="@string/xx_chose"
+                android:textColor="@color/black"
+                android:textSize="18.0sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="@string/moreShow"
+                android:textColor="@color/black"
+                android:textSize="20.0sp" />
+
+            <Button
+                android:id="@+id/add"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="10dip"
+                android:background="@android:color/transparent"
+                android:onClick="pubShow"
+                android:text="@string/show_add"
+                android:textColor="@color/black"
+                android:textSize="18sp" />
+        </RelativeLayout>
+
+        <FrameLayout
+            android:layout_width="fill_parent"
+            android:layout_height="45dip"
+            android:layout_marginTop="-5px" >
+
+            <com.yale.qcxxandroid.base.MoveTab
+                android:id="@+id/main_tab_group"
+                android:layout_width="fill_parent"
+                android:layout_height="40dip"
+                android:layout_gravity="center"
+                android:orientation="horizontal"
+                >
+
+                <Button
+                    style="@style/MMTabButton1"
+                    android:tag="main_button0"
+                    android:text="@string/xx_new"
+                    android:textSize="18sp" />
+
+                <Button
+                    style="@style/MMTabButton1"
+                    android:tag="main_button1"
+                    android:text="@string/xx_school"
+                    android:textSize="18sp" />
+
+                <Button
+                    style="@style/MMTabButton1"
+                    android:tag="main_button2"
+                    android:text="@string/xx_city"
+                    android:textSize="18sp" />
+
+                <Button
+                    style="@style/MMTabButton1"
+                    android:tag="main_button3"
+                    android:text="@string/xx_top"
+                    android:textSize="18sp" />
+            </com.yale.qcxxandroid.base.MoveTab>
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@android:id/tabcontent"
+            android:layout_width="fill_parent"
+            android:layout_height="0.0dip"
+            android:layout_weight="1.0" />
+
+        <TabWidget
+            android:id="@android:id/tabs"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.0"
+            android:visibility="gone" />
+    </LinearLayout>
+
+</TabHost>

@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_color"
+    android:orientation="vertical" >
+
+    <FrameLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" >
+
+        <LinearLayout
+            android:id="@+id/toper_lin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/bg_color"
+            android:orientation="vertical" >
+
+            <RelativeLayout
+                android:id="@+id/title"
+                android:layout_width="fill_parent"
+                android:layout_height="50dp"
+                android:background="@color/top_color" >
+
+                <Button
+                    android:id="@+id/back"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:background="@android:color/transparent"
+                    android:drawableLeft="@drawable/mm_submenu"
+                    android:onClick="backClick"
+                    android:text="返回"
+                    android:textColor="@color/black"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:text="全部订单"
+                    android:textColor="@color/black"
+                    android:textSize="20sp" />
+
+                <View
+                    android:layout_width="wrap_content"
+                    android:layout_height="0.5dp"
+                    android:layout_alignParentBottom="true"
+                    android:background="#a3a3a3" />
+            </RelativeLayout>
+
+            <LinearLayout
+                android:id="@+id/lin_bg"
+                style="@style/MyDialogStyleTop"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/bg_color"
+                android:orientation="horizontal" >
+
+                <!-- android:background="@drawable/ic_preference_single_normal" -->
+
+                <TextView
+                    android:id="@+id/search"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_weight="9"
+                    android:background="@drawable/qcediters"
+                    android:gravity="center"
+                    android:hint="搜索所有订单"
+                    android:paddingLeft="5dp"
+                    android:textSize="18sp" />
+            </LinearLayout>
+
+            <com.yale.qcxxandroid.base.MyBaseListView
+                android:id="@+id/list"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:divider="@null"
+                android:fadingEdge="none" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/lin_bger"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:background="@color/bg_color"
+            android:orientation="vertical"
+            android:visibility="gone" >
+
+            <!-- android:background="@drawable/ic_preference_single_normal" -->
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="40dp"
+                android:background="@color/bg_color"
+                android:orientation="horizontal" >
+
+                <EditText
+                    android:id="@+id/searcher"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_weight="9"
+                    android:background="@drawable/qcediters"
+                    android:focusable="false"
+                    android:gravity="center"
+                    android:hint="搜索所有订单"
+                    android:paddingLeft="5dp"
+                    android:textSize="18sp" >
+                    <requestFocus />
+                </EditText>
+
+                <TextView
+                    android:id="@+id/cancel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/cancel"
+                    android:textColor="@color/greener"
+                    android:textSize="18sp" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:alpha="0.6"
+                android:background="@color/black" />
+        </LinearLayout>
+    </FrameLayout>
+
+</LinearLayout>

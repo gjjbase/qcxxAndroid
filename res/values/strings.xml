@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- 注册 -->
+    <string name="xxjxy">学校和学院</string>
+    <string name="regtit1">请确认您的学校、学校及入学年份</string>
+    <string name="choseTime">请选择入学年份</string>
+    <string name="phoneNum">请填写手机号码</string>
+    <string name="next">下一步</string>
+    <string name="pre">上一步</string>
+    <string name="wxzl">资料完善</string>
+    <string name="jbzxtit">完成基本资料填写后，注册成功</string>
+    <string name="plsnc">请填写在系统中的昵称</string>
+    <string name="plsCode">填写手机短信获取的验证码</string>
+    <!-- 登录 -->
+    <string name="login">登 录</string>
+    <string name="regdit">注 册</string>
+    <string name="exit">退出登录</string>
+    <string name="plsnum">昵称/秀秀号/手机号</string>
+    <string name="plspass">请填写密码</string>
+    <string name="plsValpass">请确认一次密码</string>
+    <string name="plssex">请选择性别</string>
+    <string name="plslove">请选择恋爱情况</string>
+    <string name="findpass">忘记密码?</string>
+
+    <!-- 退出的弹框 -->
+    <string name="exitQc">退出青春秀秀</string>
+    <string name="exitTx">退出后，你将收不到新的消\n息.确定要退出？</string>
+    <string name="exitY">是</string>
+    <string name="exitN">否</string>
+
+    <!-- 主页模板 -->
+    <string name="qc">青春</string>
+    <string name="xx">秀秀</string>
+    <string name="bj">班级</string>
+    <string name="my">我的</string>
+
+    <!-- 青春相关 -->
+    <string name="youth_pyq">朋友圈</string>
+    <string name="youth_gzq">公众圈</string>
+    <string name="youth_gbb">隔壁班</string>
+    <string name="youth_xxhd">秀秀活动</string>
+    <string name="youth_search">班、系、校</string>
+    <string name="xxhd_gift">礼品</string>
+    <string name="xxhd_xm">选美</string>
+    <string name="xxhd_bm">报名</string>
+    <string name="xxhd_topay">立即抢购</string>
+    <string name="qc_msg">青春消息</string>
+    <string name="qc_qun">发起群聊</string>
+    <string name="qc_add">添加朋友</string>
+    <string name="qc_sao">扫一扫</string>
+    <string name="qc_choosequn">选择一个或多个联系人发起聊天</string>
+
+    <!-- 秀秀相关 -->
+    <string name="xx_new">最新</string>
+    <string name="xx_school">本校</string>
+    <string name="xx_city">同城</string>
+    <string name="xx_top">总榜</string>
+    <string name="xx_chose">筛选</string>
+    <string name="more">更多</string>
+    <string name="show_add">秀一秀</string>
+    <string name="spxx">视频秀秀</string>
+    <string name="rmht">热门话题</string>
+    <string name="twjd">提问解答</string>
+    <string name="dxt">丢纸条</string>
+    <string name="dzt">[丢纸条]</string>
+    <string name="wdx">纸条</string>
+    <string name="mys">我的秀</string>
+    <string name="moreShow">秀秀榜</string>
+    <string name="pl">评论</string>
+    <string name="conn">丢纸条(加好友)</string>
+    <string name="plscomment">请输入相关评论</string>
+    <string name="plsshow">请此刻想要说点什么吗？</string>
+    <string name="pub">发布</string>
+    <!-- 班级相关 -->
+    <string name="search_friend">请输入好友名称关键字</string>
+    <string name="itemNew">好友验证</string>
+    <string name="attention">关注</string>
+    <string name="visit">访问</string>
+    <string name="itemAdd">添加好友</string>
+    <string name="itemBlack">黑名单</string>
+    <string name="hd_mum">活动成员</string>
+    <string name="saywhat">说点什么...</string>
+    <string name="restore">恢复</string>
+    <string name="pls_search_friend">请输入好友的昵称、号码</string>
+    <string name="chat">递纸条</string>
+    <string name="addfriend">加好友</string>
+    <string name="look">关注</string>
+    <string name="top">点赞</string>
+    <string name="ignore">忽略未读</string>
+    <string name="contact">联系人</string>
+    <string name="personal">个人</string>
+    <string name="me_receive">我收到的</string>
+    <string name="me_send">我递过的</string>
+    <string name="friendadd">添加</string>
+    <string name="mesg">通讯录</string>
+    <string name="myclass">班级</string>
+    <string name="gebiclass">隔壁班级</string>
+    <string name="xyuanxiao">系、院校</string>
+    <string name="sxxx">实习秀秀</string>
+    <string name="fjtx">附近同学</string>
+    <!-- 我的 -->
+    <string name="my_credit">诚信库</string>
+    <string name="setting">设置</string>
+    <string name="my_mp">我的名片</string>
+    <string name="my_xc">我的相册</string>
+    <string name="my_hy">好友</string>
+    <string name="my_gz">关注</string>
+    <string name="my_fs">访问</string>
+    <string name="my_zt">纸条</string>
+    <string name="my_top">被赞</string>
+    <string name="my_xx">消息通知</string>
+    <string name="tx">头像</string>
+    <string name="xxzl">详细资料</string>
+    <string name="nc">昵称</string>
+    <string name="xz">星座</string>
+    <string name="sg">身高</string>
+    <string name="wtx">未填写</string>
+    <string name="cxjf">诚信积分</string>
+    <string name="qm">签名</string>
+    <string name="zh">秀秀号</string>
+    <string name="csny">出生年月</string>
+    <string name="jn">技能</string>
+    <string name="tc">特长</string>
+    <string name="ah">爱好</string>
+    <string name="laqk">恋爱状况</string>
+    <string name="szd">现居住地</string>
+    <string name="xuex">血型</string>
+    <string name="dh">联系方式</string>
+    <string name="jx">家乡</string>
+    <string name="school">学校</string>
+    <string name="collage">学院</string>
+    <string name="profer">专业</string>
+    <string name="inSchool">入学时间</string>
+    <string name="classes">班级</string>
+    <string name="verity_name">真实姓名</string>
+    <string name="xxi">详细</string>
+    <string name="xb">性别</string>
+    <string name="my_sc">我的收藏</string>
+    <string name="my_sz">设置</string>
+    <string name="wdxx">我的秀秀</string>
+    <string name="wdzt">我的纸条</string>
+    <string name="jfsc">积分商城</string>
+    <string name="qb">我的钱包</string>
+    <string name="tcdl">退出登录</string>
+    <string name="newmessage">纸条提醒</string>
+    <string name="lttx">聊天提醒</string>
+    <string name="ys">隐私</string>
+    <string name="ty">通用</string>
+    <string name="zhyaq">账号与安全</string>
+    <string name="gyqcxx">关于青春秀秀</string>
+    <string name="my_cxtx">诚信体系介绍</string>
+    <string name="my_cxjf">我的诚信积分</string>
+    <string name="my_xyjf">校友诚信积分</string>
+
+    <!-- 通用 -->
+    <string name="zd">震动</string>
+    <string name="ls">铃声</string>
+    <string name="back">返回</string>
+    <string name="myser">我的</string>
+    <string name="delete">删除</string>
+    <string name="reply">[回复]</string>
+    <string name="cancel">取消</string>
+    <string name="ok">确定</string>
+    <string name="no">取消</string>
+    <string name="plschose">请选择</string>
+    <string name="male">男</string>
+    <string name="female">女</string>
+    <string name="both">不限</string>
+    <string name="search">查找</string>
+    <string name="search1">查&#160;&#160;找</string>
+    <string name="xxtx">友情提醒</string>
+    <string name="start">开始体验</string>
+    <string name="app_name">青春秀秀</string>
+    <string name="welcome1">\n我们的大学班级\n一辈子的同窗情谊</string>
+    <string name="welcome2">\n去隔壁看看\n向隔壁的她（他）递个纸条</string>
+    <string name="welcome3">\n秀才艺专业\n我就是主角，我秀我精彩</string>
+    <string name="welcome4">\n和全国大学生交友\n绝对真实的大学生</string>
+    <string name="welcome5">\n诚信库\n她（他）你想更了解吗？</string>
+    <string name="welcome6">\n大一新生报到\n收到录取通知书，即可找到大学新同学</string>
+    <string name="welcome">青春秀秀社交平台\n欢迎您到来</string>
+    <string name="exit_title">退出后会清除账号、密码，但下次\n登录依然可以使用本帐号登录</string>
+
+</resources>
