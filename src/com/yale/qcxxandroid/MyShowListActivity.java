@@ -135,8 +135,6 @@ public class MyShowListActivity extends BaseActivity {
 		private int[] imger = new int[] { R.drawable.example1,
 				R.drawable.example2, R.drawable.xiuxiuban7 };
 
-		// private int[] imger;
-
 		private Adapter(Context context, ArrayList<String> list) {
 			this.context = context;
 			this.list = list;
