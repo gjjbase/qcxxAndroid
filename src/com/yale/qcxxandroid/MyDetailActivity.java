@@ -70,7 +70,7 @@ public class MyDetailActivity extends BaseActivity {
 						JSONArray jso = new JSONArray(returnJson);
 						JSONObject jsoo = jso.getJSONObject(0);
 						creditText = (TextView) findViewById(R.id.creditText);
-						creditText.setText(jsoo.getInt("credit") + "");
+						creditText.setText("诚信分:"+jsoo.getInt("credit"));
 
 						// qm.setText(bundle.getString("sign"));
 						zh = (TextView) findViewById(R.id.zh);

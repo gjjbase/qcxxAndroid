@@ -66,7 +66,7 @@ public class CommentsActivity extends BaseActivity {
 	private ChatLVAdapter mLvAdapter;
 	private LinkedList<ChatInfo> infos = new LinkedList<ChatInfo>();
 	private ThreadUtil thread;
-
+	private TextView txt_back;
 	// private void init(){
 	// thread=new ThreadUtil(mhandler);
 	// }
@@ -425,11 +425,20 @@ public class CommentsActivity extends BaseActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activitycomment);
 		input_sms = (MyEditText) findViewById(R.id.input_sms);
+		txt_back=(TextView) findViewById(R.id.txt_back);
 		send_sms = (ImageView) findViewById(R.id.send_sms);
 		image_face = (ImageView) findViewById(R.id.image_face);
 		img_adder = (ImageView) findViewById(R.id.img_adder);
 		mViewPager = (ViewPager) findViewById(R.id.face_viewpager);
 		mDotsLayout = (LinearLayout) findViewById(R.id.face_dots_container);
+		txt_back.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				finish();
+			}
+		});
 		image_face.setOnClickListener(new OnClickListener() {
 
 			@Override
@@ -454,10 +463,7 @@ public class CommentsActivity extends BaseActivity {
 		initViews();
 	}
 
-	public void myback(View v) {
-		finish();
-	}
-
+	 
 	private void initViews() {
 		list = (MyBaseListView) findViewById(R.id.list);
 		// chat = new ChatInfo();

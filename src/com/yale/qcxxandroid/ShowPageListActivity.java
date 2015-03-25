@@ -203,7 +203,7 @@ public class ShowPageListActivity extends BaseActivity {
 												.getBitmapFromMemCache(slideimg
 														.get(i)) == null) {
 											show1.setImageResource(R.drawable.logo);
-											LOG.i("++++++++++++++++++++++++","失败");
+//											LOG.i("++++++++++++++++++++++++","失败");
 										} else {
 											show1.setImageBitmap(GlobalUtil
 													.getBitmapFromMemCache(slideimg

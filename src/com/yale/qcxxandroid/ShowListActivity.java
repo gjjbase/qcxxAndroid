@@ -278,9 +278,7 @@ public class ShowListActivity extends BaseActivity {
 				final EditText edt = (EditText) v.findViewById(R.id.edt);
 				final ViewPager viewPager = (ViewPager) v.findViewById(R.id.vp);
 				TextView txt = (TextView) v.findViewById(R.id.txt);
-				pras = Integer.parseInt(txt2_top.getText().toString());
-				par = Integer.parseInt(txt2_top.getText().toString());
-
+			
 				try {
 					thisItem.right.setText(jsoo.getJSONObject(position)
 							.getString("pubTime"));
@@ -301,6 +299,8 @@ public class ShowListActivity extends BaseActivity {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
+				pras = Integer.parseInt(txt2_top.getText().toString());
+				par = Integer.parseInt(txt2_top.getText().toString());
 				txt.setOnClickListener(new OnClickListener() {
 
 					@Override

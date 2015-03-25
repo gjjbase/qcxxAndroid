@@ -10,7 +10,7 @@
         android:background="@color/white"
         android:orientation="horizontal" >
 
-        <TextView
+        <TextView 
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -74,6 +74,7 @@
                             android:src="@drawable/img_chakan" />
 
                         <TextView
+                            android:id="@+id/watch"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
@@ -91,6 +92,7 @@
                             android:src="@drawable/img_zan" />
 
                         <TextView
+                            android:id="@+id/zan"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
@@ -109,6 +111,7 @@
                             android:src="@drawable/img_huifu" />
 
                         <TextView
+                            android:id="@+id/msg"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"

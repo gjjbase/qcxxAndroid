@@ -27,7 +27,6 @@
             android:layout_centerVertical="true"
             android:drawableLeft="@drawable/mm_submenu"
             android:gravity="center"
-            android:onClick="myback"
             android:text="秀秀榜"
             android:textColor="@color/black"
             android:textSize="18sp" />
