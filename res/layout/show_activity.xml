@@ -52,9 +52,9 @@
 
     <com.yale.qcxxandroid.base.MtScrollView
         android:layout_width="fill_parent"
-        android:scrollbars="none"
         android:layout_height="fill_parent"
-        android:scrollbarStyle="outsideOverlay" >
+        android:scrollbarStyle="outsideOverlay"
+        android:scrollbars="none" >
 
         <LinearLayout
             android:layout_width="fill_parent"

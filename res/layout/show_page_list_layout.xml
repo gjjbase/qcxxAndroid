@@ -73,6 +73,7 @@
                             android:textSize="18sp" />
 
                         <ImageView
+                            android:id="@+id/top2"
                             android:layout_width="25dp"
                             android:layout_height="25dp"
                             android:layout_weight="1"
@@ -254,6 +255,7 @@
                             android:textSize="18sp" />
 
                         <ImageView
+                            android:id="@+id/top"
                             android:layout_width="25dp"
                             android:layout_height="25dp"
                             android:layout_weight="1"

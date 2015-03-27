@@ -125,6 +125,11 @@ public class RegditActivity extends BaseActivity implements
 		});
 		ssq = (RelativeLayout) findViewById(R.id.ssq);
 		schoolAndCollege = (TextView) findViewById(R.id.schoolAndCollege);
+		// sf_name.setText(sp.getString("sf_name", ""));
+		// sc_name.setText(sp.getString("sc_name", ""));
+		// xy_name.setText(sp.getString("xy_name", ""));
+		schoolAndCollege.setText(sp.getString("sf_name", "")
+				+ sp.getString("sc_name", "") + sp.getString("xy_name", ""));
 		schoolAndCollege.addTextChangedListener(new TextWatcher() {
 			@Override
 			public void onTextChanged(CharSequence s, int start, int before,
@@ -158,13 +163,16 @@ public class RegditActivity extends BaseActivity implements
 		ssq.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				if (pop.isShowing()) {
-					// 隐藏窗口，如果设置了点击窗口外小时即不需要此方式隐藏
-					pop.dismiss();
-				} else {
-					// 显示窗口 
-					pop.showAtLocation(v, Gravity.BOTTOM, 0, 0);
-				}
+				intent.setClass(getApplicationContext(),
+						DeteShooleActivity.class);
+				startActivity(intent);
+				// if (pop.isShowing()) {
+				// // 隐藏窗口，如果设置了点击窗口外小时即不需要此方式隐藏
+				// pop.dismiss();
+				// } else {
+				// // 显示窗口 
+				// pop.showAtLocation(v, Gravity.BOTTOM, 0, 0);
+				// }
 			}
 		});
 		mViewProvince = (WheelView) view.findViewById(R.id.id_province);
@@ -232,6 +240,22 @@ public class RegditActivity extends BaseActivity implements
 		setUpData();
 		setYearData();
 
+	}
+
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		schoolAndCollege.setText(sp.getString("sf_name", "")
+				+ sp.getString("sc_name", "") + sp.getString("xy_name", ""));
+		super.onResume();
+	}
+
+	@Override
+	protected void onRestart() {
+		// TODO Auto-generated method stub
+		schoolAndCollege.setText(sp.getString("sf_name", "")
+				+ sp.getString("sc_name", "") + sp.getString("xy_name", ""));
+		super.onRestart();
 	}
 
 	public void regBackClick(View view) {

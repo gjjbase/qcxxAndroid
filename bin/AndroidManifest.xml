@@ -38,6 +38,8 @@
 		    android:windowSoftInputMode="adjustPan" />
 
 		<activity android:name=".chat.ChatMainActivity" android:configChanges="orientation|keyboardHidden" android:theme="@android:style/Theme.NoTitleBar" android:windowSoftInputMode="adjustResize"/>
+		<activity android:name=".DeteShooleActivity" android:configChanges="orientation|keyboardHidden" android:theme="@android:style/Theme.NoTitleBar" android:windowSoftInputMode="adjustResize"/>
+		<activity android:name=".DetaActivity" android:configChanges="orientation|keyboardHidden" android:theme="@android:style/Theme.NoTitleBar" android:windowSoftInputMode="adjustResize"/>
 		<activity android:name=".CommentsActivity" android:configChanges="orientation|keyboardHidden" android:theme="@android:style/Theme.NoTitleBar" android:windowSoftInputMode="adjustPan"/>
 		<activity android:name=".FabuActivity" android:configChanges="orientation|keyboardHidden" android:theme="@android:style/Theme.NoTitleBar" android:windowSoftInputMode="adjustPan"/>
 		<activity android:name=".camera.ImgsActivity" android:configChanges="orientation|keyboardHidden" android:theme="@android:style/Theme.NoTitleBar" android:windowSoftInputMode="adjustPan"/>

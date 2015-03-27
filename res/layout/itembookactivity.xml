@@ -18,6 +18,7 @@
         android:textColor="#454545" />
 
     <RelativeLayout
+        android:id="@+id/rel"
         android:layout_width="fill_parent"
         android:layout_height="50dp"
         android:background="@drawable/horizontal_preference_single_item" >

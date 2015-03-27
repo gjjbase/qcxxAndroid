@@ -47,13 +47,13 @@ public class MyShowListActivity extends BaseActivity {
 	private ThreadUtil threadUtil;
 	Intent intent = new Intent();
 	private Adapter adapter;
-	private TextView txt_id, txt_name,txt_role;
+	private TextView txt_id, txt_name, txt_role, pubc;
 	private Button back;
 	private int pras, par;
 
+	@SuppressLint("HandlerLeak")
 	private void detail() {
 		Handler handler = new Handler() {
-			@SuppressLint("HandlerLeak")
 			public void handleMessage(Message msg) {
 				super.handleMessage(msg);
 				switch (msg.what) {
@@ -64,8 +64,9 @@ public class MyShowListActivity extends BaseActivity {
 					try {
 						JSONArray jso = new JSONArray(returnJson);
 						JSONObject jsoo = jso.getJSONObject(0);
-						txt_name.setText(jsoo.getString("nickName")); 
-						txt_role.setText("诚信分:"+jsoo.getInt("credit"));
+						txt_name.setText(jsoo.getString("nickName"));
+						txt_role.setText("诚信分:" + jsoo.getInt("credit"));
+						pubc.setText(jsoo.getString("sign"));
 						// inschool = (TextView) findViewById(R.id.inschool);
 						// inschool.setText(sp.getString("inSchool", ""));
 						// txt_role.setText(jsoo.getString("credit"));
@@ -98,7 +99,7 @@ public class MyShowListActivity extends BaseActivity {
 						// ImgLoadThread(lisimg,
 						// handlerSlideImg);
 						// imgLoadThread.start();
-
+						init();
 					} catch (JSONException e) {
 						e.printStackTrace();
 					}
@@ -113,8 +114,7 @@ public class MyShowListActivity extends BaseActivity {
 		};
 		threadUtil = new ThreadUtil(handler);
 		String methodStr = "[{'com.yale.qcxx.sessionbean.member.impl.UserInfoSessionBean':'getUserInfo'}]";
-		String jsonParamStr = "[{'userId':"
-				+ getIntent().getExtras().getString("id") + "}]";
+		String jsonParamStr = "[{'userId':" + sp.getString("userId", "") + "}]";
 		// String jsonParamStr = "[{'userId':" + sp.getString("userId", "") +
 		// "}]";
 		threadUtil.doStartWebServicerequestWebService(MyShowListActivity.this,
@@ -129,6 +129,7 @@ public class MyShowListActivity extends BaseActivity {
 		txt_id = (TextView) findViewById(R.id.txt_id);
 		txt_name = (TextView) findViewById(R.id.txt_name);
 		txt_role = (TextView) findViewById(R.id.txt_role);
+		pubc = (TextView) findViewById(R.id.pubc);
 
 		back = (Button) findViewById(R.id.back);
 		back.setOnClickListener(new OnClickListener() {
@@ -178,7 +179,7 @@ public class MyShowListActivity extends BaseActivity {
 				}.execute();
 			}
 		});
-		init();
+		detail();
 	}
 
 	private void praise(String pmrid, String youid) {

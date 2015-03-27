@@ -354,13 +354,13 @@ public class ChatMainActivity extends BaseActivity {
 		// chat.fromOrTo=0;
 		// infos.add(chat);getExtras();
 
-		infos.add(getChatInfoTo("", "武汉亦鸟科技", "1", false, "19871028"));
-		infos.add(getChatInfoTo("", "武汉亦鸟科技", "0", false, "19871027"));
-		infos.add(getChatInfoTo("", "青春秀秀", "1", false, "19871026"));
-		infos.add(getChatInfoTo("", "武汉亦鸟科技", "1", false, "19871025"));
-		infos.add(getChatInfoTo("", "武汉亦鸟科技", "0", false, "19871024"));
-		infos.add(getChatInfoTo("", "青春秀秀", "1", false, "19871023"));
-		infos.add(getChatInfoTo("", "武汉亦鸟科技", "1", false, "19871022"));
+		infos.add(getChatInfoTo("", "武汉亦鸟科技", "1", false, time()));
+		infos.add(getChatInfoTo("", "武汉亦鸟科技", "0", false, time()));
+		infos.add(getChatInfoTo("", "青春秀秀", "1", false, time()));
+		infos.add(getChatInfoTo("", "武汉亦鸟科技", "1", false, time()));
+		infos.add(getChatInfoTo("", "武汉亦鸟科技", "0", false, time()));
+		infos.add(getChatInfoTo("", "青春秀秀", "1", false, time()));
+		infos.add(getChatInfoTo("", "武汉亦鸟科技", "1", false, time()));
 		mLvAdapter = new ChatLVAdapter(this, infos);
 		mListView.setAdapter(mLvAdapter);
 		mListView.setOnRefreshListener(new OnRefreshListener() {
@@ -378,31 +378,31 @@ public class ChatMainActivity extends BaseActivity {
 
 						try {
 							// if (sp.getBoolean("false", false) == true) {
-							infos.add(getChatInfoTo("", "佳园路1", "1", false,
-									"19870423"));
-							infos.add(getChatInfoTo("", "佳园路2", "0", false,
-									"19870826"));
-							infos.add(getChatInfoTo("", "佳园路3", "1", false,
-									"19870925"));
-							infos.add(getChatInfoTo("", "佳园路4", "1", false,
-									"19870724"));
-							infos.add(getChatInfoTo("", "佳园路5", "0", false,
-									"19870621"));
-							infos.add(getChatInfoTo("", "佳园路6", "1", false,
-									"19870522"));
-							sortClass sort = new sortClass();
-							Collections.sort(infos, sort);
-							for (int i = 0; i < infos.size(); i++) {
-								ChatInfo temp = (ChatInfo) infos.get(i);
-								System.out.println("姓名:" + temp.pullname
-										+ ",生日:" + temp.content);
-							}
-							mLvAdapter.notifyDataSetChanged();
-							// editor.putBoolean("false",true);
-							// editor.commit()
+							// infos.add(getChatInfoTo("", "佳园路1", "1", false,
+							// "19870423"));
+							// infos.add(getChatInfoTo("", "佳园路2", "0", false,
+							// "19870826"));
+							// infos.add(getChatInfoTo("", "佳园路3", "1", false,
+							// "19870925"));
+							// infos.add(getChatInfoTo("", "佳园路4", "1", false,
+							// "19870724"));
+							// infos.add(getChatInfoTo("", "佳园路5", "0", false,
+							// "19870621"));
+							// infos.add(getChatInfoTo("", "佳园路6", "1", false,
+							// "19870522"));
+							// sortClass sort = new sortClass();
+							// Collections.sort(infos, sort);
+							// for (int i = 0; i < infos.size(); i++) {
+							// ChatInfo temp = (ChatInfo) infos.get(i);
+							// System.out.println("姓名:" + temp.pullname
+							// + ",生日:" + temp.content);
 							// }
-
-							mListView.setSelection(infos.size());
+							// mLvAdapter.notifyDataSetChanged();
+							// // editor.putBoolean("false",true);
+							// // editor.commit()
+							// // }
+							//
+							// mListView.setSelection(infos.size());
 							Thread.sleep(500);
 						} catch (InterruptedException e) {
 							e.printStackTrace();
@@ -728,7 +728,7 @@ public class ChatMainActivity extends BaseActivity {
 				// TODO Auto-generated method stub
 				if (!TextUtils.isEmpty(input.getText().toString())) {
 					infos.add(getChatInfoTo("", input.getText().toString(), num
-							.getText().toString(), false, ""));
+							.getText().toString(), false, time()));
 					mLvAdapter.setList(infos);
 					mLvAdapter.notifyDataSetChanged();
 					mListView.setSelection(infos.size() - 1);
@@ -906,7 +906,7 @@ public class ChatMainActivity extends BaseActivity {
 		return t >= 10 ? "" + t : "0" + t;// 三元运算符 t>10时取 ""+t
 	}
 
-	public void time() {
+	public String time() {
 		Calendar c = Calendar.getInstance();
 
 		String time = c.get(Calendar.YEAR) + "-" + // 得到年
@@ -916,6 +916,7 @@ public class ChatMainActivity extends BaseActivity {
 				formatTime(c.get(Calendar.MINUTE)) + ":" + // 分
 				formatTime(c.get(Calendar.SECOND)); // 秒
 		System.out.println(time); // 输出
+		return time;
 
 	}
 

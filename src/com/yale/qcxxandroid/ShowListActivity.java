@@ -22,7 +22,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -33,13 +32,11 @@ import android.widget.ImageView.ScaleType;
 
 import com.yale.qcxxandroid.base.MyBaseListView;
 import com.yale.qcxxandroid.base.BaseActivity;
-import com.yale.qcxxandroid.base.PicAdapter;
 import com.yale.qcxxandroid.base.PicPagerAdapter;
 import com.yale.qcxxandroid.base.MyBaseListView.OnRefreshListener;
 import com.yale.qcxxandroid.util.GlobalUtil;
 import com.yale.qcxxandroid.util.Globals;
 import com.yale.qcxxandroid.util.ImageThread;
-import com.yale.qcxxandroid.util.ImgLoadThread;
 import com.yale.qcxxandroid.util.ThreadUtil;
 
 public class ShowListActivity extends BaseActivity {
@@ -278,7 +275,7 @@ public class ShowListActivity extends BaseActivity {
 				final EditText edt = (EditText) v.findViewById(R.id.edt);
 				final ViewPager viewPager = (ViewPager) v.findViewById(R.id.vp);
 				TextView txt = (TextView) v.findViewById(R.id.txt);
-			
+
 				try {
 					thisItem.right.setText(jsoo.getJSONObject(position)
 							.getString("pubTime"));
@@ -316,19 +313,18 @@ public class ShowListActivity extends BaseActivity {
 				for (int i = 0; i < slideimg[position].length; i++) {
 					ImageView im = new ImageView(mContext);
 					im.setScaleType(ScaleType.CENTER_CROP);
-					if (GlobalUtil
-							.getBitmapFromMemCache(slideimg[position][i])==null) {
+					if (GlobalUtil.getBitmapFromMemCache(slideimg[position][i]) == null) {
 						im.setImageResource(R.drawable.logo);
 
 					} else {
 						im.setImageBitmap(GlobalUtil
 								.getBitmapFromMemCache(slideimg[position][i]));
-//							Log.i("图片", slideimg[position][i] + "*******"
-//									+ String.valueOf(i));
-//							Log.i("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~", jsoo
-//									.getJSONObject(i).getString("pubImgs"));
-//							Log.i("%%%%%%%%%%%%%%%%%%%%%",
-//									slideimg[position][i]);
+						// Log.i("图片", slideimg[position][i] + "*******"
+						// + String.valueOf(i));
+						// Log.i("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~", jsoo
+						// .getJSONObject(i).getString("pubImgs"));
+						// Log.i("%%%%%%%%%%%%%%%%%%%%%",
+						// slideimg[position][i]);
 					}
 					img.add(im);
 				}

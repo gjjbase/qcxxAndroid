@@ -1,8 +1,6 @@
 package com.yale.qcxxandroid.base;
 
-import android.annotation.SuppressLint;
 import android.app.TabActivity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -10,7 +8,6 @@ import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.TabHost;
-import com.yale.qcxxandroid.ShowActivity;
 import com.yale.qcxxandroid.ShowListActivity;
 import com.yale.qcxxandroid.R;
 import com.yale.qcxxandroid.ShowPubActivity;

@@ -3,6 +3,7 @@
     <issue id="ContentDescription" severity="ignore" />
     <issue id="DefaultLocale">
         <ignore path="src/com/yale/qcxxandroid/AdrebookActivity.java" />
+        <ignore path="src/com/yale/qcxxandroid/DetaActivity.java" />
     </issue>
     <issue id="HandlerLeak">
         <ignore path="src/com/yale/qcxxandroid/MyClassActivityOther.java" />

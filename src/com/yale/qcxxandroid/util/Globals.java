@@ -16,6 +16,9 @@ public final class Globals {
 	public static final String WSDL_URL = "http://202.103.1.30/qcxxweservice/";
 	public static final String PHT_URL = "http://202.103.1.30";
 	// public static final String WSDL_URL =
+	// "http://121.41.111.107:8080/qcxxweservice/";
+	// public static final String PHT_URL = "http://121.41.111.107:8080";
+	// public static final String WSDL_URL =
 	// "http://202.103.1.2:8080/qcxxweservice/";
 	// public static final String WSDL_URL =
 	// "http://121.41.111.107:8080/qcxxweservice/";
