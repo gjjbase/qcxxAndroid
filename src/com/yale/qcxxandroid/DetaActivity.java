@@ -12,13 +12,20 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.TranslateAnimation;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.SectionIndexer;
@@ -33,13 +40,17 @@ import com.yale.qcxxandroid.util.ThreadUtil;
 public class DetaActivity extends BaseActivity {
 	private ThreadUtil thread;
 	private ListView sortListView;
-	private TextView id;
+	private TextView id, cancel;
 	private CharacterParser characterParser;
 	private PinyinComparator pinyinComparator;
 	private SideBar sideBar;
 	private List<SortModel> SourceDateList;
 	SortAdapter adapter;
+	private RelativeLayout relhit, toprel;
+	private LinearLayout lin_bg;
+	private EditText search, hidsear;
 
+	// overridePendingTransition(R.anim.push_up_in, 0);
 	@SuppressLint("HandlerLeak")
 	private void ini() {
 		thread = new ThreadUtil(myhandler);
@@ -127,8 +138,72 @@ public class DetaActivity extends BaseActivity {
 		setContentView(R.layout.actvity_datactivity);
 		sideBar = (SideBar) findViewById(R.id.sidrbar);
 		sortListView = (ListView) findViewById(R.id.country_lvcountry);
-		characterParser = CharacterParser.getInstance();
+		cancel = (TextView) findViewById(R.id.cancel);
+		search = (EditText) findViewById(R.id.search);
+		hidsear = (EditText) findViewById(R.id.hidsear);
+		final TranslateAnimation mShowAction = new TranslateAnimation(
+				Animation.RELATIVE_TO_SELF, 0.0f, Animation.RELATIVE_TO_SELF,
+				0.0f, Animation.RELATIVE_TO_SELF, -1.0f,
+				Animation.RELATIVE_TO_SELF, 0.0f);
+		mShowAction.setDuration(500);
+		final TranslateAnimation mHiddenAction = new TranslateAnimation(
+				Animation.RELATIVE_TO_SELF, 0.0f, Animation.RELATIVE_TO_SELF,
+				0.0f, Animation.RELATIVE_TO_SELF, 0.0f,
+				Animation.RELATIVE_TO_SELF, 1.0f);
+		mHiddenAction.setDuration(1000);
+		// TranslateAnimation m = new TranslateAnimation(DetaActivity.this,
+		// R.anim.push_up_in);
+		// <translate xmlns:android="http://schemas.android.com/apk/res/android"
+		// android:duration="200"
+		// android:fromYDelta="100%p"
+		// android:toYDelta="0" />
+		// final TranslateAnimation m=new TranslateAnimation(fromXType,
+		// fromXValue, toXType, toXValue, fromYType, fromYValue, toYType,
+		// toYValue)
+		final TranslateAnimation translate = new TranslateAnimation(
 
+		Animation.RELATIVE_TO_SELF, 0, Animation.RELATIVE_TO_SELF, 0,
+
+		Animation.RELATIVE_TO_SELF, 0.1f, Animation.RELATIVE_TO_SELF, 0);
+		translate.setDuration(300);
+		characterParser = CharacterParser.getInstance();
+		relhit = (RelativeLayout) findViewById(R.id.relhit);
+		toprel = (RelativeLayout) findViewById(R.id.toprel);
+		lin_bg = (LinearLayout) findViewById(R.id.lin_bg);
+		search.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				// relhit.startAnimation(translate);
+				relhit.setVisibility(View.VISIBLE);
+				hidsear.setFocusable(true);
+				hidsear.setFocusableInTouchMode(true);
+				hidsear.requestFocus();
+				hidsear.findFocus();
+				hidsear.setGravity(Gravity.LEFT | Gravity.CENTER_VERTICAL);
+				InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+				imm.showSoftInput(search, InputMethodManager.RESULT_SHOWN);
+				imm.toggleSoftInput(InputMethodManager.SHOW_FORCED,
+						InputMethodManager.HIDE_IMPLICIT_ONLY);
+				// toprel.startAnimation(mHiddenAction);
+				// toprel.setVisibility(View.GONE);
+
+			}
+		});
+		cancel.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				// toprel.startAnimation(mHiddenAction);
+				InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+				imm.hideSoftInputFromWindow(hidsear.getWindowToken(), 0);
+				toprel.setVisibility(View.VISIBLE);
+				// relhit.startAnimation(mShowAction);
+				relhit.setVisibility(View.GONE);
+			}
+		});
 		pinyinComparator = new PinyinComparator();
 		id = (TextView) findViewById(R.id.id);
 		if (getIntent().getExtras().getString("typ").equals("1")) {
@@ -139,6 +214,10 @@ public class DetaActivity extends BaseActivity {
 			id.setText("学院");
 		}
 		ini();
+	}
+
+	public void back(View v) {
+		finish();
 	}
 
 	public class SortModel {
@@ -214,6 +293,8 @@ public class DetaActivity extends BaseActivity {
 				viewHolder.tvLetter = (TextView) view
 						.findViewById(R.id.catalog);
 				viewHolder.rel = (RelativeLayout) view.findViewById(R.id.rel);
+				viewHolder.img = (ImageView) view.findViewById(R.id.img);
+				viewHolder.img.setVisibility(View.GONE);
 				view.setTag(viewHolder);
 			} else {
 				viewHolder = (ViewHolder) view.getTag();
@@ -311,6 +392,7 @@ public class DetaActivity extends BaseActivity {
 			TextView tvLetter;
 			TextView tvTitle;
 			RelativeLayout rel;
+			ImageView img;
 		}
 	}
 

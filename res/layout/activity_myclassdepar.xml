@@ -1,306 +1,165 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/bg_color"
-    android:orientation="vertical" >
+<com.yale.qcxxandroid.base.MtScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content" >
 
-    <RelativeLayout
-        android:id="@+id/top_rel"
-        android:layout_width="fill_parent"
-        android:layout_height="50dp"
-        android:background="@color/top_color" >
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/bg_color"
+        android:orientation="vertical" >
 
-        <TextView
-            android:id="@+id/txt_back"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:drawableLeft="@drawable/mm_submenu"
-            android:text="院 系"
-            android:textColor="@color/black"
-            android:textSize="20sp" />
+        <RelativeLayout
+            android:id="@+id/top_rel"
+            android:layout_width="fill_parent"
+            android:layout_height="50dp"
+            android:background="@color/top_color" >
+
+            <TextView
+                android:id="@+id/txt_back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:drawableLeft="@drawable/mm_submenu"
+                android:text="班级"
+                android:textColor="@color/black"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_centerVertical="true"
+                android:text="系和院校"
+                android:textColor="@color/black"
+                android:textSize="20sp" />
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="0.5dp"
+                android:layout_alignParentBottom="true"
+                android:background="#a3a3a3" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="50dp"
+            android:background="@color/white" >
+
+            <TextView
+                android:id="@+id/sch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:paddingLeft="5dp"
+                android:text="华中科技大学:"
+                android:textColor="@color/black"
+                android:textSize="18sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@id/sch"
+                android:paddingRight="5dp"
+                android:text="计算机学院"
+                android:textColor="@color/black"
+                android:textSize="18sp" />
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="0.5dp"
+                android:layout_alignParentBottom="true"
+                android:background="#a3a3a3" />
+        </RelativeLayout>
 
         <View
             android:layout_width="fill_parent"
             android:layout_height="0.5dp"
-            android:layout_alignParentBottom="true"
+            android:layout_marginTop="20dp"
             android:background="#a3a3a3" />
-    </RelativeLayout>
 
-    <View
-        android:layout_width="fill_parent"
-        android:layout_height="0.5dp"
-        android:layout_marginTop="20dp"
-        android:background="#a3a3a3" />
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="50dp"
+            android:background="@color/white" >
 
-    <RelativeLayout
-        android:layout_width="fill_parent"
-        android:layout_height="50dp"
-        android:background="@color/white" >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="10dp"
+                android:text="人气班"
+                android:textColor="@color/black"
+                android:textSize="18sp" />
 
-        <ImageView
-            android:id="@+id/img_left"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="10dp"
-            android:src="@drawable/yuanxi1" />
+            <ImageView
+                android:id="@+id/img_add2"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/mm_submenu_normaler" />
 
-        <TextView
-            android:layout_width="wrap_content"
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="0.5dp"
+                android:layout_alignParentBottom="true"
+                android:layout_marginLeft="10dp"
+                android:background="#a3a3a3" />
+        </RelativeLayout>
+
+        <ListView
+            android:id="@+id/mylist"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_toRightOf="@id/img_left"
-            android:paddingLeft="5dp"
-            android:text="我的院,系"
-            android:textColor="@color/black"
-            android:textSize="18sp" />
-
-        <ImageView
-            android:id="@+id/img_add"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:src="@drawable/img_more" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_toLeftOf="@id/img_add"
-            android:paddingRight="5dp"
-            android:text="添加"
-            android:textColor="@color/black"
-            android:textSize="18sp" />
+            android:divider="@null"
+            android:fadingEdge="none" />
 
         <View
             android:layout_width="fill_parent"
             android:layout_height="0.5dp"
-            android:layout_alignParentBottom="true"
+            android:layout_marginTop="20dp"
             android:background="#a3a3a3" />
-    </RelativeLayout>
 
-    <ListView
-        android:id="@+id/list"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="30dp"
-        android:divider="@null"
-        android:listSelector="@drawable/textview_style" />
-
-    <View
-        android:layout_width="fill_parent"
-        android:layout_height="0.5dp"
-        android:layout_marginTop="20dp"
-        android:background="#a3a3a3" />
-
-    <RelativeLayout
-        android:layout_width="fill_parent"
-        android:layout_height="50dp"
-        android:background="@color/white" >
-
-        <ImageView
-            android:id="@+id/img_left1"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="10dp"
-            android:src="@drawable/yuanxi2" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="10dp"
-            android:layout_toRightOf="@id/img_left1"
-            android:text="院系活动"
-            android:textColor="@color/black"
-            android:textSize="18sp" />
-
-        <ImageView
-            android:id="@+id/img_add2"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:src="@drawable/img_more" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_toLeftOf="@id/img_add2"
-            android:paddingRight="5dp"
-            android:text="添加"
-            android:textColor="@color/black"
-            android:textSize="18sp" />
-
-        <View
+        <RelativeLayout
             android:layout_width="fill_parent"
-            android:layout_height="0.5dp"
-            android:layout_alignParentBottom="true"
-            android:layout_marginLeft="40dp"
-            android:background="#a3a3a3" />
-    </RelativeLayout>
+            android:layout_height="50dp"
+            android:background="@color/white" >
 
-    <RelativeLayout
-        android:layout_width="fill_parent"
-        android:layout_height="50dp"
-        android:background="@color/white" >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="10dp"
+                android:text="人气班"
+                android:textColor="@color/black"
+                android:textSize="18sp" />
 
-        <ImageView
-            android:id="@+id/img_left2"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="10dp"
-            android:src="@drawable/yuanxi3" />
+            <ImageView
+                android:id="@+id/img_add2"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/mm_submenu_normaler" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="10dp"
-            android:layout_toRightOf="@id/img_left2"
-            android:text="院系秀秀"
-            android:textColor="@color/black"
-            android:textSize="18sp" />
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="0.5dp"
+                android:layout_alignParentBottom="true"
+                android:layout_marginLeft="10dp"
+                android:background="#a3a3a3" />
+        </RelativeLayout>
 
-        <ImageView
-            android:id="@+id/img_add3"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:src="@drawable/img_more" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_toLeftOf="@id/img_add3"
-            android:paddingRight="5dp"
-            android:text="添加"
-            android:textColor="@color/black"
-            android:textSize="18sp" />
-
-        <View
+        <ListView
+            android:id="@+id/list"
             android:layout_width="fill_parent"
-            android:layout_height="0.5dp"
-            android:layout_alignParentBottom="true"
-            android:background="#a3a3a3" />
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:layout_width="fill_parent"
-        android:layout_height="50dp"
-        android:layout_marginTop="20dp"
-        android:background="@color/white" >
-
-        <View
-            android:layout_width="fill_parent"
-            android:layout_height="0.5dp"
-            android:layout_alignParentTop="true"
-            android:background="#a3a3a3" />
-
-        <ImageView
-            android:id="@+id/img_left3"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="10dp"
-            android:src="@drawable/yuanxi4" />
-
-        <TextView
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="10dp"
-            android:layout_toRightOf="@id/img_left3"
-            android:text="院系通讯录"
-            android:textColor="@color/black"
-            android:textSize="18sp" />
+            android:divider="@null"
+            android:fadingEdge="none" />
+    </LinearLayout>
 
-        <ImageView
-            android:id="@+id/img_add4"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:src="@drawable/img_more" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_toLeftOf="@id/img_add4"
-            android:paddingRight="5dp"
-            android:text="添加"
-            android:textColor="@color/black"
-            android:textSize="18sp" />
-
-        <View
-            android:layout_width="fill_parent"
-            android:layout_height="0.5dp"
-            android:layout_alignParentBottom="true"
-            android:layout_marginLeft="40dp"
-            android:background="#a3a3a3" />
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:layout_width="fill_parent"
-        android:layout_height="50dp"
-        android:background="@color/white" >
-
-        <View
-            android:layout_width="fill_parent"
-            android:layout_height="0.5dp"
-            android:layout_alignParentBottom="true"
-            android:background="#a3a3a3" />
-
-        <ImageView
-            android:id="@+id/img_left4"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="10dp"
-            android:src="@drawable/yuanxi5" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="10dp"
-            android:layout_toRightOf="@id/img_left4"
-            android:text="院系留言"
-            android:textColor="@color/black"
-            android:textSize="18sp" />
-
-        <ImageView
-            android:id="@+id/img_add5"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:src="@drawable/img_more" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_toLeftOf="@id/img_add5"
-            android:paddingRight="5dp"
-            android:text="添加"
-            android:textColor="@color/black"
-            android:textSize="18sp" />
-    </RelativeLayout>
-
-</LinearLayout>
+</com.yale.qcxxandroid.base.MtScrollView>

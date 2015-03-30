@@ -486,7 +486,7 @@ public class ChatMainActivity extends BaseActivity {
 										public void onClick(
 												DialogInterface dialog,
 												int which) {
-											openAlbum();
+											takePicture();
 										}
 									}).create();
 					dialog.show();

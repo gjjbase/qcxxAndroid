@@ -58,7 +58,7 @@ public class ShowListActivity extends BaseActivity {
 		String methodStr = "[{'com.yale.qcxx.sessionbean.comm.impl.CommonDataSessionBean':'saveCommonAction'}]";
 		String jsonParamStr = "[{'me_id':" + sp.getString("userId", "")
 				+ ",'primary_id':" + "'" + pmrid + "'" + ",'action_type':" + 2
-				+ ",'your_id':" + 1 + "}]";
+				+ ",'your_id':" + youid + "}]";
 		threadUtil.doStartWebServicerequestWebService(ShowListActivity.this,
 				jsonParamStr, methodStr, true);
 	}
@@ -446,7 +446,22 @@ public class ShowListActivity extends BaseActivity {
 					@Override
 					public void onClick(View v) {
 						// TODO Auto-generated method stub
-						intent.setClass(mContext, CommentsActivity.class);
+						try {
+							bundle.putString(
+									"prid",
+									jsoo.getJSONObject(position).getString(
+											"showsId"));
+							bundle.putString(
+									"youid",
+									jsoo.getJSONObject(position)
+											.getJSONObject("userInfo")
+											.getString("userId"));
+						} catch (JSONException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						intent.setClass(mContext, CommentsActivity.class)
+								.putExtras(bundle);
 						intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 						startActivity(intent);
 					}

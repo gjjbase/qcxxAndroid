@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Calendar;
 
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
@@ -26,6 +27,7 @@ import android.util.Log;
  */
 public class GlobalUtil {
 	public static int cacheSize = 50 * 1024 * 1024;
+	protected static int count = 0;
 	public static LruCache<String, Bitmap> mMemoryCache = new LruCache<String, Bitmap>(
 			cacheSize) {
 		@Override
@@ -33,6 +35,24 @@ public class GlobalUtil {
 			return value.getRowBytes() * value.getHeight();
 		}
 	};
+
+	private static String formatTime(int t) {
+		return t >= 10 ? "" + t : "0" + t;// 三元运算符 t>10时取 ""+t
+	}
+
+	public static String time() {
+		Calendar c = Calendar.getInstance();
+
+		String time = c.get(Calendar.YEAR) + "-" + // 得到年
+				formatTime(c.get(Calendar.MONTH) + 1) + "-" + // month加一 //月
+				formatTime(c.get(Calendar.DAY_OF_MONTH)) + " " + // 日
+				formatTime(c.get(Calendar.HOUR_OF_DAY)) + ":" + // 时
+				formatTime(c.get(Calendar.MINUTE)) + ":" + // 分
+				formatTime(c.get(Calendar.SECOND)); // 秒
+		System.out.println(time); // 输出
+		return time;
+
+	}
 
 	/**
 	 * 加载本地图片
@@ -86,6 +106,18 @@ public class GlobalUtil {
 			mMemoryCache.remove(key);
 		}
 		mMemoryCache.put(key, bitmap);
+	}
+
+	public static synchronized String getUUID(String uuid) {
+		count++;
+		long time = System.currentTimeMillis();
+
+		uuid = "G" + Long.toHexString(time) + Integer.toHexString(count)
+				+ Long.toHexString(Double.doubleToLongBits(Math.random()));
+
+		uuid = uuid.substring(0, 24).toUpperCase();
+
+		return uuid;
 	}
 
 	public static Bitmap getBitmapFromMemCache(String key) {
