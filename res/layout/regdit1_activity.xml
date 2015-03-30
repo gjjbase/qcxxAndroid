@@ -92,7 +92,8 @@
                     android:layout_height="80dp"
                     android:layout_alignParentRight="true"
                     android:layout_marginRight="10dp"
-                    android:background="@drawable/head" />
+                    android:background="@drawable/head"
+                    android:scaleType="centerCrop" />
             </RelativeLayout>
 
             <LinearLayout

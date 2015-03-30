@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
 import android.widget.Scroller;
+
 public class ScrollLinerLayout extends LinearLayout {
 
 	public ScrollLinerLayout(Context context, AttributeSet attrs) {
@@ -28,7 +29,7 @@ public class ScrollLinerLayout extends LinearLayout {
 	public void setPressed(boolean pressed) {
 		if (this.pressed)
 			super.setPressed(pressed);
-		else{
+		else {
 			super.setPressed(this.pressed);
 		}
 	}

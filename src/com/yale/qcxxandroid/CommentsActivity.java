@@ -11,10 +11,13 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.text.Editable;
@@ -49,6 +52,7 @@ import com.yale.qcxxandroid.chat.ChatInfo;
 import com.yale.qcxxandroid.chat.FaceGVAdapter;
 import com.yale.qcxxandroid.chat.FaceVPAdapter;
 import com.yale.qcxxandroid.chat.MyEditText;
+import com.yale.qcxxandroid.util.GlobalUtil;
 import com.yale.qcxxandroid.util.ThreadUtil;
 
 public class CommentsActivity extends BaseActivity {
@@ -67,24 +71,40 @@ public class CommentsActivity extends BaseActivity {
 	private LinkedList<ChatInfo> infos = new LinkedList<ChatInfo>();
 	private ThreadUtil thread;
 	private TextView txt_back;
-	// private void init(){
-	// thread=new ThreadUtil(mhandler);
-	// }
-	// Handler mhandler=new Handler(){
-	// public void handlerMessage(Message msg){
-	// super.handleMessage(msg);
-	// switch (msg.what) {
-	// case 1:
-	//
-	// break;
-	// case 2:
-	//
-	// break;
-	//
-	//
-	// }
-	// }
-	// };
+
+	private void init() {
+		thread = new ThreadUtil(mhandler);
+		String methodStr = "[{'com.yale.qcxx.sessionbean.comm.impl.CommonDataSessionBean':'saveComment'}]";
+		String jsonParamStr = "[{'user_id':" + sp.getString("userId", "")
+				+ ",'primary_id':" + getIntent().getExtras().getString("prid")
+				+ ",'comment_type':" + 0 + ",'your_id':"
+				+ getIntent().getExtras().getString("youid") + ",'comment_id':"
+				+ GlobalUtil.getUUID(sp.getString("userId", ""))
+				+ ",'comment_time':" + GlobalUtil.time()
+				+ ",'comment_content':" + 123456 + "}]";// input_sms.getText().toString()
+
+		thread.doStartWebServicerequestWebService(CommentsActivity.this,
+				jsonParamStr, methodStr, true);
+	}
+
+	@SuppressLint("HandlerLeak")
+	Handler mhandler = new Handler() {
+		@SuppressWarnings("unused")
+		public void handlerMessage(Message msg) {
+			super.handleMessage(msg);
+			switch (msg.what) {
+			case 1:
+				String returnJson = (String) msg.getData().getString(
+						"returnJson");
+				break;
+			case 2:
+
+				break;
+
+			}
+		}
+	};
+
 	class PageChange implements OnPageChangeListener {
 
 		@Override
@@ -425,14 +445,14 @@ public class CommentsActivity extends BaseActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activitycomment);
 		input_sms = (MyEditText) findViewById(R.id.input_sms);
-		txt_back=(TextView) findViewById(R.id.txt_back);
+		txt_back = (TextView) findViewById(R.id.txt_back);
 		send_sms = (ImageView) findViewById(R.id.send_sms);
 		image_face = (ImageView) findViewById(R.id.image_face);
 		img_adder = (ImageView) findViewById(R.id.img_adder);
 		mViewPager = (ViewPager) findViewById(R.id.face_viewpager);
 		mDotsLayout = (LinearLayout) findViewById(R.id.face_dots_container);
 		txt_back.setOnClickListener(new OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
@@ -461,9 +481,9 @@ public class CommentsActivity extends BaseActivity {
 		mViewPager.setOnPageChangeListener(new PageChange());
 		initStaticFaces();
 		initViews();
+		init();
 	}
 
-	 
 	private void initViews() {
 		list = (MyBaseListView) findViewById(R.id.list);
 		// chat = new ChatInfo();

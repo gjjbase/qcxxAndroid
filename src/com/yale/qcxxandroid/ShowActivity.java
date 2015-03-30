@@ -104,7 +104,7 @@ public class ShowActivity extends TabActivity {
 					JSONObject jo = joA.getJSONObject(0);
 					txt_msg.setText(jo.getInt("countZitiao") + "");
 					txt_msger.setText(jo.getInt("countMyShow") + "");
-					
+
 				} catch (Exception e) {
 					// TODO: handle exception
 				}
