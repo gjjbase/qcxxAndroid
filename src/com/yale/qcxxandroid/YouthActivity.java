@@ -31,8 +31,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
-import android.view.animation.Animation;
-import android.view.animation.TranslateAnimation;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
@@ -249,19 +247,7 @@ public class YouthActivity extends BaseActivity {
 		listView.setSingleTapUpListenner(this);
 		// 声明动画
 		resetTransition();
-		final TranslateAnimation translate = new TranslateAnimation(
 
-		Animation.RELATIVE_TO_SELF, 0, Animation.RELATIVE_TO_SELF, 0,
-
-		Animation.RELATIVE_TO_SELF, 0.1f, Animation.RELATIVE_TO_SELF, 0);
-		translate.setDuration(300);
-		final TranslateAnimation translat = new TranslateAnimation(
-
-		Animation.RELATIVE_TO_SELF, 0, Animation.RELATIVE_TO_SELF, 0,
-
-		Animation.RELATIVE_TO_SELF, 0.1f, Animation.RELATIVE_TO_SELF, 0);
-		translate.setDuration(300);
-//		TranslateAnimation M=new TranslateAnimation(  , fromXValue, toXType, toXValue, fromYType, fromYValue, toYType, toYValue)
 		// 初始化动画
 		initAnim();
 		listView.setOnItemClickListener(new ListView.OnItemClickListener() {

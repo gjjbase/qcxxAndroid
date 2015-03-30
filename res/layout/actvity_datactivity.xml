@@ -1,162 +1,111 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent"
+    android:background="@color/bg_color"
+    android:orientation="vertical" >
 
     <RelativeLayout
-        android:id="@+id/toprel"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/bg_color"
-        android:orientation="vertical" >
-
-        <RelativeLayout
-            android:id="@+id/title"
-            android:layout_width="fill_parent"
-            android:layout_height="50dp"
-            android:layout_gravity="center"
-            android:clickable="true"
-            android:onClick="back"
-            android:animateLayoutChanges="true"
-            android:background="@color/top_color" >
-
-            <TextView
-                android:id="@+id/name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_centerVertical="true"
-                android:drawableLeft="@drawable/mm_submenu"
-                android:gravity="center"
-                android:paddingLeft="10dp"
-                android:text="学校和学院"
-                android:textColor="@color/black"
-                android:textSize="18sp" />
-
-            <TextView
-                android:id="@+id/id"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:gravity="center"
-                android:text="省份"
-                android:textColor="@color/black"
-                android:textSize="18sp" />
-
-            <View
-                android:layout_width="fill_parent"
-                android:layout_height="0.5dp"
-                android:layout_alignParentBottom="true"
-                android:background="#a3a3a3" />
-        </RelativeLayout>
-
-        <LinearLayout
-            android:id="@+id/lin_bg"
-            style="@style/MyDialogStyleTop"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/title"
-            android:background="@color/white"
-            android:orientation="horizontal" >
-
-            <!-- android:background="@drawable/ic_preference_single_normal" -->
-
-            <EditText
-                android:id="@+id/search"
-                android:layout_width="wrap_content"
-                android:layout_height="30dp"
-                android:layout_gravity="center"
-                android:layout_marginBottom="5dp"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
-                android:layout_marginTop="5dp"
-                android:layout_weight="9"
-                android:background="@drawable/datashap"
-                android:focusable="false"
-                android:gravity="center"
-                android:hint="搜索"
-                android:imeOptions="actionSearch"
-                android:inputType="text"
-                android:paddingLeft="5dp"
-                android:textSize="18sp" />
-        </LinearLayout>
-
-        <FrameLayout
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_below="@id/lin_bg" >
-
-            <ListView
-                android:id="@+id/country_lvcountry"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:layout_gravity="center"
-                android:divider="@null"
-                android:scrollbars="none" />
-        </FrameLayout>
-
-        <com.yale.qcxxandroid.SideBar
-            android:id="@+id/sidrbar"
-            android:layout_width="30.0dip"
-            android:layout_height="fill_parent"
-            android:layout_alignParentRight="true"
-            android:layout_gravity="right|center"
-            android:layout_marginTop="90dp" />
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:id="@+id/relhit"
+        android:id="@+id/title"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:visibility="gone" >
+        android:layout_height="50dp"
+        android:layout_gravity="center"
+        android:animateLayoutChanges="true"
+        android:background="@color/top_color" >
 
-        <LinearLayout
-            android:id="@+id/hitrel"
-            style="@style/MyDialogStyleTop"
-            android:layout_width="fill_parent"
+        <TextView
+            android:id="@+id/name"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@color/bg_color"
-            android:orientation="horizontal" >
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:drawableLeft="@drawable/mm_submenu"
+            android:gravity="center"
+            android:paddingLeft="10dp"
+            android:text="学校和学院"
+            android:textColor="@color/black"
+            android:textSize="18sp" />
 
-            <!-- android:background="@drawable/ic_preference_single_normal" -->
-
-            <EditText
-                android:id="@+id/hidsear"
-                android:layout_width="wrap_content"
-                android:layout_height="30dp"
-                android:layout_gravity="center"
-                android:layout_marginBottom="5dp"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
-                android:layout_marginTop="5dp"
-                android:layout_weight="9"
-                android:background="@drawable/qcediters"
-                android:focusable="false"
-                android:gravity="left|center_vertical"
-                android:hint="搜索"
-                android:imeOptions="actionSearch"
-                android:inputType="text"
-                android:paddingLeft="5dp"
-                android:textSize="18sp" />
-
-            <TextView
-                android:id="@+id/cancel"
-                android:layout_width="wrap_content"
-                android:layout_height="30dp"
-                android:layout_gravity="center"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="@string/cancel"
-                android:textColor="@color/greener"
-                android:textSize="18sp" />
-        </LinearLayout>
+        <TextView
+            android:id="@+id/id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:text="省份"
+            android:textColor="@color/black"
+            android:textSize="18sp" />
 
         <View
-            android:clickable="true"
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_below="@id/hitrel"
-            android:background="@color/gray_font" />
+            android:layout_height="0.5dp"
+            android:layout_alignParentBottom="true"
+            android:background="#a3a3a3" />
     </RelativeLayout>
 
-</FrameLayout>
+    <LinearLayout
+        android:id="@+id/lin_bg"
+        style="@style/MyDialogStyleTop"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/title"
+        android:background="@color/white"
+        android:orientation="horizontal" >
+
+        <!-- android:background="@drawable/ic_preference_single_normal" -->
+
+        <EditText
+            android:id="@+id/search"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_gravity="center"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_weight="9"
+            android:background="@drawable/datashap"
+            android:focusable="false"
+            android:gravity="center"
+            android:hint="搜索"
+            android:imeOptions="actionSearch"
+            android:inputType="text"
+            android:paddingLeft="5dp"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@string/cancel"
+            android:textColor="@color/greener"
+            android:textSize="18sp"
+            android:visibility="gone" />
+    </LinearLayout>
+
+    <FrameLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@id/lin_bg" >
+
+        <ListView
+            android:id="@+id/country_lvcountry"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_gravity="center"
+            android:divider="@null"
+            android:scrollbars="none" />
+    </FrameLayout>
+
+    <com.yale.qcxxandroid.SideBar
+        android:id="@+id/sidrbar"
+        android:layout_width="30.0dip"
+        android:layout_height="fill_parent"
+        android:layout_alignParentRight="true"
+        android:layout_gravity="right|center"
+        android:layout_marginTop="90dp" />
+
+</RelativeLayout>

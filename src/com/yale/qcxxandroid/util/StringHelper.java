@@ -28,7 +28,7 @@ public class StringHelper {
                         "[\\u4E00-\\u9FA5]+")) {  
                 	try{
                 		t2 = PinyinHelper.toHanyuPinyinStringArray(t1[i], t3);  
-                		t4 += t2[0];                                                             
+                		t4 += t2[0];  
                 	}catch(Exception e){
                 		
                 	}
