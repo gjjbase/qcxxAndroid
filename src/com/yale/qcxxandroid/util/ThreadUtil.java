@@ -7,15 +7,15 @@ import org.ksoap2.serialization.SoapObject;
 import com.yale.qcxxandroid.base.FlippingLoadingDialog;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
-import android.content.DialogInterface;
-import android.os.Bundle;
+import android.os.Bundle; 
 import android.os.Handler;
 import android.os.Message;
 public class ThreadUtil extends Thread {
 
 	private Handler handler;
+	@SuppressWarnings("unused")
 	private boolean view;
+	@SuppressWarnings("unused")
 	private Activity activity;
 	private String jsonParamStr;
 	private String methodStr;

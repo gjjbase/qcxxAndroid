@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -40,12 +38,14 @@ public class MyClassActivityCont extends BaseActivity {
 	private Adapter adapter;
 	private ThreadUtil thread;
 	private TextView txt_back;
+	@SuppressWarnings("unused")
 	private JSONArray jsoo;
 	private List<String> list = new ArrayList<String>();
 	private TextView txtliuyan;
 	private Intent intent = new Intent();
 	private Bundle bundle = new Bundle();
 
+	@SuppressLint("HandlerLeak")
 	private void init() {
 
 		Handler handler = new Handler() {
@@ -54,6 +54,7 @@ public class MyClassActivityCont extends BaseActivity {
 				switch (msg.what) {
 				case 1:
 
+					@SuppressWarnings("unused")
 					String returnJson = (String) msg.getData().getString(
 							"returnJson");
 					// try {
@@ -77,8 +78,9 @@ public class MyClassActivityCont extends BaseActivity {
 		String methodStr = "[{'com.yale.qcxx.sessionbean.comm.impl.CommonDataSessionBean':'myClassDetail'}]";
 
 		String jsonParamStr = "[{'signType':" + 1 + ",'commentType':" + 1
-				+ ",'primaryId':" + 5 + ",'pubType':" + 0 + ",'orderBy':" + 4
-				+ "}]";// primaryid 班级ID
+				+ ",'primaryId':"
+				+ getIntent().getExtras().getString("classlist")
+				+ ",'pubType':" + 0 + ",'orderBy':" + 4 + "}]";// primaryid 班级ID
 		// String jsonParamStr = "[{'signType':" + 1 + ",'commentType':" + 1
 		// + ",'primaryId':" + bundle.getString("cdId") + ",'pubType':" + 0 +
 		// ",'orderBy':" + 4
@@ -101,6 +103,7 @@ public class MyClassActivityCont extends BaseActivity {
 		private ViewHolder viewholder;
 		List<Shows> allList = new ArrayList<Shows>();
 		private int length;
+		@SuppressWarnings("unused")
 		private JSONArray jsoo;
 		private String[] str = { "光谷一日游", "青春秀秀合伙人", "户外徒步旅行", "爬山", "同学聚会" };
 		private List<ImageView> img;
@@ -427,7 +430,6 @@ public class MyClassActivityCont extends BaseActivity {
 				// editor.putBoolean("fasle", true);
 				// editor.commit();
 				new AsyncTask<Void, Void, Void>() {
-					@SuppressWarnings("unchecked")
 					protected Void doInBackground(Void... params) {
 
 						try {
@@ -485,7 +487,7 @@ public class MyClassActivityCont extends BaseActivity {
 		});
 		adapter = new Adapter(MyClassActivityCont.this, falg);
 		conlist.setAdapter(adapter);
-		// init();
+		init();
 
 	}
 }

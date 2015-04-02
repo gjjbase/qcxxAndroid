@@ -50,7 +50,7 @@ public class ShowListActivity extends BaseActivity {
 	String PID = "G14C3080A6639B3FE30FFDC4";
 	private int pras, par;
 	private ShowListAdapter Adapter;
-	private int tag, myfag;
+	private int tag;
 
 	private void praise(String pmrid, String youid) {
 		threadUtil = new ThreadUtil(handler);
@@ -127,7 +127,6 @@ public class ShowListActivity extends BaseActivity {
 							int cl = b.getInt("cl");
 							// 1成功 0失败
 							if (cl == 0) {
-								myfag = 0;
 							} else {
 
 							}

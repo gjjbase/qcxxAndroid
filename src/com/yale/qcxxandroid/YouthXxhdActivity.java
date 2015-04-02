@@ -16,7 +16,6 @@ import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class YouthXxhdActivity extends FragmentActivity {
 	private ViewPager mPageVp;
@@ -47,7 +46,6 @@ public class YouthXxhdActivity extends FragmentActivity {
 	 */
 	private int screenWidth;
 	private LinearLayout lin1, lin2, lin3;
-	private LinearLayout[] lin;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -56,85 +54,11 @@ public class YouthXxhdActivity extends FragmentActivity {
 		lin1 = (LinearLayout) findViewById(R.id.lin1);
 		lin2 = (LinearLayout) findViewById(R.id.lin2);
 		lin3 = (LinearLayout) findViewById(R.id.lin3);
-		lin = new LinearLayout[] { lin1, lin2, lin3 };
 		findById();
 		init();
 		initTabLineWidth();
 
 	}
-
-	// case 0:
-	// button[0].setTextColor(getResources().getColor(R.color.white));
-	// button[1]
-	// .setTextColor(getResources().getColor(R.color.greener));
-	// button[2]
-	// .setTextColor(getResources().getColor(R.color.greener));
-	// button[3]
-	// .setTextColor(getResources().getColor(R.color.greener));
-	// button[0].setBackground(getResources().getDrawable(
-	// R.color.greener));
-	//
-	// button[1].setBackground(getResources().getDrawable(
-	// R.drawable.btn_bg_xml));
-	// button[2].setBackground(getResources().getDrawable(
-	// R.drawable.btn_bg_xml));
-	// button[3].setBackground(getResources().getDrawable(
-	// R.drawable.btn_bg_xml));
-	// break;
-	// case 1:
-	// button[0].setBackground(getResources().getDrawable(
-	// R.drawable.btn_bg_xml));
-	//
-	// button[1].setBackground(getResources().getDrawable(
-	// R.color.greener));
-	// button[2].setBackground(getResources().getDrawable(
-	// R.drawable.btn_bg_xml));
-	// button[3].setBackground(getResources().getDrawable(
-	// R.drawable.btn_bg_xml));
-	// button[0]
-	// .setTextColor(getResources().getColor(R.color.greener));
-	// button[1].setTextColor(getResources().getColor(R.color.white));
-	// button[2]
-	// .setTextColor(getResources().getColor(R.color.greener));
-	// button[3]
-	// .setTextColor(getResources().getColor(R.color.greener));
-	// break;
-	// case 2:
-	// button[0].setBackground(getResources().getDrawable(
-	// R.drawable.btn_bg_xml));
-	//
-	// button[1].setBackground(getResources().getDrawable(
-	// R.drawable.btn_bg_xml));
-	// button[2].setBackground(getResources().getDrawable(
-	// R.color.greener));
-	// button[3].setBackground(getResources().getDrawable(
-	// R.drawable.btn_bg_xml));
-	// button[0]
-	// .setTextColor(getResources().getColor(R.color.greener));
-	// button[1]
-	// .setTextColor(getResources().getColor(R.color.greener));
-	// button[2].setTextColor(getResources().getColor(R.color.white));
-	// button[3]
-	// .setTextColor(getResources().getColor(R.color.greener));
-	// break;
-	// case 3:
-	// button[0].setBackground(getResources().getDrawable(
-	// R.drawable.btn_bg_xml));
-	//
-	// button[1].setBackground(getResources().getDrawable(
-	// R.drawable.btn_bg_xml));
-	// button[2].setBackground(getResources().getDrawable(
-	// R.drawable.btn_bg_xml));
-	// button[3].setBackground(getResources().getDrawable(
-	// R.color.greener));
-	// button[0]
-	// .setTextColor(getResources().getColor(R.color.greener));
-	// button[1]
-	// .setTextColor(getResources().getColor(R.color.greener));
-	// button[2]
-	// .setTextColor(getResources().getColor(R.color.greener));
-	// button[3].setTextColor(getResources().getColor(R.color.white));
-	// break;
 	private void findById() {
 		back = (LinearLayout) findViewById(R.id.back);
 		mTabGift = (TextView) this.findViewById(R.id.xxhd_gift);
@@ -294,6 +218,7 @@ public class YouthXxhdActivity extends FragmentActivity {
 	/**
 	 * 重置颜色
 	 */
+	@SuppressWarnings("unused")
 	private void resetTextView() {
 		mTabGift.setTextColor(Color.BLACK);
 		mTabXm.setTextColor(Color.BLACK);

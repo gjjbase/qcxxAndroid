@@ -1,19 +1,28 @@
 package com.yale.qcxxandroid;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -27,15 +36,21 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
+import com.j256.ormlite.dao.Dao;
+import com.yale.qcxxandroid.DetaActivity.SortAdapter;
+import com.yale.qcxxandroid.DetaActivity.SortModel;
 import com.yale.qcxxandroid.SideBar.OnTouchingLetterChangedListener;
 import com.yale.qcxxandroid.base.BaseActivity;
-import com.yale.qcxxandroid.chat.ChatMainActivity;
+import com.yale.qcxxandroid.bean.PicUpload;
+import com.yale.qcxxandroid.util.StringHelper;
 import com.yale.qcxxandroid.util.ThreadUtil;
 
 @SuppressLint("DefaultLocale")
+@SuppressWarnings("unused")
 public class AdrebookActivity extends BaseActivity {
-	private ListView sortListView;
+	private ListView sortListView, bomlist;
 	private ThreadUtil thread;
+
 	private SharedPreferences share;
 	private String searchStr = "";
 	private Intent intent = new Intent();
@@ -47,9 +62,66 @@ public class AdrebookActivity extends BaseActivity {
 	private SortAdapter adapter;
 	private List<SortModel> SourceDateList;
 	private EditText searcher;
-	private LinearLayout bottom, lin_br;
+	private LinearLayout lin_br;
 	private RelativeLayout toper_lin;
 	private TextView cancel;
+	private JSONArray jsoo;
+	List<PicUpload> picList;
+	Dao<PicUpload, Integer> picUploadDAO;
+
+	public void init() {
+
+		thread = new ThreadUtil(handler);
+		String methodStr = "[{'com.yale.qcxx.sessionbean.member.impl.UserInfoSessionBean':'myFriendList'}]";
+		String jsonParamStr = "[{'userId':" + sp.getString("userId", "")
+				+ ",'actionId':" + 100 + "}]";
+		thread.doStartWebServicerequestWebService(AdrebookActivity.this,
+				jsonParamStr, methodStr, true);
+
+	}
+
+	@SuppressLint("HandlerLeak")
+	Handler handler = new Handler() {
+		@Override
+		public void handleMessage(Message msg) {
+			super.handleMessage(msg);
+			switch (msg.what) {
+			case 1:
+				String returnJson = (String) msg.getData().getString(
+						"returnJson");
+				try {
+					jsoo = new JSONArray(returnJson);
+					// JSONObject parm = new JSONObject();
+					// if (picList.isEmpty() == false) {
+					// try {
+					// picList = picUploadDAO.queryForAll();
+					//
+					// } catch (SQLException e) {
+					// // TODO Auto-generated catch block
+					// e.printStackTrace();
+					// }
+					// for (PicUpload pic : picList) {
+					//
+					// }
+					// } else {
+					// }
+					SourceDateList = filledData(jsoo);
+					// 根据a-z进行排序源数据
+					Collections.sort(SourceDateList, pinyinComparator);
+					adapter = new SortAdapter(AdrebookActivity.this,
+							SourceDateList);
+					sortListView.setAdapter(adapter);
+				} catch (Exception e) {
+					// TODO: handle exception
+				}
+				break;
+			case 2:
+
+				break;
+
+			}
+		}
+	};
 
 	public void onback(View v) {
 		finish();
@@ -75,6 +147,11 @@ public class AdrebookActivity extends BaseActivity {
 		startActivity(intent);
 	}
 
+	public void txtadd(View v) {
+		intent.setClass(getApplicationContext(), AddnewFrdACtivity.class);
+		startActivity(intent);
+	}
+
 	public void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
@@ -84,6 +161,62 @@ public class AdrebookActivity extends BaseActivity {
 		searcher = (EditText) findViewById(R.id.searcher);
 		lin_br = (LinearLayout) findViewById(R.id.lin_br);
 		toper_lin = (RelativeLayout) findViewById(R.id.toper_lin);
+		bomlist = (ListView) findViewById(R.id.bomlist);
+		searcher.addTextChangedListener(new TextWatcher() {
+
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before,
+					int count) {
+				// TODO Auto-generated method stub
+				List<SortModel> Sou = new ArrayList<SortModel>();
+				JSONObject js = new JSONObject();
+				for (int i = 0; i < jsoo.length(); i++) {
+					try {
+						if (StringHelper.getPingYin(
+								jsoo.getJSONObject(i).getString("cdMc"))
+								.contains(searcher.getText().toString()) == true
+								|| jsoo.getJSONObject(i)
+										.getString("cdMc")
+										.contains(searcher.getText().toString())
+								|| jsoo.getJSONObject(i).getString("cdMc")
+										.contains("yaleviewmicro")) {
+							js.put("cdMc",
+									jsoo.getJSONObject(i).getString("cdMc"));
+							js.put("cdId",
+									jsoo.getJSONObject(i).getString("cdId"));
+
+						}
+					} catch (JSONException e) {
+						e.printStackTrace();
+					}
+				}
+
+				try {
+					JSONArray jso = new JSONArray().put(js);
+					Sou = filledData(jso);
+					Collections.sort(Sou, pinyinComparator);
+					adapter = new SortAdapter(AdrebookActivity.this, Sou);
+					bomlist.setAdapter(adapter);
+					adapter.notifyDataSetChanged();
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count,
+					int after) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void afterTextChanged(Editable s) {
+				// TODO Auto-generated method stub
+
+			}
+		});
 		cancel.setOnClickListener(new OnClickListener() {
 
 			@Override
@@ -120,7 +253,7 @@ public class AdrebookActivity extends BaseActivity {
 				}
 			}
 		});
-
+		init();
 		initViews();
 	}
 
@@ -296,22 +429,18 @@ public class AdrebookActivity extends BaseActivity {
 			}
 		});
 
-		SourceDateList = filledData(getResources().getStringArray(R.array.date));
-
-		// 根据a-z进行排序源数据
-		Collections.sort(SourceDateList, pinyinComparator);
-		adapter = new SortAdapter(this, SourceDateList);
-		sortListView.setAdapter(adapter);
 	}
 
-	private List<SortModel> filledData(String[] date) {
+	private List<SortModel> filledData(JSONArray jso) throws JSONException {
 		List<SortModel> mSortList = new ArrayList<SortModel>();
 
-		for (int i = 0; i < date.length; i++) {
+		for (int i = 0; i < jso.length(); i++) {
 			SortModel sortModel = new SortModel();
-			sortModel.setName(date[i]);
+			sortModel.setName(jso.getJSONObject(i).getJSONObject("userInfo")
+					.getString("nickName"));
 			// 汉字转换成拼音
-			String pinyin = characterParser.getSelling(date[i]);
+			String pinyin = characterParser.getSelling(jso.getJSONObject(i)
+					.getJSONObject("userInfo").getString("nickName"));
 			String sortString = pinyin.substring(0, 1).toUpperCase();
 
 			// 正则表达式，判断首字母是否是英文字母
@@ -326,5 +455,5 @@ public class AdrebookActivity extends BaseActivity {
 		return mSortList;
 
 	}
-	
+
 }

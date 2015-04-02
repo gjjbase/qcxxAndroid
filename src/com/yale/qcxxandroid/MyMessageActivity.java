@@ -39,8 +39,6 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Base64;
 import android.util.Log;
 import android.view.Display;
@@ -73,8 +71,7 @@ public class MyMessageActivity extends BaseActivity implements
 	AlertDialog alert;
 	static Bitmap bm;
 	private TextView marriage, birthday, back, txt_hot, txt_qianming, sign,
-			verity_name, txt_dis, txt_renick, txt_phone, txt_disan,
-			constellation, sex;
+			verity_name, txt_renick, txt_phone, txt_disan, constellation;
 	private int year, month, day;
 	private kankan.wheel.widget.WheelView mViewProvince, mViewCity,
 			mViewDistrict;
@@ -99,7 +96,7 @@ public class MyMessageActivity extends BaseActivity implements
 	 */
 	protected String mCurrentSchoolName = "";
 
-	private TextView nick_name, xx_num, phone_num;
+	private TextView nick_name;
 
 	public static void readBitmapAutoSize(String filePath, int outWidth,
 			int outHeight, ImageView jpgView) {
@@ -828,7 +825,6 @@ public class MyMessageActivity extends BaseActivity implements
 
 	@SuppressLint("HandlerLeak")
 	public Handler mhandler = new Handler() {
-		@SuppressWarnings("unused")
 		public void handleMessage(Message msg) {
 			super.handleMessage(msg);
 			switch (msg.what) {
@@ -875,7 +871,6 @@ public class MyMessageActivity extends BaseActivity implements
 		rel_lov = (RelativeLayout) findViewById(R.id.rel_lov);
 		rel_nick = (RelativeLayout) findViewById(R.id.rel_nick);
 		constellation = (TextView) findViewById(R.id.constellation);
-		sex = (TextView) findViewById(R.id.sex);
 		verity_name = (TextView) findViewById(R.id.verity_name);
 		sign = (TextView) findViewById(R.id.sign);
 
@@ -928,12 +923,7 @@ public class MyMessageActivity extends BaseActivity implements
 		rel_phone = (RelativeLayout) findViewById(R.id.rel_phone);
 		rel_disan = (RelativeLayout) findViewById(R.id.rel_disan);
 		txt_disan = (TextView) findViewById(R.id.txt_inschool);
-		phone_num = (TextView) findViewById(R.id.phone_num);
 		nick_name = (TextView) findViewById(R.id.nick_name);
-		xx_num = (TextView) findViewById(R.id.xx_num);
-		// nick_name.setText(sp.getString("nick_name", ""));
-		// xx_num.setText(sp.getString("xxNum", ""));
-		// phone_num.setText(sp.getString("phoneNum", ""));
 		rel_disan.setOnClickListener(new OnClickListener() {
 
 			@Override

@@ -22,6 +22,7 @@ public class ScrollLayout extends ViewGroup {
 	private int mTouchState = TOUCH_STATE_REST;
 	private int mTouchSlop;
 	private float mLastMotionX;
+	@SuppressWarnings("unused")
 	private float mLastMotionY;
 
 	private int currentScreenIndex = 0;
@@ -145,6 +146,7 @@ public class ScrollLayout extends ViewGroup {
 
 		final int action = event.getAction();
 		final float x = event.getX();
+		@SuppressWarnings("unused")
 		final float y = event.getY();
 
 		switch (action) {

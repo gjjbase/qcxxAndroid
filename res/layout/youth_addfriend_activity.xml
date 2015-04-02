@@ -19,10 +19,13 @@
             android:layout_centerVertical="true"
             android:layout_marginLeft="10dp"
             android:text="@string/cancel"
+            android:clickable="true"
+			android:onClick="backer"
             android:textColor="@color/black"
             android:textSize="18sp" />
 
         <TextView
+            android:id="@+id/topname"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
@@ -37,26 +40,31 @@
             android:background="#a3a3a3" />
     </RelativeLayout>
 
-    <EditText
-        android:id="@+id/search"
+    <LinearLayout
         android:layout_width="fill_parent"
-        android:layout_height="30dp"
-        android:layout_marginBottom="5dp"
-        android:layout_marginTop="5dp"
-        android:background="@drawable/ic_preference_single_normal"
-        android:gravity="center"
-        android:hint="@string/plsnum"
-        android:imeOptions="actionSearch"
-        android:inputType="text"
-        android:textSize="14sp" />
+        android:layout_height="40dp"
+        android:background="@color/bg_color" >
+
+        <EditText
+            android:id="@+id/search"
+            android:layout_width="fill_parent"
+            android:layout_height="30dp"
+            android:layout_margin="5dp"
+            android:background="@drawable/qcediters"
+            android:gravity="center"
+            android:hint="@string/plsnum"
+            android:imeOptions="actionSearch"
+            android:inputType="text"
+            android:textSize="14sp" />
+    </LinearLayout>
 
     <ListView
         android:id="@+id/searchList"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
+        android:background="@color/white"
         android:cacheColorHint="#00000000"
-        android:divider="@color/comm_color"
-        android:dividerHeight="1dp"
+        android:divider="@null"
         android:fadingEdge="none" />
 
 </LinearLayout>

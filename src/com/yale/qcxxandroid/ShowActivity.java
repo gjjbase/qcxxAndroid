@@ -81,7 +81,6 @@ public class ShowActivity extends TabActivity {
 	}
 
 	@SuppressLint("HandlerLeak")
-	@SuppressWarnings("unused")
 	private void ini() {
 		thread = new ThreadUtil(myhandler);// com.yale.qcxx.sessionbean.member.impl
 		String methodStr = "[{'com.yale.qcxx.sessionbean.show.impl.ShowsSessionBean':'showshowMain'}]";
@@ -92,7 +91,6 @@ public class ShowActivity extends TabActivity {
 
 	@SuppressLint("HandlerLeak")
 	Handler myhandler = new Handler() {
-		@SuppressWarnings("unused")
 		public void handleMessage(Message msg) {
 			super.handleMessage(msg);
 			switch (msg.what) {
@@ -288,6 +286,7 @@ public class ShowActivity extends TabActivity {
 		startActivity(intent);
 	}
 
+	@SuppressLint("HandlerLeak")
 	private Handler handler = new Handler() {
 		@Override
 		public void handleMessage(Message msg) {

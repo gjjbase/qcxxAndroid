@@ -69,6 +69,7 @@ public class MyLetterListView extends View {
 
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public boolean dispatchTouchEvent(MotionEvent event) {
 		final int action = event.getAction();

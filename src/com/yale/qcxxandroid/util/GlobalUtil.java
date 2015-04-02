@@ -6,8 +6,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.BitmapFactory;
@@ -20,14 +24,17 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.support.v4.util.LruCache;
 import android.util.Log;
+import android.widget.Toast;
 
 /**
  * 全局方法工具类
  * 
  */
+@SuppressLint("DefaultLocale")
 public class GlobalUtil {
 	public static int cacheSize = 50 * 1024 * 1024;
 	protected static int count = 0;
+	public static Context context;
 	public static LruCache<String, Bitmap> mMemoryCache = new LruCache<String, Bitmap>(
 			cacheSize) {
 		@Override
@@ -38,6 +45,10 @@ public class GlobalUtil {
 
 	private static String formatTime(int t) {
 		return t >= 10 ? "" + t : "0" + t;// 三元运算符 t>10时取 ""+t
+	}
+
+	public static void toast(String msg, Context context) {
+		Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
 	}
 
 	public static String time() {
@@ -185,5 +196,13 @@ public class GlobalUtil {
 		Bitmap resizeBmp = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(),
 				bitmap.getHeight(), matrix, true);
 		return resizeBmp;
+	}
+
+	@SuppressLint("SimpleDateFormat")
+	public static String getLocalDate() {
+		String localDate = "";
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		localDate = format.format(new Date());
+		return localDate;
 	}
 }

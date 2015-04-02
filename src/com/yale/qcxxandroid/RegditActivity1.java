@@ -1,13 +1,12 @@
 package com.yale.qcxxandroid;
 
-import java.io.BufferedInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.util.Timer;
 
 import org.apache.commons.lang.StringUtils;
+import org.json.JSONException;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ActionBar.LayoutParams;
@@ -15,15 +14,13 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Message;
 import android.provider.MediaStore;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.util.Base64;
 import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
@@ -36,18 +33,16 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.media.ExifInterface;
-import java.io.IOException;
 
 import com.yale.qcxxandroid.base.BaseActivity;
-import com.yale.qcxxandroid.base.MainActivity;
+import com.yale.qcxxandroid.util.Globals;
+import com.yale.qcxxandroid.util.ThreadUtil;
 
 public class RegditActivity1 extends BaseActivity {
 	private Intent intent = new Intent();
 	private Bundle bundle = new Bundle();
-	private TextView sexValue, loveValue;
+	private TextView sexValue;
 	private EditText nc, passWord, valPassWord;
-	private String ncheng, pw, valpw, sex, love;
 	private Button regdit;
 	Timer timer = new Timer();
 	AlertDialog alert;
@@ -57,10 +52,57 @@ public class RegditActivity1 extends BaseActivity {
 	private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 100;
 	private static final int PICK_IMAGE_ACTIVITY_REQUEST_CODE = 200;
 	static Bitmap bm;
+	private ThreadUtil thread;
+	private String base;
 
-	public void toast(String msg) {
-		Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+	private void ini() {
+		// com.yale.qcxxssionbean.member.impl.UserInfoSessionBean
+		thread = new ThreadUtil(handler);
+		int tag = 0;
+		if (sexValue.getText().toString().equals("男")) {
+			tag = 0;
+		} else if (sexValue.getText().toString().equals("女")) {
+			tag = 1;
+		} else {
+			tag=2;
+		}
+		String jsonParamStr = "[{'phoneNum':"
+				+ getIntent().getExtras().getString("phoneNum") + ",'headImg':"
+				+ base + ",'passWord':" + valPassWord.getText().toString()
+				+ ",'sex':" + tag + ",'nickName':" + "'"
+				+ nc.getText().toString() + "'" + "}]";
+
+		String methodStr = "[{'com.yale.qcxx.sessionbean.member.impl.UserInfoSessionBean':'saveUserInfo'}]";
+		thread.doStartWebServicerequestWebService(RegditActivity1.this,
+				jsonParamStr, methodStr, true);
 	}
+
+	@SuppressLint("HandlerLeak")
+	@SuppressWarnings("unused")
+	Handler handler = new Handler() {
+		public void handlerMessage(Message msg) throws JSONException {
+			super.handleMessage(msg);
+			switch (msg.what) {
+			case 1:
+				String returnJson = (String) msg.getData().getString(
+						"returnJson");
+				if (returnJson.equals(Globals.RETURN_STR_TRUE)) {
+					bundle.putBoolean("true", true);
+					bundle.putString("name", nc.getText().toString());
+					bundle.putString("psw", passWord.getText().toString());
+					intent.setClass(RegditActivity1.this, LoginActivity.class)
+							.putExtras(bundle);
+					startActivity(intent);
+				}
+
+				break;
+			case 2:
+				toast("注册失败", getApplicationContext());
+				break;
+
+			}
+		}
+	};
 
 	// 拍照
 	public void takePicture() {
@@ -96,10 +138,10 @@ public class RegditActivity1 extends BaseActivity {
 		if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
 			if (resultCode == RESULT_OK) {
 				Log.e(tag, "获取图片成功，path=" + picFileFullName);
-				toast("获取图片成功，path=" + picFileFullName);
-				readBitmapAutoSize(picFileFullName, 100, 100, tx);
-				Log.e(tag, bitmap64(picFileFullName));
-
+				toast("获取图片成功，path=" + picFileFullName, getApplicationContext());
+				ImageTools.readBitmapAutoSize(bm, picFileFullName, tx);
+				Log.e(tag, ImageTools.bitmap64(picFileFullName));
+				base = ImageTools.bitmap64(picFileFullName);
 			} else if (resultCode == RESULT_CANCELED) {
 				// 用户取消了图像捕获
 			} else {
@@ -112,10 +154,10 @@ public class RegditActivity1 extends BaseActivity {
 				if (uri != null) {
 					String realPath = getRealPathFromURI(uri);
 					Log.e(tag, "获取图片成功，path=" + realPath);
-					toast("获取图片成功，path=" + realPath);
-					readBitmapAutoSize(realPath, 100, 100, tx);
-					Log.e(tag, bitmap64(realPath));
-
+					toast("获取图片成功，path=" + realPath, getApplicationContext());
+					ImageTools.readBitmapAutoSize(bm, realPath, tx);
+					Log.e(tag, ImageTools.bitmap64(realPath));
+					base = ImageTools.bitmap64(realPath);
 				} else {
 					Log.e(tag, "从相册获取图片失败");
 				}
@@ -123,63 +165,6 @@ public class RegditActivity1 extends BaseActivity {
 		}
 	}
 
-	public static void readBitmapAutoSize(String filePath, int outWidth,
-			int outHeight, ImageView jpgView) {
-		// outWidth和outHeight是目标图片的最大宽度和高度，用作限制
-		FileInputStream fs = null;
-		BufferedInputStream bs = null;
-		try {
-			fs = new FileInputStream(filePath);
-			bs = new BufferedInputStream(fs);
-			BitmapFactory.Options options = setBitmapOption(filePath, outWidth,
-					outHeight);
-			bm = BitmapFactory.decodeStream(bs, null, options);
-
-			jpgView.setImageBitmap(bm);
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				bs.close();
-				fs.close();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-	}
-
-	private static BitmapFactory.Options setBitmapOption(String file,
-			int width, int height) {
-		BitmapFactory.Options opt = new BitmapFactory.Options();
-		opt.inJustDecodeBounds = true;
-		// 设置只是解码图片的边距，此操作目的是度量图片的实际宽度和高度
-		BitmapFactory.decodeFile(file, opt);
-
-		int outWidth = opt.outWidth; // 获得图片的实际高和宽
-		int outHeight = opt.outHeight;
-		opt.inDither = false;
-		opt.inPreferredConfig = Bitmap.Config.RGB_565;
-		// 设置加载图片的颜色数为16bit，默认是RGB_8888，表示24bit颜色和透明通道，但一般用不上
-		opt.inSampleSize = 1;
-		// 设置缩放比,1表示原比例，2表示原来的四分之一....
-		// 计算缩放比
-		if (outWidth != 0 && outHeight != 0 && width != 0 && height != 0) {
-			int sampleSize = (outWidth / width + outHeight / height) / 2;
-			opt.inSampleSize = sampleSize;
-		}
-
-		opt.inJustDecodeBounds = false;// 最后把标志复原
-		return opt;
-	}
-
-	/**
-	 * This method is used to get real path of file from from uri<br/>
-	 * http://stackoverflow.com/questions/11591825/how-to-get-image-path-just-
-	 * captured-from-camera
-	 * 
-	 * @param contentUri
-	 * @return String
-	 */
 	public String getRealPathFromURI(Uri contentUri) {
 		try {
 			String[] proj = { MediaStore.Images.Media.DATA };
@@ -198,75 +183,6 @@ public class RegditActivity1 extends BaseActivity {
 		}
 	}
 
-	/**
-	 * 读取照片exif信息中的旋转角度<br/>
-	 * http://www.eoeandroid.com/thread-196978-1-1.html
-	 * 
-	 * @param path
-	 *            照片路径
-	 * @return角度
-	 */
-	public static int readPictureDegree(String path) {
-		int degree = 0;
-		try {
-			ExifInterface exifInterface = new ExifInterface(path);
-			int orientation = exifInterface.getAttributeInt(
-					ExifInterface.TAG_ORIENTATION,
-					ExifInterface.ORIENTATION_NORMAL);
-			switch (orientation) {
-			case ExifInterface.ORIENTATION_ROTATE_90:
-				degree = 90;
-				break;
-			case ExifInterface.ORIENTATION_ROTATE_180:
-				degree = 180;
-				break;
-			case ExifInterface.ORIENTATION_ROTATE_270:
-				degree = 270;
-				break;
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return degree;
-	}
-
-	public String bitmap64(String filepath) {
-		FileInputStream fs = null;
-		BufferedInputStream bs = null;
-		Bitmap bt = null;
-		String encode = null;
-		BitmapFactory.Options options = null;
-		try {
-			fs = new FileInputStream(filepath);
-			bs = new BufferedInputStream(fs);
-			options = setBitmapOption(filepath, 100, 100);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		bt = BitmapFactory.decodeStream(bs, null, options);
-		try {
-			// 先将bitmap转换为普通的字节数组
-			ByteArrayOutputStream out = new ByteArrayOutputStream();
-			bt.compress(Bitmap.CompressFormat.JPEG, 100, out);
-			out.flush();
-			out.close();
-			byte[] buffer = out.toByteArray();
-			// 将普通字节数组转换为base64数组
-			encode = Base64.encodeToString(buffer, Base64.DEFAULT);
-			// // string = Base64.encodeToString(bytes, Base64.DEFAULT);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		try {
-			bs.close();
-			fs.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return encode;
-
-	}
-
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -277,10 +193,36 @@ public class RegditActivity1 extends BaseActivity {
 		sexValue = (TextView) findViewById(R.id.sexValue);
 		regdit = (Button) findViewById(R.id.regdit);
 		tx = (ImageView) findViewById(R.id.tx);
-		ncheng = nc.getText().toString();
-		pw = passWord.getText().toString();
-		valpw = valPassWord.getText().toString();
-		sex = sexValue.getText().toString();
+		regdit.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				Log.i("####################", nc.getText().toString()
+						+ passWord.getText().toString());
+				if (!StringUtils.isEmpty(nc.getText().toString())
+						&& !StringUtils.isEmpty(passWord.getText().toString())
+						&& !StringUtils.isEmpty(valPassWord.getText()
+								.toString())
+						&& valPassWord.getText().toString()
+								.equals(passWord.getText().toString())
+						&& !StringUtils.isEmpty(sexValue.getText().toString())) {
+					ini();
+				} else {
+					if (!passWord.getText().toString()
+							.equals(valPassWord.getText().toString())) {
+						Toast.makeText(getApplicationContext(), "2次输入的密码不一致",
+								3000).show();
+					} else {
+						Toast.makeText(getApplicationContext(), "请输入完整的信息",
+								3000).show();
+
+					}
+				}
+
+			}
+
+		});
 		tx.setOnClickListener(new OnClickListener() {
 
 			@Override
@@ -309,128 +251,10 @@ public class RegditActivity1 extends BaseActivity {
 				dialog.show();
 			}
 		});
-		// love = loveValue.getText().toString();
-		regdit.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				if (!StringUtils.isEmpty(ncheng) && !StringUtils.isEmpty(pw)
-						&& !StringUtils.isEmpty(valpw)
-						&& !StringUtils.isEmpty(sex)
-						&& !StringUtils.isEmpty(love)) {
-					// regdit.setEnabled(true);
-					// regdit.refreshDrawableState();
-					if (StringUtils.equals(valpw, pw)) {
-						Toast.makeText(getApplicationContext(), "两次输入的密码不一致",
-								3000).show();
-					} else {
-
-					}
-				} else {
-					// regdit.setEnabled(false);
-					// regdit.refreshDrawableState();
-					Toast.makeText(getApplicationContext(), "请填写完整的信息", 3000)
-							.show();
-				}
-
-			}
-		});
-		nc = (EditText) this.findViewById(R.id.nc);
-		nc.addTextChangedListener(new TextWatcher() {
-			@Override
-			public void onTextChanged(CharSequence s, int start, int before,
-					int count) {
-				// commValid();
-			}
-
-			@Override
-			public void beforeTextChanged(CharSequence s, int start, int count,
-					int after) {
-				// commValid();
-			}
-
-			@Override
-			public void afterTextChanged(Editable s) {
-				// commValid();
-			}
-		});
-
-		passWord = (EditText) this.findViewById(R.id.passWord);
-		passWord.addTextChangedListener(new TextWatcher() {
-			@Override
-			public void onTextChanged(CharSequence s, int start, int before,
-					int count) {
-				// commValid();
-			}
-
-			@Override
-			public void beforeTextChanged(CharSequence s, int start, int count,
-					int after) {
-				// commValid();
-			}
-
-			@Override
-			public void afterTextChanged(Editable s) {
-				// commValid();
-			}
-		});
-
-		valPassWord = (EditText) this.findViewById(R.id.valPassWord);
-		valPassWord.addTextChangedListener(new TextWatcher() {
-			@Override
-			public void onTextChanged(CharSequence s, int start, int before,
-					int count) {
-				// commValid();
-			}
-
-			@Override
-			public void beforeTextChanged(CharSequence s, int start, int count,
-					int after) {
-				// commValid();
-			}
-
-			@Override
-			public void afterTextChanged(Editable s) {
-				// commValid();
-			}
-		});
-
-		sexValue = (TextView) this.findViewById(R.id.sexValue);
-		sexValue.addTextChangedListener(new TextWatcher() {
-			@Override
-			public void onTextChanged(CharSequence s, int start, int before,
-					int count) {
-				// commValid();
-			}
-
-			@Override
-			public void beforeTextChanged(CharSequence s, int start, int count,
-					int after) {
-				// commValid();
-			}
-
-			@Override
-			public void afterTextChanged(Editable s) {
-				// commValid();
-			}
-		});
 	}
 
 	public void regPreClick(View view) {
 		this.finish();
-	}
-
-	public void regditSub(View view) {
-		intent = new Intent();
-		bundle = new Bundle();
-		intent.setClass(RegditActivity1.this, MainActivity.class);
-		startActivity(intent);
-		this.finish();
-	}
-
-	public void loveChose(View view) {
-
 	}
 
 	private void txt_arr(TextView[] view, int falg) {
@@ -443,6 +267,7 @@ public class RegditActivity1 extends BaseActivity {
 	public void alert() {
 		WindowManager manager = getWindowManager();
 		Display display = manager.getDefaultDisplay();
+		@SuppressWarnings("deprecation")
 		int width = display.getWidth();
 		alert = new AlertDialog.Builder(this).create();
 		alert.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -457,8 +282,8 @@ public class RegditActivity1 extends BaseActivity {
 		final TextView txt2 = (TextView) alert.findViewById(R.id.txt2);
 		final TextView[] txt = { txt1, txt2, txt_exit };
 
-		txt_exit.setText("单身中");
-		txt1.setText("恋爱中");
+		txt_exit.setText("男");
+		txt1.setText("女");
 		txt2.setText("保密");
 		txt_exit.setOnClickListener(new OnClickListener() {
 
@@ -484,6 +309,7 @@ public class RegditActivity1 extends BaseActivity {
 			public void onClick(View v) {
 				txt_arr(txt, 1);
 				sexValue.setText(txt2.getText().toString());
+
 			}
 		});
 
@@ -492,22 +318,4 @@ public class RegditActivity1 extends BaseActivity {
 	public void sexChose(View view) {
 		alert();
 	}
-
-	// public void commValid() {
-	// cd = code.getText().toString();
-	// ncheng = nc.getText().toString();
-	// pw = passWord.getText().toString();
-	// valpw = valPassWord.getText().toString();
-	// sex = sexValue.getText().toString();
-	// love = loveValue.getText().toString();
-	// if (!StringUtils.isEmpty(cd) && !StringUtils.isEmpty(ncheng)
-	// && !StringUtils.isEmpty(pw) && !StringUtils.isEmpty(valpw)
-	// && !StringUtils.isEmpty(sex) && !StringUtils.isEmpty(love)) {
-	// regdit.setEnabled(true);
-	// regdit.refreshDrawableState();
-	// } else {
-	// regdit.setEnabled(false);
-	// regdit.refreshDrawableState();
-	// }
-	// }
 }

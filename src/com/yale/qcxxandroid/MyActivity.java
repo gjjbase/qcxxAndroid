@@ -3,6 +3,7 @@ package com.yale.qcxxandroid;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -18,7 +19,6 @@ import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.ImageView.ScaleType;
 
 import com.yale.qcxxandroid.base.BaseActivity;
@@ -33,8 +33,8 @@ public class MyActivity extends BaseActivity {
 	private ThreadUtil thread;
 	private TextView nickname, id;
 	private ImageView head8;
+	@SuppressLint("HandlerLeak")
 	public Handler mhandler = new Handler() {
-		@SuppressWarnings("unused")
 		public void handleMessage(Message msg) {
 			super.handleMessage(msg);
 			switch (msg.what) {

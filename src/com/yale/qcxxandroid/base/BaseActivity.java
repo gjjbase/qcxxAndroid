@@ -3,15 +3,26 @@ package com.yale.qcxxandroid.base;
 /**
  * 基础activity
  */
+import java.util.ArrayList;
+import java.util.List;
+
+import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.AsyncQueryHandler;
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Toast;
 
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
@@ -20,6 +31,7 @@ import com.baidu.location.LocationClientOption;
 import com.yale.qcxxandroid.base.ActionSheet.OnActionSheetSelected;
 import com.yale.qcxxandroid.bean.MyLocation;
 
+@SuppressLint("HandlerLeak")
 public class BaseActivity extends Activity implements OnDeleteListioner,
 		ListViewonSingleTapUpListenner, OnActionSheetSelected, OnCancelListener {
 	protected FlippingLoadingDialog mLoadingDialog;
@@ -28,12 +40,63 @@ public class BaseActivity extends Activity implements OnDeleteListioner,
 	protected Editor editor = null;
 	protected LocationClient locationClient = null;
 	protected MyLocation myLocation = new MyLocation();
-	private static final int UPDATE_TIME = 5000;
-	private static int LOCATION_COUTNS = 0;
+	protected static final int UPDATE_TIME = 5000;
+	protected AsyncQueryHandler asyncQuery;
+	protected static final String NAME = "name", NUMBER = "number",
+			SORT_KEY = "sort_key";
+	protected List<ContentValues> phonelist;
 
-	@Override
+	protected class MyAsyncQueryHandler extends AsyncQueryHandler {
+
+		public MyAsyncQueryHandler(ContentResolver cr) {
+			super(cr);
+
+		}
+
+		protected void onQueryComplete(int token, Object cookie, Cursor cursor) {
+			if (cursor != null && cursor.getCount() > 0) {
+				phonelist = new ArrayList<ContentValues>();
+				cursor.moveToFirst();
+				for (int i = 0; i < cursor.getCount(); i++) {
+					ContentValues cv = new ContentValues();
+					cursor.moveToPosition(i);
+					String name = cursor.getString(1);
+					String number = cursor.getString(2);
+					String sortKey = cursor.getString(3);
+					if (number.startsWith("+86")) {
+						cv.put(NAME, name);
+						cv.put(NUMBER, number.substring(3)); // 去掉+86
+						cv.put(SORT_KEY, sortKey);
+					} else {
+						cv.put(NAME, name);
+						cv.put(NUMBER, number);
+						cv.put(SORT_KEY, sortKey);
+					}
+					phonelist.add(cv);
+					Log.i("num", number);
+				}
+			}
+
+		}
+
+	}
+
+	public void Pholis(boolean fag) {
+		if (fag == true) {
+			Uri uri = Uri.parse("content://com.android.contacts/data/phones");
+			String[] projection = { "_id", "display_name", "data1", "sort_key" };
+			asyncQuery.startQuery(0, null, uri, projection, null, null,
+					"sort_key COLLATE LOCALIZED asc");
+		} else {
+
+		}
+	}
+
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		asyncQuery = new MyAsyncQueryHandler(getContentResolver());
+		// alphaIndexer = new HashMap<String, Integer>();
+		// handler = new Handler();
 		sp = getSharedPreferences("qcxx", Context.MODE_PRIVATE);
 		editor = sp.edit();
 		mLoadingDialog = new FlippingLoadingDialog(this, "正在加载中,请稍后....");
@@ -76,6 +139,10 @@ public class BaseActivity extends Activity implements OnDeleteListioner,
 		 * 定时定位时，调用一次requestLocation，会定时监听到定位结果。
 		 */
 		locationClient.requestLocation();
+	}
+
+	public static void toast(String msg, Context context) {
+		Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
 	}
 
 	@Override

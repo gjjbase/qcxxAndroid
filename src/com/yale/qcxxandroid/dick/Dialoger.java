@@ -9,9 +9,7 @@ import com.yale.qcxxandroid.R;
 import android.app.Dialog;
 import android.content.Context;
 import android.util.Log;
-import android.view.Display;
 import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Toast;
 
 public class Dialoger extends Dialog {

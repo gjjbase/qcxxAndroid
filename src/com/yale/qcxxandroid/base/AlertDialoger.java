@@ -4,14 +4,11 @@ import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.yale.qcxxandroid.R;
 
 public class AlertDialoger extends BaseActivity {
-	private LinearLayout layout;
 	private TextView message;
 	private EditText edt_put;
 	private String falg;
@@ -19,7 +16,6 @@ public class AlertDialoger extends BaseActivity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.alert_dialog);
-		layout = (LinearLayout) findViewById(R.id.alertLayout);
 		edt_put = (EditText) findViewById(R.id.edt_put);
 		message = (TextView) findViewById(R.id.mess);
 		falg = getIntent().getExtras().getString("falg");

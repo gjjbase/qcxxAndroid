@@ -1,10 +1,9 @@
 package com.yale.qcxxandroid;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -16,15 +15,16 @@ import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.text.Editable;
-import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -43,10 +43,16 @@ import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.stmt.Where;
 import com.yale.qcxxandroid.base.BaseActivity;
 import com.yale.qcxxandroid.base.BaseListView;
+import com.yale.qcxxandroid.bean.MessageBean;
 import com.yale.qcxxandroid.chat.ChatMainActivity;
+import com.yale.qcxxandroid.chat.xmpp.XmppGlobals;
+import com.yale.qcxxandroid.util.DataHelper;
 import com.yale.qcxxandroid.util.ThreadUtil;
 
 public class YouthActivity extends BaseActivity {
@@ -56,7 +62,7 @@ public class YouthActivity extends BaseActivity {
 	private ListView searchList;
 	private MsgAdapter msgAdapter;
 	private SearchAdapter searchAdapter;
-	private LinearLayout xxhd, qc_qun, qc_ad, bottom, lin_top;
+	private LinearLayout xxhd, qc_qun, bottom, lin_top;
 	RelativeLayout shade;
 	private ImageView add;
 	private List<JSONObject> jsonList = new ArrayList<JSONObject>();
@@ -64,7 +70,7 @@ public class YouthActivity extends BaseActivity {
 	private EditText search;
 	private LinearLayout title;
 	private TextView cancel;
-	private LinearLayout lin_bg;
+	@SuppressWarnings("unused")
 	private ThreadUtil thread;
 	private LayoutTransition mTransitioner;
 
@@ -155,6 +161,7 @@ public class YouthActivity extends BaseActivity {
 
 	}
 
+	@SuppressLint("HandlerLeak")
 	Handler handlerSlideImg = new Handler() {
 		@Override
 		public void handleMessage(Message msg) {
@@ -207,8 +214,10 @@ public class YouthActivity extends BaseActivity {
 	// }
 	// searchAdapter = new SearchAdapter(YouthActivity.this, searchListObj);
 	// }
+	@SuppressLint("HandlerLeak")
 	public void init() {
 		Handler handler = new Handler() {
+			@SuppressWarnings("unused")
 			public void handerMessage(Message msg) {
 				super.handleMessage(msg);
 				switch (msg.what) {
@@ -232,6 +241,11 @@ public class YouthActivity extends BaseActivity {
 		thread = new ThreadUtil(handler);
 	}
 
+	public void click(View v) {
+		Log.i("0000", "点击");
+	}
+
+	@SuppressWarnings("deprecation")
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.youth_activity);
@@ -240,7 +254,6 @@ public class YouthActivity extends BaseActivity {
 		title = (LinearLayout) findViewById(R.id.title);
 		listView = (BaseListView) findViewById(R.id.qcList);
 		searchList = (ListView) findViewById(R.id.searchList);
-		lin_bg = (LinearLayout) findViewById(R.id.lin_bg);
 		xxhd = (LinearLayout) findViewById(R.id.xxhd);
 		bottom = (LinearLayout) findViewById(R.id.bottom);
 		lin_top = (LinearLayout) findViewById(R.id.lin_top);
@@ -255,13 +268,15 @@ public class YouthActivity extends BaseActivity {
 
 		Animation.RELATIVE_TO_SELF, 0.1f, Animation.RELATIVE_TO_SELF, 0);
 		translate.setDuration(300);
+		@SuppressWarnings("unused")
 		final TranslateAnimation translat = new TranslateAnimation(
 
 		Animation.RELATIVE_TO_SELF, 0, Animation.RELATIVE_TO_SELF, 0,
 
 		Animation.RELATIVE_TO_SELF, 0.1f, Animation.RELATIVE_TO_SELF, 0);
 		translate.setDuration(300);
-//		TranslateAnimation M=new TranslateAnimation(  , fromXValue, toXType, toXValue, fromYType, fromYValue, toYType, toYValue)
+		// TranslateAnimation M=new TranslateAnimation( , fromXValue, toXType,
+		// toXValue, fromYType, fromYValue, toYType, toYValue)
 		// 初始化动画
 		initAnim();
 		listView.setOnItemClickListener(new ListView.OnItemClickListener() {
@@ -381,7 +396,90 @@ public class YouthActivity extends BaseActivity {
 		// }
 		// });
 		initData();
+		IntentFilter filter = new IntentFilter(XmppGlobals.MESSAGE_ACTION);
+		registerReceiver(receiver, filter);
+
+		IntentFilter filter1 = new IntentFilter(XmppGlobals.MODE_ACTION);
+		registerReceiver(receiver2, filter1);
+
 	}
+
+	boolean hasflag = false;
+	public static int msgCount;
+	BroadcastReceiver receiver = new BroadcastReceiver() {
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			String from = intent.getStringExtra("from");
+			String message = intent.getStringExtra("body");
+			String time = intent.getStringExtra("time");
+			String name = from.substring(0, from.indexOf("@"));
+			Dao<MessageBean, Integer> messageDao = DataHelper.getInstance(
+					YouthActivity.this).getMessageDAO();
+			try {
+				Where<MessageBean, Integer> query = messageDao.queryBuilder()
+						.where().eq("msgtype", "0").and().eq("readed", false);
+				List<MessageBean> list = messageDao.query(query.prepare());
+				msgCount = list.size();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
+			try {
+				for (int i = 0; i < jsonList.size(); i++) {
+					JSONObject tmp = jsonList.get(i);
+					String curentName = tmp.get("nc").toString();
+					if (curentName.equals(name)) {
+						hasflag = true;
+						jsonList.remove(i);
+						tmp.put("content", message);
+						tmp.put("pubtime", time);
+						tmp.put("tongzhi", msgCount + "");
+						jsonList.add(0, tmp);
+					}
+				}
+				if (!hasflag) {
+					JSONObject tmp = new JSONObject();
+					tmp.put("nc", name);
+					tmp.put("content", message);
+					tmp.put("pubtime", time);
+					tmp.put("tongzhi", msgCount + "");
+					jsonList.add(0, tmp);
+				}
+				msgAdapter.notifyDataSetChanged();
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+		}
+	};
+
+	BroadcastReceiver receiver2 = new BroadcastReceiver() {
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			String from = intent.getStringExtra("from");
+			String mode = intent.getStringExtra("mode");
+			String name = from.substring(0, from.indexOf("@"));
+			if (mode.equals("online")) {
+				Toast.makeText(YouthActivity.this, name + "上线了" + mode, 2000)
+						.show();
+			} else if (mode.equals("away")) {
+				Toast.makeText(YouthActivity.this, name + "有事离开了" + mode, 2000)
+						.show();
+			} else if (mode.equals("dnd")) {
+				Toast.makeText(YouthActivity.this, name + "隐身了" + mode, 2000)
+						.show();
+			} else if (mode.equals("chat")) {
+				Toast.makeText(YouthActivity.this, name + "空闲" + mode, 2000)
+						.show();
+			} else if (mode.equals("outline")) {
+				Toast.makeText(YouthActivity.this, name + "下线了" + mode, 2000)
+						.show();
+			} else {
+				Toast.makeText(YouthActivity.this, name + "上线了" + mode, 2000)
+						.show();
+			}
+		}
+	};
 
 	@SuppressLint("NewApi")
 	private void hideSearch() {
@@ -447,7 +545,7 @@ public class YouthActivity extends BaseActivity {
 			tmp1.put("pubtime", "6分钟前");
 			jsonList.add(tmp1);
 			JSONObject tmp2 = new JSONObject();
-			tmp2.put("nc", "邱老师");
+			tmp2.put("nc", "admin");
 			tmp2.put("content", "一起出来吃个饭吧");
 			tmp2.put("pubtime", "7分钟前");
 			jsonList.add(tmp2);

@@ -1,19 +1,15 @@
 package com.yale.qcxxandroid;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.yale.qcxxandroid.base.BaseActivity;
-import com.yale.qcxxandroid.base.Exit;
 import com.yale.qcxxandroid.base.Welcome;
 import com.yale.qcxxandroid.base.ZhiTiaoTabActivity;
 

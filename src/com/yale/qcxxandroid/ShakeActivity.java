@@ -29,7 +29,6 @@ import com.yale.qcxxandroid.base.BaseLocationActivity;
 import com.yale.qcxxandroid.util.RedisThreadUtil;
 
 @SuppressLint("ShowToast")
-@SuppressWarnings("deprecation")
 public class ShakeActivity extends BaseLocationActivity {
 
 	ShakeListener mShakeListener = null;
@@ -89,6 +88,7 @@ public class ShakeActivity extends BaseLocationActivity {
 		});
 	}
 
+	@SuppressLint("HandlerLeak")
 	Handler handler = new Handler() {
 		@SuppressWarnings("unchecked")
 		@Override
@@ -189,7 +189,6 @@ public class ShakeActivity extends BaseLocationActivity {
 
 	public void startVibrato() { // 定义震动
 		mVibrator.vibrate(new long[] { 500, 200, 500, 200 }, -1); // 第一个｛｝里面是节奏数组，
-																	// 第二个参数是重复次数，-1为不重复，非-1俄日从pattern的指定下标开始重复
 	}
 
 	public void shake_activity_back(View v) { // 标题栏 返回按钮

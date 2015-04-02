@@ -5,13 +5,13 @@ import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import org.jivesoftware.smack.packet.Message;
 
 import com.j256.ormlite.dao.Dao;
 import com.yale.qcxxandroid.bean.MessageBean;
 import com.yale.qcxxandroid.chat.xmpp.smack.SmackImpl;
 import com.yale.qcxxandroid.util.DataHelper;
 
+import android.annotation.SuppressLint;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -21,6 +21,7 @@ import android.os.IBinder;
 import android.text.TextUtils;
 import android.util.Log;
 
+@SuppressLint("HandlerLeak")
 public class XmppService extends Service {
 
 	public static final int PONG_TIMEOUT = 10000;
@@ -28,9 +29,6 @@ public class XmppService extends Service {
 	private String password;
 	private boolean isFristConnect = true;	//是否是首次登陆！（登陆界面）
 	private static SmackImpl smackImpl;		//自定义smack接口的实现类
-	public static final String MESSAGE_ACTION = "messagAction";
-	public static final String MODE_ACTION = "modeAction";
-	
 	
 	private IBinder mBinder = new XmppBinder();
 	
@@ -40,6 +38,7 @@ public class XmppService extends Service {
 		}
 		return smackImpl;
 	}
+	
 	/**
 	 * 创建service
 	 */
@@ -86,7 +85,7 @@ public class XmppService extends Service {
 				Login(account, password);	//如果不是第一次登陆的话，就直接重新登陆
 			Log.e("onStartCommand", "Login");
 		}
-		account = XmppService.this.getSharedPreferences("qcxx", Context.MODE_PRIVATE).getString("nickName", "");
+		account = XmppService.this.getSharedPreferences("qcxx", Context.MODE_PRIVATE).getString("phoneNum", "");
 		password = XmppService.this.getSharedPreferences("qcxx", Context.MODE_PRIVATE).getString("passWord", "");
 		if (!TextUtils.isEmpty(account) && !TextUtils.isEmpty(password) && isFristConnect){
 			Login(account, password);	//如果不是第一次登陆的话，就直接重新登陆
@@ -145,10 +144,12 @@ public class XmppService extends Service {
 	 */
 	public void sendMsg(final String toJid,final String msg){
 		new Thread(new Runnable() {
+			@SuppressWarnings("deprecation")
 			@Override
 			public void run() {
 				smackImpl = getSmackImpl();
-				boolean flag = smackImpl.sendMessage(toJid+"@"+smackImpl.SERVER, msg);
+				@SuppressWarnings("unused")
+				boolean flag = smackImpl.sendMessage(toJid, msg);//+"@"+smackImpl.SERVER
 				try {	
 					//发送的消息存到数据库
 					Dao<MessageBean, Integer> messageDao = DataHelper.getInstance(XmppService.this).getMessageDAO(); 
@@ -178,49 +179,9 @@ public class XmppService extends Service {
 			return XmppService.this;
 		}
 	}
-	/**
-	 * 消息接收
-	 */
-	public void handReciveMessage(Message msg) {
-		String from = msg.getFrom();
-		String body = msg.getBody();
-		String time = "2015-3-3 16:24";
-		Intent intent = new Intent();
-		intent.putExtra("from", from);
-		intent.putExtra("body", body);
-		intent.putExtra("time", time);
-		intent.setAction(MESSAGE_ACTION);
-		try {	
-			//发送的消息存到数据库
-			Dao<MessageBean, Integer> messageDao = DataHelper.getInstance(XmppService.this).getMessageDAO(); 
-			MessageBean bean = new MessageBean();
-			bean.setMsgtype(1);		//消息类别      发送的消息1
-			bean.setType(0);		//消息类型   0代表正常的消息
-			bean.setMsgContent(body);
-			bean.setMsgTime(new Date(System.currentTimeMillis()).toLocaleString());
-			bean.setReciver("myself");
-			String sender = from.substring(0, from.indexOf("@"));
-			bean.setReaded(true);	//是否已读
-			bean.setSender(sender);
-			messageDao.create(bean);
-			intent.putExtra("bean", bean);
-		}catch (SQLException e) {
-			e.printStackTrace();
-		}
-		XmppService.this.getApplicationContext().sendBroadcast(intent);
-	}
-	/**
-	 * 联系人状态变化
-	 * @param fromName
-	 * @param mode
-	 */
-	public void presenceChanged(String fromName,String mode) {
-		Intent intent = new Intent();
-		intent.putExtra("from", fromName);
-		intent.putExtra("mode", mode);
-		intent.setAction(MODE_ACTION);
-		XmppService.this.getApplicationContext().sendBroadcast(intent);
-	}
+	
+	
+	
 	
 	/**
 	 * 连接异常关闭的时候

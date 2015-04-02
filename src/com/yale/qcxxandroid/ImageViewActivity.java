@@ -17,7 +17,6 @@ import com.yale.qcxxandroid.base.BaseActivity;
 public class ImageViewActivity extends BaseActivity {
 	private ImageView img;
 	static Bitmap bm;
-	private boolean fag = false;
 
 	public static void readBitmapAutoSize(String filePath, int outWidth,
 			int outHeight, ImageView jpgView) {
@@ -72,7 +71,9 @@ public class ImageViewActivity extends BaseActivity {
 		super.onCreate(savedInstanceState);
 		WindowManager manager = getWindowManager();
 		Display display = manager.getDefaultDisplay();
+		@SuppressWarnings("deprecation")
 		int width = display.getWidth();
+		@SuppressWarnings("deprecation")
 		int height = display.getHeight();
 		setContentView(R.layout.activity_imageview);
 		img = (ImageView) findViewById(R.id.img);

@@ -3,15 +3,12 @@ package com.yale.qcxxandroid;
 import org.json.JSONArray;
 import org.json.JSONException;
 
-import com.yale.qcxxandroid.MyShowListAdapter.ThisItem;
 
 import android.content.Context;
-import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 

@@ -3,10 +3,6 @@ package com.yale.qcxxandroid.chat;
 import java.io.IOException;
 import java.util.List;
 
-
-
-
-
 import com.yale.qcxxandroid.R;
 
 import android.content.Context;
@@ -19,18 +15,18 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-
-
 public class FaceGVAdapter extends BaseAdapter {
 	@SuppressWarnings("unused")
 	private static final String TAG = "FaceGVAdapter";
 	private List<String> list;
 	private Context mContext;
+	private int fag;
 
-	public FaceGVAdapter(List<String> list, Context mContext) {
+	public FaceGVAdapter(List<String> list, Context mContext, int fag) {
 		super();
 		this.list = list;
 		this.mContext = mContext;
+		this.fag = fag;
 	}
 
 	public void clear() {
@@ -70,22 +66,36 @@ public class FaceGVAdapter extends BaseAdapter {
 			hodler = (ViewHodler) convertView.getTag();
 		}
 		try {
-			Bitmap mBitmap = BitmapFactory.decodeStream(mContext.getAssets()
-					.open("face/png/" + list.get(position)));
-			hodler.iv.setImageBitmap(mBitmap);
+			if (fag == 1) {
+				Bitmap mBitmap = BitmapFactory.decodeStream(mContext
+						.getAssets().open("face/png/" + list.get(position)));
+				hodler.iv.setImageBitmap(mBitmap);
+				hodler.tv.setText("face/png/" + list.get(position));
+			} else if (fag == 2) {
+				Bitmap mBitmap = BitmapFactory.decodeStream(mContext
+						.getAssets().open("faceer/png/" + list.get(position)));
+				hodler.iv.setImageBitmap(mBitmap);
+				hodler.tv.setText("faceer/png/" + list.get(position));
+			} else if (fag == 3) {
+				Bitmap mBitmap = BitmapFactory.decodeStream(mContext
+						.getAssets().open("myface/png/" + list.get(position)));
+				hodler.iv.setImageBitmap(mBitmap);
+				hodler.tv.setText("myface/png/" + list.get(position));
+			}
+
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		hodler.tv.setText("face/png/" + list.get(position));
-//		convertView.setOnClickListener(new View.OnClickListener() {
-//
-//			@Override
-//			public void onClick(View v) {
-//				// TODO Auto-generated method stub
-//				
-//			}
-//		});
+
+		// convertView.setOnClickListener(new View.OnClickListener() {
+		//
+		// @Override
+		// public void onClick(View v) {
+		// // TODO Auto-generated method stub
+		//
+		// }
+		// });
 
 		return convertView;
 	}

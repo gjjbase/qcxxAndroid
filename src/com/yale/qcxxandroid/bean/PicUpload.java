@@ -2,14 +2,26 @@ package com.yale.qcxxandroid.bean;
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
-@DatabaseTable(tableName="picUpload")
+
+@DatabaseTable(tableName = "picUpload")
 public class PicUpload {
 	@DatabaseField(generatedId = true)
-	int id ;
-	@DatabaseField(columnName = "picToken",canBeNull = false)
+	int id;
+	@DatabaseField(columnName = "picToken", canBeNull = false)
 	String picToken;
-	@DatabaseField(columnName = "picUrl",canBeNull = false)
+	@DatabaseField(columnName = "picUrl", canBeNull = false)
 	String picUrl;
+	@DatabaseField(columnName = "newFrd", canBeNull = false)
+	String newFrd;
+
+	public String getNewFrd() {
+		return newFrd;
+	}
+
+	public void setNewFrd(String newFrd) {
+		this.newFrd = newFrd;
+	}
+
 	public String getPicUrl() {
 		return picUrl;
 	}
@@ -17,13 +29,15 @@ public class PicUpload {
 	public void setPicUrl(String picUrl) {
 		this.picUrl = picUrl;
 	}
+
 	public int getId() {
 		return id;
 	}
+
 	public void setId(int id) {
 		this.id = id;
 	}
-	
+
 	public String getPicToken() {
 		return picToken;
 	}
@@ -31,7 +45,8 @@ public class PicUpload {
 	public void setPicToken(String picToken) {
 		this.picToken = picToken;
 	}
-	public PicUpload(){//必须要有一个无参数的构造函数
+
+	public PicUpload() {// 必须要有一个无参数的构造函数
 	}
-	
+
 }

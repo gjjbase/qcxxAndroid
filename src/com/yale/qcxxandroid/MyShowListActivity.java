@@ -10,8 +10,6 @@ import org.json.JSONObject;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -26,19 +24,16 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.ImageView.ScaleType;
 import android.widget.Toast;
 
-import com.yale.qcxxandroid.ShowListActivity.ShowListAdapter;
 import com.yale.qcxxandroid.base.BaseActivity;
 import com.yale.qcxxandroid.base.PicPagerAdapter;
 import com.yale.qcxxandroid.base.MyBaseListView.OnRefreshListener;
 import com.yale.qcxxandroid.util.GlobalUtil;
 import com.yale.qcxxandroid.util.Globals;
 import com.yale.qcxxandroid.util.ImageThread;
-import com.yale.qcxxandroid.util.ImgLoadThread;
 import com.yale.qcxxandroid.util.ThreadUtil;
 import com.yale.qcxxandroid.base.MyBaseListView;
 
@@ -224,6 +219,7 @@ public class MyShowListActivity extends BaseActivity {
 			}
 		}
 	};
+	@SuppressLint("HandlerLeak")
 	public Handler mhandler = new Handler() {
 		public void handleMessage(Message msg) {
 			super.handleMessage(msg);

@@ -7,10 +7,8 @@ import com.yale.qcxxandroid.R;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;

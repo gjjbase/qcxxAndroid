@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -72,7 +70,7 @@ public class CommentsActivity extends BaseActivity {
 	private ThreadUtil thread;
 	private TextView txt_back;
 
-	private void init() {
+	private void init(String date) {
 		thread = new ThreadUtil(mhandler);
 		String methodStr = "[{'com.yale.qcxx.sessionbean.comm.impl.CommonDataSessionBean':'saveComment'}]";
 		String jsonParamStr = "[{'user_id':" + sp.getString("userId", "")
@@ -81,7 +79,7 @@ public class CommentsActivity extends BaseActivity {
 				+ getIntent().getExtras().getString("youid") + ",'comment_id':"
 				+ GlobalUtil.getUUID(sp.getString("userId", ""))
 				+ ",'comment_time':" + GlobalUtil.time()
-				+ ",'comment_content':" + 123456 + "}]";// input_sms.getText().toString()
+				+ ",'comment_content':" + date + "}]";// input_sms.getText().toString()
 
 		thread.doStartWebServicerequestWebService(CommentsActivity.this,
 				jsonParamStr, methodStr, true);
@@ -222,13 +220,6 @@ public class CommentsActivity extends BaseActivity {
 		} else {
 			info.fromOrTo = Integer.parseInt(fag);
 		}
-		// if ((System.currentTimeMillis() - upTime) > 60000) {
-		// upTime = System.currentTimeMillis();
-		// info.time = DateFormatUtil.getCurrDate(Constant.DATE_PATTERN_1);
-		// } else {
-		// info.time = "";
-		// }
-		// info.time = DateFormatUtil.getCurrDate(Constant.DATE_PATTERN_1);
 		return info;
 	}
 
@@ -269,7 +260,7 @@ public class CommentsActivity extends BaseActivity {
 		 * 末尾添加删除图标
 		 * */
 		subList.add("emotion_del_normal.png");
-		FaceGVAdapter mGvAdapter = new FaceGVAdapter(subList, this);
+		FaceGVAdapter mGvAdapter = new FaceGVAdapter(subList, this, 1);
 		gridview.setAdapter(mGvAdapter);
 		gridview.setNumColumns(columns);
 		// 单击表情执行的操作
@@ -323,20 +314,6 @@ public class CommentsActivity extends BaseActivity {
 
 			}
 		});
-		// 发送
-		// editText.setOnTouchListener(new OnTouchListener() {
-		//
-		// @Override
-		// public boolean onTouch(View v, MotionEvent event) {
-		// // TODO Auto-generated method stub
-		// if(expanded){
-		//
-		// setFaceLayoutExpandState(false);
-		// expanded=false;
-		// }
-		// return false;
-		// }
-		// });
 		input_sms.setOnTouchListener(new OnTouchListener() {
 
 			@Override
@@ -369,39 +346,11 @@ public class CommentsActivity extends BaseActivity {
 					mLvAdapter.setList(infos);
 					mLvAdapter.notifyDataSetChanged();
 					list.setSelection(infos.size() - 1);
+					init(input_sms.getText().toString());
 					input_sms.setText("");
 				}
 			}
 		});
-
-		/***
-		 * listview下拉刷新
-		 * */
-		// mListView
-		// .setOnRefreshListenerHead(new
-		// DropdownListView.OnRefreshListenerHeader() {
-		//
-		// @Override
-		// public void onRefresh() {
-		// // TODO Auto-generated method stub
-		// new Thread() {
-		// @Override
-		// public void run() {
-		// try {
-		// sleep(1000);
-		// Message msg = mHandler.obtainMessage(0);
-		// mHandler.sendMessage(msg);
-		// } catch (InterruptedException e) {
-		// // TODO Auto-generated catch block
-		// e.printStackTrace();
-		// }
-		//
-		// }
-		//
-		// }.start();
-		// }
-		// });
-
 		return gridview;
 	}
 
@@ -481,7 +430,6 @@ public class CommentsActivity extends BaseActivity {
 		mViewPager.setOnPageChangeListener(new PageChange());
 		initStaticFaces();
 		initViews();
-		init();
 	}
 
 	private void initViews() {
@@ -523,36 +471,9 @@ public class CommentsActivity extends BaseActivity {
 				// editor.putBoolean("fasle", true);
 				// editor.commit();
 				new AsyncTask<Void, Void, Void>() {
-					@SuppressWarnings("unchecked")
 					protected Void doInBackground(Void... params) {
 
 						try {
-							// if (sp.getBoolean("false", false) == true) {
-							// infos.add(getChatInfoTo("", "佳园路1", "1", false,
-							// "1987-04-23"));
-							// infos.add(getChatInfoTo("", "佳园路2", "1", false,
-							// "1987-08-26"));
-							// infos.add(getChatInfoTo("", "佳园路3", "1", false,
-							// "1987-09-25"));
-							// infos.add(getChatInfoTo("", "佳园路4", "1", false,
-							// "1987-07-24"));
-							// infos.add(getChatInfoTo("", "佳园路5", "1", false,
-							// "1987-06-21"));
-							// infos.add(getChatInfoTo("", "佳园路6", "1", false,
-							// "1987-05-22"));
-							// sortClass sort = new sortClass();
-							// Collections.sort(infos, sort);
-							// for (int i = 0; i < infos.size(); i++) {
-							// ChatInfo temp = (ChatInfo) infos.get(i);
-							// System.out.println("姓名:" + temp.pullname
-							// + ",生日:" + temp.content);
-							// }
-							// mLvAdapter.notifyDataSetChanged();
-							// editor.putBoolean("false",true);
-							// editor.commit()
-							// }
-
-							// /list.setSelection(infos.size());
 							Thread.sleep(500);
 						} catch (InterruptedException e) {
 							e.printStackTrace();
@@ -569,28 +490,28 @@ public class CommentsActivity extends BaseActivity {
 		});
 		InitViewPager();
 	}
+	//时间比较
+	// private String mathc(String str) {
+	// Pattern p = Pattern.compile("\\(qemu\\)");
+	// // 假设你接受到的字符串为"I have a problem (qemu) about this"
+	// Matcher m = p.matcher(str);
+	// // 将"(qemu)"用""代替，即过滤掉。
+	// return m.replaceAll("");
+	// }
 
-	private String mathc(String str) {
-		Pattern p = Pattern.compile("\\(qemu\\)");
-		// 假设你接受到的字符串为"I have a problem (qemu) about this"
-		Matcher m = p.matcher(str);
-		// 将"(qemu)"用""代替，即过滤掉。
-		return m.replaceAll("");
-	}
-
-	class sortClass implements Comparator {
-		public int compare(Object arg0, Object arg1) {
-			// LinkedList<ChatInfo> infos = new LinkedList<ChatInfo>();
-			// ChatInfo info = new ChatInfo();
-
-			ChatInfo user0 = (ChatInfo) arg0;
-			ChatInfo user1 = (ChatInfo) arg1;
-
-			int flag = mathc(user0.time).compareTo(mathc(user0.time));
-			// int flag = user0.time.compareTo(user1.time);
-			return flag;
-		}
-	}
+	// class sortClass implements Comparator {
+	// public int compare(Object arg0, Object arg1) {
+	// // LinkedList<ChatInfo> infos = new LinkedList<ChatInfo>();
+	// // ChatInfo info = new ChatInfo();
+	//
+	// ChatInfo user0 = (ChatInfo) arg0;
+	// ChatInfo user1 = (ChatInfo) arg1;
+	//
+	// int flag = mathc(user0.time).compareTo(mathc(user0.time));
+	// // int flag = user0.time.compareTo(user1.time);
+	// return flag;
+	// }
+	// }
 
 	class ChatLVAdapter extends BaseAdapter {
 		private Context mContext;

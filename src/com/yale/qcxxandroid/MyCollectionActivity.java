@@ -22,7 +22,6 @@ import android.widget.AdapterView.OnItemClickListener;
 
 import com.yale.qcxxandroid.base.BaseActivity;
 import com.yale.qcxxandroid.base.BaseListView;
-import com.yale.qcxxandroid.base.CircularImage;
 import com.yale.qcxxandroid.base.OnDeleteListioner;
 import com.yale.qcxxandroid.bean.ZhiTiao;
 
@@ -30,6 +29,7 @@ public class MyCollectionActivity extends BaseActivity {
 	private BaseListView listView;
 	private Adapter adapter;
 	private List<ZhiTiao> zts = new ArrayList<ZhiTiao>();
+	@SuppressWarnings("unused")
 	private Intent intent = new Intent();
 	MyHandler myHandler;
 	int tabHostValue = 0;

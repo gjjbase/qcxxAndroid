@@ -15,6 +15,7 @@ import android.view.View;
 public class ViewPagerAdapter extends PagerAdapter {
 	private int[] viewResId;
 	private List<View> views;
+	@SuppressWarnings("unused")
 	private ArrayList<HashMap<String, Object>> list;
 
 	public ViewPagerAdapter(int[] viewResId, List<View> views) {

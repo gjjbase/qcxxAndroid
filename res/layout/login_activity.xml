@@ -50,7 +50,6 @@
         android:background="@drawable/login_editbox"
         android:hint="@string/plsnum"
         android:singleLine="true"
-        android:text="100001"
         android:textColor="@color/black"
         android:textSize="16sp" />
 
@@ -66,7 +65,6 @@
         android:hint="@string/plspass"
         android:inputType="textPassword"
         android:singleLine="true"
-        android:text="1234"
         android:textColor="@color/black"
         android:textSize="16sp" />
 

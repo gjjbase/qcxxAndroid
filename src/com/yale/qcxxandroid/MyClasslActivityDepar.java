@@ -12,20 +12,25 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.yale.qcxxandroid.base.AllListView;
 import com.yale.qcxxandroid.base.BaseActivity;
 import com.yale.qcxxandroid.util.ThreadUtil;
 
+@SuppressWarnings("unused")
 public class MyClasslActivityDepar extends BaseActivity {
 	private Intent intent = new Intent();
 	private Bundle bundle = new Bundle();
 	private ThreadUtil thread;
 	private JSONArray jsoo;
-	private ListView mylist, list;
-	private List<String> str, strt;
+	private AllListView mylist, list;
+	private List<String> str;
 	private Adapter adpter;
 
 	@Override
@@ -34,12 +39,16 @@ public class MyClasslActivityDepar extends BaseActivity {
 		super.onStop();
 	}
 
+	public void backs(View v) {
+		finish();
+	}
+
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_myclassdepar);
-		list = (ListView) findViewById(R.id.list);
-		mylist = (ListView) findViewById(R.id.mylist);
+		list = (AllListView) findViewById(R.id.list);
+		mylist = (AllListView) findViewById(R.id.mylist);
 		str = new ArrayList<String>();
 		str.add("Z1201");
 		str.add("Z1202");
@@ -51,6 +60,24 @@ public class MyClasslActivityDepar extends BaseActivity {
 		str.add("Z1289");
 		adpter = new Adapter(getApplicationContext(), str);
 		mylist.setAdapter(adpter);
+		list.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
+					long arg3) {
+				// TODO Auto-generated method stub
+				Toast.makeText(getApplicationContext(), "跳到班级", 3000).show();
+			}
+		});
+		mylist.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
+					long arg3) {
+				// TODO Auto-generated method stub
+				Toast.makeText(getApplicationContext(), "跳到班级", 3000).show();
+			}
+		});
 	}
 
 	class Adapter extends BaseAdapter {

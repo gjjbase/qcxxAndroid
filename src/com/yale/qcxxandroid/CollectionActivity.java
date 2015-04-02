@@ -17,7 +17,6 @@ public class CollectionActivity extends TabActivity {
 	private Bundle bundle;
 	private TextView btn1, btn2;
 
-	@SuppressWarnings("deprecation")
 	public void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);

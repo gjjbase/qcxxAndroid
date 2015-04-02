@@ -8,7 +8,6 @@ import com.yale.qcxxandroid.base.BaseActivity;
 
 public class MoneyActivity extends BaseActivity {
 	private Intent intent = new Intent();
-	private Bundle bundle = new Bundle();
 
 	public void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub

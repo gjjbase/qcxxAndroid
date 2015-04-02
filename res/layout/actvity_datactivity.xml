@@ -15,10 +15,10 @@
             android:layout_width="fill_parent"
             android:layout_height="50dp"
             android:layout_gravity="center"
-            android:clickable="true"
-            android:onClick="back"
             android:animateLayoutChanges="true"
-            android:background="@color/top_color" >
+            android:background="@color/top_color"
+            android:clickable="true"
+            android:onClick="back" >
 
             <TextView
                 android:id="@+id/name"
@@ -151,8 +151,8 @@
                 android:textSize="18sp" />
         </LinearLayout>
 
-        <View
-            android:clickable="true"
+        <ListView
+            android:id="@+id/bomlist"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:layout_below="@id/hitrel"

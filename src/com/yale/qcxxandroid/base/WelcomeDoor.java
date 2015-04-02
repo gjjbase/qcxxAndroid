@@ -15,7 +15,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.yale.qcxxandroid.R;
-import com.yale.qcxxandroid.StartActivity;
 
 public class WelcomeDoor extends Activity {
 	

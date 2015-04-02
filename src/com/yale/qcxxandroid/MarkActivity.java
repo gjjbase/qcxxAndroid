@@ -24,7 +24,7 @@ import android.widget.Toast;
 import com.yale.qcxxandroid.base.MyBaseListView;
 import com.yale.qcxxandroid.base.BaseActivity;
 import com.yale.qcxxandroid.base.MyBaseListView.OnRefreshListener;
-
+@SuppressWarnings("unused")
 public class MarkActivity extends BaseActivity {
 	private ListView searchList;
 	private MyBaseListView list;
@@ -170,7 +170,6 @@ public class MarkActivity extends BaseActivity {
 				// editor.putBoolean("fasle", true);
 				// editor.commit();
 				new AsyncTask<Void, Void, Void>() {
-					@SuppressWarnings("unchecked")
 					protected Void doInBackground(Void... params) {
 
 						try {

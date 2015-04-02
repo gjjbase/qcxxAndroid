@@ -5,6 +5,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -47,15 +48,14 @@ public class StartActivity extends BaseActivity {
 	public void toLogin(View v) {
 		Intent intent = new Intent(StartActivity.this, LoginActivity.class);
 		startActivity(intent);
-		finish();
 	}
 
 	public void toRegdit(View v) {
 		Intent intent = new Intent(StartActivity.this, RegditActivity.class);
 		startActivity(intent);
-		finish();
 	}
 
+	@SuppressLint("HandlerLeak")
 	Handler handler = new Handler() {
 		@Override
 		public void handleMessage(Message msg) {

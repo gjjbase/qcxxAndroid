@@ -7,11 +7,15 @@ import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,7 +29,6 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.SectionIndexer;
@@ -34,12 +37,13 @@ import android.widget.Toast;
 
 import com.yale.qcxxandroid.SideBar.OnTouchingLetterChangedListener;
 import com.yale.qcxxandroid.base.BaseActivity;
+import com.yale.qcxxandroid.util.StringHelper;
 import com.yale.qcxxandroid.util.ThreadUtil;
 
 @SuppressLint("DefaultLocale")
 public class DetaActivity extends BaseActivity {
 	private ThreadUtil thread;
-	private ListView sortListView;
+	private ListView sortListView, bomlist;
 	private TextView id, cancel;
 	private CharacterParser characterParser;
 	private PinyinComparator pinyinComparator;
@@ -47,8 +51,8 @@ public class DetaActivity extends BaseActivity {
 	private List<SortModel> SourceDateList;
 	SortAdapter adapter;
 	private RelativeLayout relhit, toprel;
-	private LinearLayout lin_bg;
 	private EditText search, hidsear;
+	private JSONArray joA;
 
 	// overridePendingTransition(R.anim.push_up_in, 0);
 	@SuppressLint("HandlerLeak")
@@ -59,10 +63,13 @@ public class DetaActivity extends BaseActivity {
 		if (getIntent().getExtras().getString("typ").equals("1")) {
 			jsonParamStr = "[{'cdType':" + 7 + "}]";
 		} else if (getIntent().getExtras().getString("typ").equals("2")) {
-			jsonParamStr = "[{'cdType':" + 1 + ",'cdParendId':"
+			jsonParamStr = "[{'cdType':" + 1 + ",'cdParentId':"
 					+ sp.getString("pasf_name", "") + "}]";
 		} else if (getIntent().getExtras().getString("typ").equals("3")) {
-			jsonParamStr = "[{'cdType':" + 2 + ",'cdParendId':"
+
+			// jsonParamStr = "[{'cdType':" + 2 + ",'cdParentId':"
+			// +34001 + "}]";
+			jsonParamStr = "[{'cdType':" + 2 + ",'cdParentId':"
 					+ sp.getString("pasc_name", "") + "}]";
 		}
 
@@ -79,7 +86,7 @@ public class DetaActivity extends BaseActivity {
 				String returnJson = (String) msg.getData().getString(
 						"returnJson");
 				try {
-					final JSONArray joA = new JSONArray(returnJson);
+					joA = new JSONArray(returnJson);
 					// 设置右侧触摸监听
 					sideBar.setOnTouchingLetterChangedListener(new OnTouchingLetterChangedListener() {
 
@@ -141,6 +148,7 @@ public class DetaActivity extends BaseActivity {
 		cancel = (TextView) findViewById(R.id.cancel);
 		search = (EditText) findViewById(R.id.search);
 		hidsear = (EditText) findViewById(R.id.hidsear);
+		bomlist = (ListView) findViewById(R.id.bomlist);
 		final TranslateAnimation mShowAction = new TranslateAnimation(
 				Animation.RELATIVE_TO_SELF, 0.0f, Animation.RELATIVE_TO_SELF,
 				0.0f, Animation.RELATIVE_TO_SELF, -1.0f,
@@ -169,7 +177,6 @@ public class DetaActivity extends BaseActivity {
 		characterParser = CharacterParser.getInstance();
 		relhit = (RelativeLayout) findViewById(R.id.relhit);
 		toprel = (RelativeLayout) findViewById(R.id.toprel);
-		lin_bg = (LinearLayout) findViewById(R.id.lin_bg);
 		search.setOnClickListener(new OnClickListener() {
 
 			@Override
@@ -188,8 +195,73 @@ public class DetaActivity extends BaseActivity {
 						InputMethodManager.HIDE_IMPLICIT_ONLY);
 				// toprel.startAnimation(mHiddenAction);
 				// toprel.setVisibility(View.GONE);
+				// for (ZhiTiao friend : tempList) {
+				// if(StringHelper.getPingYin(friend.getName()).contains(searchStr)||friend.getName().contains(searchStr)||searchStr.contains("yaleviewmicro")){
+				// friends.add(friend);
+				// }
+				// }
+				// SourceDateList = filledData(joA);
+				//
+				// // 根据a-z进行排序源数据
+				// // .sort(SourceDateList, pinyinComparator);
+				// Collections.sort(SourceDateList, pinyinComparator);
+				// adapter = new SortAdapter(DetaActivity.this, SourceDateList);
+				// sortListView.setAdapter(adapter);
+			}
+		});
+		hidsear.addTextChangedListener(new TextWatcher() {
+
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before,
+					int count) {
 
 			}
+
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count,
+					int after) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void afterTextChanged(Editable s) {
+				// TODO Auto-generated method stub
+				List<SortModel> Sou = new ArrayList<SortModel>();
+				JSONObject js = new JSONObject();
+				for (int i = 0; i < joA.length(); i++) {
+					try {
+						if (StringHelper.getPingYin(
+								joA.getJSONObject(i).getString("cdMc"))
+								.contains(hidsear.getText().toString())
+								|| joA.getJSONObject(i).getString("cdMc")
+										.contains(hidsear.getText().toString())
+								|| joA.getJSONObject(i).getString("cdMc")
+										.contains("yaleviewmicro")) {
+							js.put("cdMc",
+									joA.getJSONObject(i).getString("cdMc"));
+							js.put("cdId",
+									joA.getJSONObject(i).getString("cdId"));
+
+						}
+					} catch (JSONException e) {
+						e.printStackTrace();
+					}
+				}
+
+				try {
+					JSONArray jso = new JSONArray().put(js);
+					Sou = filledData(jso);
+					Collections.sort(Sou, pinyinComparator);
+					adapter = new SortAdapter(DetaActivity.this, Sou);
+					bomlist.setAdapter(adapter);
+					adapter.notifyDataSetChanged();
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+
 		});
 		cancel.setOnClickListener(new OnClickListener() {
 
@@ -334,6 +406,10 @@ public class DetaActivity extends BaseActivity {
 								.getId());
 					}
 					editor.commit();
+					((InputMethodManager) getSystemService(INPUT_METHOD_SERVICE))
+							.hideSoftInputFromWindow(DetaActivity.this
+									.getCurrentFocus().getWindowToken(),
+									InputMethodManager.HIDE_NOT_ALWAYS);
 					finish();
 				}
 			});
@@ -349,6 +425,7 @@ public class DetaActivity extends BaseActivity {
 		 */
 		public int getSectionForPosition(int position) {
 			return list.get(position).getSortLetters().charAt(0);
+
 		}
 
 		/**
@@ -402,7 +479,12 @@ public class DetaActivity extends BaseActivity {
 		for (int i = 0; i < data.length(); i++) {
 			SortModel sortModel = new SortModel();
 			sortModel.setName(data.getJSONObject(i).getString("cdMc"));
+			// if(getIntent().getExtras().getString("typ").equals("2")){
+			// sortModel.setId(data.getJSONObject(i).getString("cdParentId"));
+			// }else{
 			sortModel.setId(data.getJSONObject(i).getString("cdId"));
+			// }
+
 			// 汉字转换成拼音
 			String pinyin = characterParser.getSelling(data.getJSONObject(i)
 					.getString("cdMc"));

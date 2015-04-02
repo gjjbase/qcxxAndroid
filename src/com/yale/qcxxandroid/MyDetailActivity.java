@@ -1,32 +1,20 @@
 package com.yale.qcxxandroid;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.os.Handler;
 import android.os.Message;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.ImageView.ScaleType;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.yale.qcxxandroid.base.BaseActivity;
-import com.yale.qcxxandroid.base.CircularImage;
-import com.yale.qcxxandroid.util.GlobalUtil;
-import com.yale.qcxxandroid.util.ImgLoadThread;
 import com.yale.qcxxandroid.util.ThreadUtil;
 
 public class MyDetailActivity extends BaseActivity {
@@ -51,14 +39,11 @@ public class MyDetailActivity extends BaseActivity {
 	TextView ztcount;
 	TextView verityName, jn, tc, ah, creditText, txt_role, nickname, sign,
 			inschool;
-	private RelativeLayout credit;
 	private ThreadUtil thread;
-	private ImageView img;
-	private Bitmap bitmap;
 
+	@SuppressLint("HandlerLeak")
 	private void init() {
 		Handler handler = new Handler() {
-			@SuppressLint("HandlerLeak")
 			public void handleMessage(Message msg) {
 				super.handleMessage(msg);
 				switch (msg.what) {
@@ -70,7 +55,7 @@ public class MyDetailActivity extends BaseActivity {
 						JSONArray jso = new JSONArray(returnJson);
 						JSONObject jsoo = jso.getJSONObject(0);
 						creditText = (TextView) findViewById(R.id.creditText);
-						creditText.setText("诚信分:"+jsoo.getInt("credit"));
+						creditText.setText("诚信分:" + jsoo.getInt("credit"));
 
 						// qm.setText(bundle.getString("sign"));
 						zh = (TextView) findViewById(R.id.zh);
@@ -157,8 +142,6 @@ public class MyDetailActivity extends BaseActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.mydetail_activity);
 		back = (Button) findViewById(R.id.back);
-		int uid = getIntent().getExtras().getInt("tag");
-		String st = getIntent().getExtras().getString("id");
 		back.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {

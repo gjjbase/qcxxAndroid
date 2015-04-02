@@ -20,9 +20,6 @@ public class DeteShooleActivity extends BaseActivity {
 		sf_name = (TextView) findViewById(R.id.sf_name);
 		sc_name = (TextView) findViewById(R.id.sc_name);
 		xy_name = (TextView) findViewById(R.id.xy_name);
-		sf_name.setText(sp.getString("sf_name", ""));
-		sc_name.setText(sp.getString("sc_name", ""));
-		xy_name.setText(sp.getString("xy_name", ""));
 	}
 
 	public void regBackClick(View v) {
@@ -43,6 +40,8 @@ public class DeteShooleActivity extends BaseActivity {
 		bundle.putString("typ", "1");
 		intent.setClass(getApplicationContext(), DetaActivity.class).putExtras(
 				bundle);
+		sc_name.setText("未选择");
+		xy_name.setText("未选择");
 		startActivity(intent);
 	}
 
@@ -54,6 +53,7 @@ public class DeteShooleActivity extends BaseActivity {
 			bundle.putString("typ", "2");
 			intent.setClass(getApplicationContext(), DetaActivity.class)
 					.putExtras(bundle);
+			xy_name.setText("未选择");
 			startActivity(intent);
 		}
 

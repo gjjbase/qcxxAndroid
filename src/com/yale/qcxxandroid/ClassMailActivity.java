@@ -6,7 +6,6 @@ import java.util.List;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
-import android.text.Html;
 import android.text.TextWatcher;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -25,7 +24,6 @@ public class ClassMailActivity extends BaseActivity {
 //    private MsgAdapter adapter;  
     private List<ZhiTiao> friends = new ArrayList<ZhiTiao>();  
     private Intent intent = new Intent();
-    private Bundle bundle = new Bundle();
     private EditText search;
     Button ignore;
     @Override

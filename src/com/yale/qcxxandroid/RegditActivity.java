@@ -19,10 +19,14 @@ import kankan.wheel.widget.model.XmlParserHandler;
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONException;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.res.AssetManager;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.provider.Settings.Global;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Gravity;
@@ -35,17 +39,21 @@ import android.widget.EditText;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.yale.qcxxandroid.base.BaseActivity;
+import com.yale.qcxxandroid.util.Globals;
+import com.yale.qcxxandroid.util.ThreadUtil;
 
 public class RegditActivity extends BaseActivity implements
 		OnWheelChangedListener {
 	private Intent intent = new Intent();
 	private Bundle bundle = new Bundle();
-	private EditText phoneNum;
+	private ThreadUtil thread;
+	private EditText phoneNum, Num;
 	private TextView schoolAndCollege, time;
 	private RelativeLayout ssq, year;
-	private String pN, tie, sAndC;
+	private String pN, tie, sAndC, num;
 	private Button next;
 	/** 所有省 */
 	protected String[] mProvinceDatas;
@@ -76,14 +84,84 @@ public class RegditActivity extends BaseActivity implements
 	private WheelView mViewProvince, mViewYear;
 	private WheelView mViewCity;
 	private WheelView mViewDistrict;
-	private TextView mBtnConfirm, mBtnCancle, mBtnConfirm1, mBtnCancle1;
+	private TextView mBtnConfirm, mBtnCancle, mBtnConfirm1, mBtnCancle1,
+			areaNum;
+	private int TIME = 1000;
+	private int mobile_code;
+
+	private void init() {
+		thread = new ThreadUtil(handler);
+		mobile_code = (int) (Math.random() * 9000 + 1000);// 4228
+		String methodStr = "[{'com.yale.qcxx.sessionbean.member.impl.UserInfoSessionBean':'sendMsg'}]";
+		String jsonParamStr = "[{'tel':" + pN + ",'param':" + mobile_code
+				+ "}]";
+		thread.doStartWebServicerequestWebService(RegditActivity.this,
+				jsonParamStr, methodStr, true);
+	}
+
+	@SuppressLint("HandlerLeak")
+	Handler handler = new Handler() {
+		@Override
+		public void handleMessage(Message msg) {
+			super.handleMessage(msg);
+			switch (msg.what) {
+			case 1:
+				String returnJson = (String) msg.getData().getString(
+						"returnJson");
+				if (returnJson.equals(Globals.RETURN_STR_TRUE)) {
+					toast("短信发送成功，请填写正确的验证码", getApplicationContext());
+				} else {
+					toast("发送失败", getApplicationContext());
+
+				}
+
+			case 2:
+				toast("网络连接失败", getApplicationContext());
+				break;
+
+			}
+		}
+	};
+	private int fag = 120;
+	private Runnable runnable;
+
+	private void timer() {
+		final Handler handler = new Handler();
+		runnable = new Runnable() {
+
+			@Override
+			public void run() {
+				// handler自带方法实现定时器
+				try {
+					handler.postDelayed(this, TIME);
+					areaNum.setText(Integer.toString(fag--) + "秒");
+					if (fag == 0) {
+						phoneNum.setEnabled(true);
+						areaNum.setEnabled(true);
+						areaNum.refreshDrawableState();
+						areaNum.setText("发送");
+						fag = 120;
+						mobile_code = 0;
+						handler.removeCallbacks(runnable);
+					}
+					System.out.println("do...");
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					System.out.println("exception...");
+				}
+			}
+		};
+		handler.postDelayed(runnable, TIME);
+
+	}
 
 	@SuppressWarnings("deprecation")
-	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.regdit_activity);
 		phoneNum = (EditText) this.findViewById(R.id.phoneNum);
+		Num = (EditText) this.findViewById(R.id.Num);
 		next = (Button) this.findViewById(R.id.next);
 		phoneNum.addTextChangedListener(new TextWatcher() {
 			@Override
@@ -95,32 +173,26 @@ public class RegditActivity extends BaseActivity implements
 			@Override
 			public void beforeTextChanged(CharSequence s, int start, int count,
 					int after) {
-				commValdate();
+
 			}
 
 			@Override
 			public void afterTextChanged(Editable s) {
-				commValdate();
 			}
 		});
 
 		time = (TextView) this.findViewById(R.id.time);
-		time.addTextChangedListener(new TextWatcher() {
-			@Override
-			public void onTextChanged(CharSequence s, int start, int before,
-					int count) {
-				commValdate();
-			}
+
+		areaNum = (TextView) findViewById(R.id.areaNum);
+		areaNum.setOnClickListener(new OnClickListener() {
 
 			@Override
-			public void beforeTextChanged(CharSequence s, int start, int count,
-					int after) {
-				commValdate();
-			}
-
-			@Override
-			public void afterTextChanged(Editable s) {
-				commValdate();
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				phoneNum.setEnabled(false);
+				areaNum.setEnabled(false);
+				init();
+				timer();
 			}
 		});
 		ssq = (RelativeLayout) findViewById(R.id.ssq);
@@ -130,22 +202,26 @@ public class RegditActivity extends BaseActivity implements
 		// xy_name.setText(sp.getString("xy_name", ""));
 		schoolAndCollege.setText(sp.getString("sf_name", "")
 				+ sp.getString("sc_name", "") + sp.getString("xy_name", ""));
-		schoolAndCollege.addTextChangedListener(new TextWatcher() {
+		Num.addTextChangedListener(new TextWatcher() {
+
 			@Override
 			public void onTextChanged(CharSequence s, int start, int before,
 					int count) {
+				// TODO Auto-generated method stub
 				commValdate();
 			}
 
 			@Override
 			public void beforeTextChanged(CharSequence s, int start, int count,
 					int after) {
-				commValdate();
+				// TODO Auto-generated method stub
+
 			}
 
 			@Override
 			public void afterTextChanged(Editable s) {
-				commValdate();
+				// TODO Auto-generated method stub
+
 			}
 		});
 		LayoutInflater inflater = LayoutInflater.from(this);
@@ -180,6 +256,7 @@ public class RegditActivity extends BaseActivity implements
 		mViewDistrict = (WheelView) view.findViewById(R.id.id_district);
 		mBtnCancle = (TextView) view.findViewById(R.id.btn_cancle);
 		mBtnConfirm = (TextView) view.findViewById(R.id.btn_confirm);
+
 		mBtnConfirm.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -263,9 +340,9 @@ public class RegditActivity extends BaseActivity implements
 	}
 
 	public void regNext(View view) {
-		intent = new Intent();
-		bundle = new Bundle();
-		intent.setClass(RegditActivity.this, RegditActivity1.class);
+		bundle.putString("phoneNum", phoneNum.getText().toString());
+		intent.setClass(RegditActivity.this, RegditActivity1.class).putExtras(
+				bundle);
 		startActivity(intent);
 	}
 
@@ -273,15 +350,26 @@ public class RegditActivity extends BaseActivity implements
 		pN = phoneNum.getText().toString();
 		tie = time.getText().toString();
 		sAndC = schoolAndCollege.getText().toString();
+		num = Num.getText().toString();
 		if (!StringUtils.isEmpty(pN) && !StringUtils.isEmpty(tie)
-				&& !StringUtils.isEmpty(sAndC)) {
-			next.setEnabled(true);
-			next.setTextColor(getResources().getColor(R.color.green));
-			next.refreshDrawableState();
+				&& !StringUtils.isEmpty(sAndC) && pN.length() == 11) {
+			areaNum.setEnabled(true);
+			areaNum.refreshDrawableState();
+			if (num.length() == 4 && num.equals(String.valueOf(mobile_code))) {
+				// if (num.length() == 4 &&
+				// num.equals(String.valueOf(mobile_code))) {
+				next.setEnabled(true);
+				next.refreshDrawableState();
+				next.setTextColor(getResources().getColor(R.color.green));
+			}
+
 		} else {
 			next.setEnabled(false);
-			next.setTextColor(getResources().getColor(R.color.gray_font));
 			next.refreshDrawableState();
+			areaNum.setEnabled(false);
+			areaNum.refreshDrawableState();
+			next.setTextColor(getResources().getColor(R.color.gray_font));
+
 		}
 	}
 

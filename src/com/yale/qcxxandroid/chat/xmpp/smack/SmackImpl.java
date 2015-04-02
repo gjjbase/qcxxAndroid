@@ -1,12 +1,9 @@
 package com.yale.qcxxandroid.chat.xmpp.smack;
 
-import java.io.IOException;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
-import org.apache.harmony.javax.security.auth.callback.Callback;
-import org.apache.harmony.javax.security.auth.callback.CallbackHandler;
-import org.apache.harmony.javax.security.auth.callback.UnsupportedCallbackException;
 import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.ConnectionListener;
 import org.jivesoftware.smack.PacketListener;
@@ -18,7 +15,6 @@ import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.filter.PacketTypeFilter;
 import org.jivesoftware.smack.packet.Message;
-import org.jivesoftware.smack.packet.Message.Type;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.Presence.Mode;
@@ -32,19 +28,16 @@ import org.jivesoftware.smackx.provider.DiscoverInfoProvider;
 import org.jivesoftware.smackx.receipts.DeliveryReceipt;
 import org.jivesoftware.smackx.receipts.DeliveryReceiptRequest;
 
-import com.j256.ormlite.dao.Dao;
-import com.yale.qcxxandroid.bean.MessageBean;
+import com.yale.qcxxandroid.chat.xmpp.XmppGlobals;
 import com.yale.qcxxandroid.chat.xmpp.XmppService;
-import com.yale.qcxxandroid.util.DataHelper;
-
-import android.app.Service;
+import android.content.Intent;
 import android.util.Log;
 
 public class SmackImpl implements ISmack{
 	// 客户端名称和类型。主要是向服务器登记，有点类似QQ显示iphone或者Android手机在线的功能
 	public static final String XMPP_IDENTITY_NAME = "android";// 客户端名称
 	public static final String XMPP_IDENTITY_TYPE = "phone";// 客户端类型
-	public static final int PACKET_TIMEOUT = 100000;	//连接超时时间
+	public static final int PACKET_TIMEOUT = 30000;	//连接超时时间
 	public static final String HOST = "202.103.1.21";//服务器地址
 	public static final int PORT = 5222;//服务器端口号
 	public static final String SERVER = "soon";//服务器域名（@后面的部分,需要和服务器设置保持一致）
@@ -56,6 +49,7 @@ public class SmackImpl implements ISmack{
 	private PacketListener mPacketListener;
 	private Roster mRoster;
 	private RosterListener mRosterListener;
+	@SuppressWarnings("unused")
 	private PacketListener mPongListener;// ping pong服务器动态监听
 	
 	/*******************************************************
@@ -127,12 +121,12 @@ public class SmackImpl implements ISmack{
 		mXMPPConfig.setReconnectionAllowed(false);
 		mXMPPConfig.setSendPresence(false);
 		mXMPPConfig.setCompressionEnabled(false); // disable for now
-		mXMPPConfig.setDebuggerEnabled(false);	// 是否需要smack debug 不启用
+		mXMPPConfig.setDebuggerEnabled(true);	// 是否需要smack debug 不启用
 		mXMPPConfig.setReconnectionAllowed(true); 
-		mXMPPConfig.setSecurityMode(ConnectionConfiguration.SecurityMode.enabled);       
-		mXMPPConfig.setSASLAuthenticationEnabled(false);      
+//		mXMPPConfig.setSecurityMode(ConnectionConfiguration.SecurityMode.enabled);       
+		mXMPPConfig.setSASLAuthenticationEnabled(true);      
 		mXMPPConfig .setTruststorePath("/system/etc/security/cacerts.bks");       
-//		mXMPPConfig.setTruststorePassword("changeit");       
+		mXMPPConfig.setTruststorePassword("changeit");       
 		mXMPPConfig.setTruststoreType("bks"); 
 		
 		//是否需要ssl安全配置 不启用
@@ -161,6 +155,7 @@ public class SmackImpl implements ISmack{
 	 */
 	@Override
 	public boolean login(String account, String password) {
+		password="123456";
 		try {
 			if(mXMPPConnection == null){
 				ConnectionConfig();
@@ -209,7 +204,7 @@ public class SmackImpl implements ISmack{
 			});
 			//到此为止是连接服务器成功！开始登陆
 			if(!mXMPPConnection.isAuthenticated()){
-				mXMPPConnection.login(account, password,"android");
+				mXMPPConnection.login(account+"@"+SERVER, password);
 			}
 			// 更新在线状态
 			refrashState();
@@ -302,11 +297,17 @@ public class SmackImpl implements ISmack{
 		PacketTypeFilter filter = new PacketTypeFilter(Message.class);
 		mPacketListener = new PacketListener() {
 			
+			@SuppressWarnings("deprecation")
 			@Override
 			public void processPacket(Packet packet) {
 				if (packet instanceof Message) {// 如果是消息类型
 					Message message = (Message) packet;
-					service.handReciveMessage(message);
+					//发现消息到消息中心（MessageReciver）
+					Intent intent = new Intent(XmppGlobals.MessageAction);
+					intent.putExtra("from", message.getFrom());
+					intent.putExtra("body", message.getBody());
+					intent.putExtra("time", new Date(System.currentTimeMillis()).toLocaleString());
+					service.sendBroadcast(intent);
 				}
 			}
 		};
@@ -339,7 +340,12 @@ public class SmackImpl implements ISmack{
 					values = "outline";	//下线
 					Log.e("presenceChanged", fromName);
 				}
-				service.presenceChanged(fromName,values);
+//				service.presenceChanged(fromName,values);
+				Intent intent = new Intent(XmppGlobals.PRESENCE_CHANGED);
+				intent.putExtra("fromName", fromName);
+				intent.putExtra("mode", values);
+				service.sendBroadcast(intent);
+				 
 			}
 			
 			@Override
@@ -365,7 +371,7 @@ public class SmackImpl implements ISmack{
 	//发送消息
 	@Override
 	public boolean sendMessage(String toJID, String message) {
-		final Message newMessage = new Message(toJID, Message.Type.chat);
+		final Message newMessage = new Message(toJID+"@"+SERVER, Message.Type.chat);
 		newMessage.setBody(message);
 		newMessage.addExtension(new DeliveryReceiptRequest());	//发送成功后的回执
 		if (mXMPPConnection.isAuthenticated()){

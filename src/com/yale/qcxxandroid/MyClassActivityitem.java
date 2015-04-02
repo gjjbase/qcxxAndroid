@@ -1,14 +1,13 @@
 package com.yale.qcxxandroid;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.yale.qcxxandroid.base.AllListView;
 import com.yale.qcxxandroid.base.BaseActivity;
 import com.yale.qcxxandroid.util.ThreadUtil;
 
@@ -23,14 +22,11 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,13 +36,13 @@ public class MyClassActivityitem extends BaseActivity {
 	private Intent intent = new Intent();
 	private Bundle bundle = new Bundle();
 	private ThreadUtil thread;
-	private ListView list;
+	private AllListView list;
 	private JSONArray jsoo;
 	private BaseAdapter adapter;
 	private TextView txt_back, txt_myclass;
 	private List<String> mylist;
-	private int fag;
-	private List<Boolean> tag;
+	private List<String> classlist;
+	private String strclas;
 
 	private void nexta() {
 		mylist = new ArrayList<String>();
@@ -66,9 +62,7 @@ public class MyClassActivityitem extends BaseActivity {
 							.findViewById(R.id.list_check);
 					ckd.setChecked(true);
 				}
-
 				mylist.add(String.valueOf(i + 1));
-				// TODO: handle exception
 			}
 		}
 		StringBuffer sb = new StringBuffer();
@@ -82,6 +76,7 @@ public class MyClassActivityitem extends BaseActivity {
 						.show();
 			}
 		} else {
+			bundle.putString("classlist", strclas);
 			intent.setClass(MyClassActivityitem.this, MyClassActivityCont.class)
 					.putExtras(bundle);
 			startActivity(intent);
@@ -91,7 +86,6 @@ public class MyClassActivityitem extends BaseActivity {
 
 	@SuppressLint("HandlerLeak")
 	public void init() {
-
 		thread = new ThreadUtil(mhandler);
 		String methodStr = "[{'com.yale.qcxx.sessionbean.comm.impl.CommonDataSessionBean':'listOfClass'}]";
 
@@ -119,6 +113,7 @@ public class MyClassActivityitem extends BaseActivity {
 	}
 
 	CompoundButton chebtn = null;
+	@SuppressLint("HandlerLeak")
 	Handler mhandler = new Handler() {
 		public void handleMessage(Message msg) {
 			super.handleMessage(msg);
@@ -127,8 +122,30 @@ public class MyClassActivityitem extends BaseActivity {
 
 				String returnJson = (String) msg.getData().getString(
 						"returnJson");
+				final List<String> mlist = new ArrayList<String>();
+				classlist = new ArrayList<String>();
 				try {
 					jsoo = new JSONArray(returnJson);
+
+					for (int i = 0; i < jsoo.length(); i++) {
+						for (int j = 0; j < jsoo.getJSONObject(i)
+								.getJSONArray("classesList").length(); j++) {
+							mlist.add(jsoo.getJSONObject(i).getString(
+									"schoolName")
+									+ jsoo.getJSONObject(i).getString(
+											"collageName")
+									+ jsoo.getJSONObject(i).getString(
+											"profName")
+									+ jsoo.getJSONObject(i).getString(
+											"collageName")
+									+ jsoo.getJSONObject(i)
+											.getJSONArray("classesList")
+											.getJSONObject(j).getString("cdMc"));
+							classlist.add(jsoo.getJSONObject(i)
+									.getJSONArray("classesList")
+									.getJSONObject(j).getString("cdId"));
+						}
+					}
 					adapter = new BaseAdapter() {
 
 						public View getView(final int arg0, View arg1,
@@ -139,8 +156,6 @@ public class MyClassActivityitem extends BaseActivity {
 									.inflate(R.layout.member_listview, null);
 							viewholder.list_txt = (TextView) arg1
 									.findViewById(R.id.list_txt);
-							viewholder.hint = (TextView) arg1
-									.findViewById(R.id.hint);
 							viewholder.list_check = (CheckBox) arg1
 									.findViewById(R.id.list_check);
 							viewholder.lin = (LinearLayout) arg1
@@ -175,6 +190,7 @@ public class MyClassActivityitem extends BaseActivity {
 											 * viewholder.list_check.setChecked
 											 * (true); }
 											 */
+											strclas = classlist.get(arg0);
 											boolean flag = viewholder.list_check
 													.isChecked();
 											viewholder.list_check
@@ -182,19 +198,7 @@ public class MyClassActivityitem extends BaseActivity {
 										}
 									});
 
-							try {
-
-								viewholder.list_txt.setText(jsoo.getJSONObject(
-										arg0).getString("schoolName")
-										+ jsoo.getJSONObject(arg0).getString(
-												"collageName")
-										+ jsoo.getJSONObject(arg0).getString(
-												"profName")
-										+ jsoo.getJSONObject(arg0).getString(
-												"inSchoolName"));
-							} catch (JSONException e) {
-								e.printStackTrace();
-							}
+							viewholder.list_txt.setText(mlist.get(arg0));
 							return arg1;
 						}
 
@@ -208,12 +212,12 @@ public class MyClassActivityitem extends BaseActivity {
 						}
 
 						public int getCount() {
-							return jsoo.length();
+							return mlist.size();
 
 						}
 
 						class ViewHolder {
-							TextView list_txt, hint;
+							TextView list_txt;
 							CheckBox list_check;
 							LinearLayout lin;
 						}
@@ -292,7 +296,6 @@ public class MyClassActivityitem extends BaseActivity {
 	}
 
 	public void addclass(View v) {
-
 		intent.setClass(MyClassActivityitem.this, FabuActivity.class);
 		startActivity(intent);
 	}
@@ -313,7 +316,7 @@ public class MyClassActivityitem extends BaseActivity {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.myclass_actiivtyitem);
-		list = (ListView) findViewById(R.id.list);
+		list = (AllListView) findViewById(R.id.list);
 		txt_back = (TextView) findViewById(R.id.txt_back);
 		txt_myclass = (TextView) findViewById(R.id.txt_myclass);
 		switch (getIntent().getExtras().getInt("data")) {
@@ -332,16 +335,18 @@ public class MyClassActivityitem extends BaseActivity {
 				finish();
 			}
 		});
-		list.setOnItemClickListener(new OnItemClickListener() {
-
-			@Override
-			public void onItemClick(AdapterView<?> parent, View view,
-					int position, long id) {
-				// TODO Auto-generated method stub
-				CheckBox ck = (CheckBox) view.findViewById(R.id.list_check);
-				ck.setChecked(true);
-			}
-		});
+		// list.setOnItemClickListener(new OnItemClickListener() {
+		//
+		// @Override
+		// public void onItemClick(AdapterView<?> parent, View view,
+		// int position, long id) {
+		// // TODO Auto-generated method stub
+		// CheckBox ck = (CheckBox) view.findViewById(R.id.list_check);
+		// ck.setChecked(true);
+		// editor.putString("classlist", classlist.get(position));
+		// editor.commit();
+		// }
+		// });
 		init();
 	}
 

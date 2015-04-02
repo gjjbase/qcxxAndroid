@@ -2,6 +2,7 @@ package com.yale.qcxxandroid.base;
 
 import com.yale.qcxxandroid.R;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
@@ -14,6 +15,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 
+@SuppressLint({ "HandlerLeak", "Recycle" })
 public class MoveTab1 extends LinearLayout {
 
 	private static final int DELAY = 10;
@@ -21,6 +23,7 @@ public class MoveTab1 extends LinearLayout {
 	private static final int MOVE = 1;
 	private static final String TAG = "MoveTab1";
 	
+	@SuppressWarnings("unused")
 	private Context mContext;
 	private Drawable mDrawable;//移动的背景图
 	private final Rect mNowRect = new Rect();//当前的区域

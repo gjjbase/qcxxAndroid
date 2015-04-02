@@ -1,14 +1,8 @@
 package com.yale.qcxxandroid.chat;
 
-import java.io.BufferedInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
+import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.LinkedList;
@@ -16,26 +10,38 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.sf.json.JSONObject;
+
+import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.dao.GenericRawResults;
+import com.j256.ormlite.dao.RawRowMapper;
 import com.yale.qcxxandroid.base.MyBaseListView;
 import com.yale.qcxxandroid.R;
 import com.yale.qcxxandroid.base.BaseActivity;
 import com.yale.qcxxandroid.base.MyBaseListView.OnRefreshListener;
+import com.yale.qcxxandroid.bean.MessageBean;
+import com.yale.qcxxandroid.chat.xmpp.XmppGlobals;
+import com.yale.qcxxandroid.chat.xmpp.XmppService;
+import com.yale.qcxxandroid.util.DataHelper;
+import com.yale.qcxxandroid.util.GlobalUtil;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.app.Dialog;
+import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.ServiceConnection;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.inputmethodservice.InputMethodService.Insets;
-import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.IBinder;
 import android.provider.MediaStore;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
@@ -46,25 +52,23 @@ import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.style.ImageSpan;
-import android.util.Base64;
+import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup.LayoutParams;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -81,9 +85,9 @@ public class ChatMainActivity extends BaseActivity {
 	// 7列3行
 	private int columns = 7;
 	private int rows = 3;
-	private List<View> views = new ArrayList<View>();
+	private List<View> views;
 	private List<String> staticFacesList;
-	private LinkedList<ChatInfo> infos = new LinkedList<ChatInfo>();
+	private volatile LinkedList<ChatInfo> infos = new LinkedList<ChatInfo>();
 	private ImageView image_face;
 	private EditText num;
 	private int tag = 0;
@@ -96,138 +100,7 @@ public class ChatMainActivity extends BaseActivity {
 	private ImageView img_adder;
 	RelativeLayout rel_hint;
 	private ImageView left, inputer;
-	private int falg, fag;
-	private android.support.v4.view.ViewPager grd;
-	private GridView mygrd;
-
-	public static void readBitmapAutoSize(String filePath, int outWidth,
-			int outHeight, TextView jpgView) {
-		// outWidth和outHeight是目标图片的最大宽度和高度，用作限制
-		FileInputStream fs = null;
-		BufferedInputStream bs = null;
-		try {
-			fs = new FileInputStream(filePath);
-			bs = new BufferedInputStream(fs);
-			BitmapFactory.Options options = setBitmapOption(filePath, outWidth,
-					outHeight);
-			bm = BitmapFactory.decodeStream(bs, null, options);
-
-			// jpgView.setImageBitmap(bm);
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				bs.close();
-				fs.close();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-	}
-
-	// readBitmapAutoSize(picList.get(position).getPicUrl(), 100, 100,
-	// imger);
-	public String Bitmap2Base64(Bitmap bitmap) {
-		try {
-			// 先将bitmap转换为普通的字节数组
-			ByteArrayOutputStream out = new ByteArrayOutputStream();
-			bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
-			out.flush();
-			out.close();
-			byte[] buffer = out.toByteArray();
-			// 将普通字节数组转换为base64数组
-			String encode = Base64.encodeToString(buffer, Base64.DEFAULT);
-			// // string = Base64.encodeToString(bytes, Base64.DEFAULT);
-			return encode;
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
-
-	// 将文件路径转化为Bitmap string 类型
-	public String bitmap64(String filepath) {
-		FileInputStream fs = null;
-		BufferedInputStream bs = null;
-		Bitmap bt = null;
-		String encode = null;
-		BitmapFactory.Options options = null;
-		try {
-			fs = new FileInputStream(filepath);
-			bs = new BufferedInputStream(fs);
-			options = setBitmapOption(filepath, 100, 100);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		bt = BitmapFactory.decodeStream(bs, null, options);
-		try {
-			// 先将bitmap转换为普通的字节数组
-			ByteArrayOutputStream out = new ByteArrayOutputStream();
-			bt.compress(Bitmap.CompressFormat.JPEG, 100, out);
-			out.flush();
-			out.close();
-			byte[] buffer = out.toByteArray();
-			// 将普通字节数组转换为base64数组
-			encode = Base64.encodeToString(buffer, Base64.DEFAULT);
-			// // string = Base64.encodeToString(bytes, Base64.DEFAULT);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		try {
-			bs.close();
-			fs.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return encode;
-
-	}
-
-	public static Bitmap BitmapAutoSize(String filePath) {
-		// outWidth和outHeight是目标图片的最大宽度和高度，用作限制
-		FileInputStream fs = null;
-		BufferedInputStream bs = null;
-		BitmapFactory.Options options = null;
-		try {
-			fs = new FileInputStream(filePath);
-			bs = new BufferedInputStream(fs);
-			options = setBitmapOption(filePath, 100, 100);
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				bs.close();
-				fs.close();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-		return BitmapFactory.decodeStream(bs, null, options);
-	}
-
-	private static BitmapFactory.Options setBitmapOption(String file,
-			int width, int height) {
-		BitmapFactory.Options opt = new BitmapFactory.Options();
-		opt.inJustDecodeBounds = true;
-		// 设置只是解码图片的边距，此操作目的是度量图片的实际宽度和高度
-		BitmapFactory.decodeFile(file, opt);
-
-		int outWidth = opt.outWidth; // 获得图片的实际高和宽
-		int outHeight = opt.outHeight;
-		opt.inDither = false;
-		opt.inPreferredConfig = Bitmap.Config.RGB_565;
-		// 设置加载图片的颜色数为16bit，默认是RGB_8888，表示24bit颜色和透明通道，但一般用不上
-		opt.inSampleSize = 1;
-		// 设置缩放比,1表示原比例，2表示原来的四分之一....
-		// 计算缩放比
-		if (outWidth != 0 && outHeight != 0 && width != 0 && height != 0) {
-			int sampleSize = (outWidth / width + outHeight / height) / 2;
-			opt.inSampleSize = sampleSize;
-		}
-
-		opt.inJustDecodeBounds = false;// 最后把标志复原
-		return opt;
-	}
+	private int falg;
 
 	// 拍照
 	public void takePicture() {
@@ -262,7 +135,6 @@ public class ChatMainActivity extends BaseActivity {
 		super.onActivityResult(requestCode, resultCode, data);
 		if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
 			if (resultCode == RESULT_OK) {
-
 				// toast("获取图片成功，path=" + picFileFullName);
 				// readBitmapAutoSize(picFileFullName, 100, 100, img_tuxiang);
 				editor.putString("item", picFileFullName);
@@ -281,7 +153,6 @@ public class ChatMainActivity extends BaseActivity {
 					realPath = getRealPathFromURI(uri);
 					// Log.e(tag, "获取图片成功，path="+realPath);
 					// toast("获取图片成功，path=" + realPath);
-					//
 					// readBitmapAutoSize(realPath, 100, 100, img_tuxiang);
 					editor.putString("item", realPath);
 					editor.putInt("falger", 1);
@@ -302,7 +173,6 @@ public class ChatMainActivity extends BaseActivity {
 		mLvAdapter.setList(infos);
 		mLvAdapter.notifyDataSetChanged();
 		mListView.setSelection(infos.size() - 1);
-
 	}
 
 	@SuppressWarnings("deprecation")
@@ -324,97 +194,117 @@ public class ChatMainActivity extends BaseActivity {
 		}
 	}
 
-	public static int readPictureDegree(String path) {
-		int degree = 0;
+	private void initViews() {
+		chatName = getIntent().getExtras().getString("name");
+		mListView = (MyBaseListView) findViewById(R.id.message_chat_listview);
+		/*
+		 * Dao<MessageBean, Integer> messageDao =
+		 * DataHelper.getInstance(ChatMainActivity.this).getMessageDAO();
+		 * PreparedQuery<MessageBean> query;
+		 */
 		try {
-			ExifInterface exifInterface = new ExifInterface(path);
-			int orientation = exifInterface.getAttributeInt(
-					ExifInterface.TAG_ORIENTATION,
-					ExifInterface.ORIENTATION_NORMAL);
-			switch (orientation) {
-			case ExifInterface.ORIENTATION_ROTATE_90:
-				degree = 90;
-				break;
-			case ExifInterface.ORIENTATION_ROTATE_180:
-				degree = 180;
-				break;
-			case ExifInterface.ORIENTATION_ROTATE_270:
-				degree = 270;
-				break;
+			/*
+			 * Where<MessageBean, Integer> qeuryBuidler=
+			 * messageDao.queryBuilder().orderBy("msgTime",
+			 * true).where().eq("sender", chatName).or().eq("reciver",
+			 * chatName); query = qeuryBuidler.prepare(); List<MessageBean> lsit
+			 * = messageDao.query(query);
+			 */
+			Dao<MessageBean, Integer> messageDao = DataHelper.getInstance(
+					ChatMainActivity.this).getMessageDAO();
+			String sql = "select * from messageBean where sender = '"
+					+ chatName + "' or reciver = '" + chatName
+					+ "' order by msgTime desc limit 5";
+			GenericRawResults<MessageBean> rawResults = messageDao.queryRaw(
+					sql, new RawRowMapper<MessageBean>() {
+						@Override
+						public MessageBean mapRow(String[] columnNames,
+								String[] resultColumns) throws SQLException {
+							MessageBean bean = new MessageBean();
+							bean.setSender(resultColumns[0]);
+							bean.setMsgContent(resultColumns[1]);
+							bean.setMsgTime(resultColumns[2]);
+							bean.setReciver(resultColumns[3]);
+							bean.setReaded(Boolean
+									.parseBoolean(resultColumns[4]));
+							bean.setMsgtype(Integer.parseInt(resultColumns[5]));
+							bean.setId(Integer.parseInt(resultColumns[6]));
+							bean.setType(Integer.parseInt(resultColumns[7]));
+							return bean;
+						}
+					});
+			// there should be 1 result
+			List<MessageBean> results = rawResults.getResults();
+			if (results != null) {
+				for (int i = results.size() - 1; i > 0; i--) {
+					MessageBean msg = results.get(i - 1);
+					infos.add(getChatInfoTo(msg.getSender(),
+							msg.getMsgContent(), msg.getMsgtype() + "", false,
+							msg.getMsgTime()));
+				}
 			}
-		} catch (IOException e) {
+		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		return degree;
-	}
-
-	private void initViews() {
-		mListView = (MyBaseListView) findViewById(R.id.message_chat_listview);
-		// chat = new ChatInfo();
-		// chat.fromOrTo=0;
-		// infos.add(chat);getExtras();
-
-		infos.add(getChatInfoTo("", "武汉亦鸟科技", "1", false, time()));
-		infos.add(getChatInfoTo("", "武汉亦鸟科技", "0", false, time()));
-		infos.add(getChatInfoTo("", "青春秀秀", "1", false, time()));
-		infos.add(getChatInfoTo("", "武汉亦鸟科技", "1", false, time()));
-		infos.add(getChatInfoTo("", "武汉亦鸟科技", "0", false, time()));
-		infos.add(getChatInfoTo("", "青春秀秀", "1", false, time()));
-		infos.add(getChatInfoTo("", "武汉亦鸟科技", "1", false, time()));
 		mLvAdapter = new ChatLVAdapter(this, infos);
 		mListView.setAdapter(mLvAdapter);
 		mListView.setOnRefreshListener(new OnRefreshListener() {
-
 			@Override
 			public void onRefresh() {
-				// TODO Auto-generated method stub
-				Toast.makeText(getApplicationContext(), "刷新",
-						Toast.LENGTH_SHORT).show();
-				// editor.putBoolean("fasle", true);
-				// editor.commit();
-				new AsyncTask<Void, Void, Void>() {
-					@SuppressWarnings("unchecked")
-					protected Void doInBackground(Void... params) {
-
-						try {
-							// if (sp.getBoolean("false", false) == true) {
-							// infos.add(getChatInfoTo("", "佳园路1", "1", false,
-							// "19870423"));
-							// infos.add(getChatInfoTo("", "佳园路2", "0", false,
-							// "19870826"));
-							// infos.add(getChatInfoTo("", "佳园路3", "1", false,
-							// "19870925"));
-							// infos.add(getChatInfoTo("", "佳园路4", "1", false,
-							// "19870724"));
-							// infos.add(getChatInfoTo("", "佳园路5", "0", false,
-							// "19870621"));
-							// infos.add(getChatInfoTo("", "佳园路6", "1", false,
-							// "19870522"));
-							// sortClass sort = new sortClass();
-							// Collections.sort(infos, sort);
-							// for (int i = 0; i < infos.size(); i++) {
-							// ChatInfo temp = (ChatInfo) infos.get(i);
-							// System.out.println("姓名:" + temp.pullname
-							// + ",生日:" + temp.content);
-							// }
-							// mLvAdapter.notifyDataSetChanged();
-							// // editor.putBoolean("false",true);
-							// // editor.commit()
-							// // }
-							//
-							// mListView.setSelection(infos.size());
-							Thread.sleep(500);
-						} catch (InterruptedException e) {
-							e.printStackTrace();
+				try {
+					int num = 0;
+					if (infos != null && infos.size() > 0)
+						num = infos.size() - 1;
+					Dao<MessageBean, Integer> messageDao = DataHelper
+							.getInstance(ChatMainActivity.this).getMessageDAO();
+					String sql = "select * from messageBean where sender = '"
+							+ chatName + "' or reciver = '" + chatName
+							+ "' order by msgTime desc limit " + (num + 5);
+					GenericRawResults<MessageBean> rawResults = messageDao
+							.queryRaw(sql, new RawRowMapper<MessageBean>() {
+								@Override
+								public MessageBean mapRow(String[] columnNames,
+										String[] resultColumns)
+										throws SQLException {
+									MessageBean bean = new MessageBean();
+									bean.setSender(resultColumns[0]);
+									bean.setMsgContent(resultColumns[1]);
+									bean.setMsgTime(resultColumns[2]);
+									bean.setReciver(resultColumns[3]);
+									bean.setReaded(Boolean
+											.parseBoolean(resultColumns[4]));
+									bean.setMsgtype(Integer
+											.parseInt(resultColumns[5]));
+									bean.setId(Integer
+											.parseInt(resultColumns[6]));
+									bean.setType(Integer
+											.parseInt(resultColumns[7]));
+									return bean;
+								}
+							});
+					// there should be 1 result
+					List<MessageBean> results = rawResults.getResults();
+					if (results != null && results.size() > (num + 1)) {
+						infos.clear();
+						for (int i = results.size(); i > 0; i--) {
+							MessageBean bean = results.get(i - 1);
+							infos.add(getChatInfoTo(bean.getSender(),
+									bean.getMsgContent(), bean.getMsgtype()
+											+ "", false, bean.getMsgTime()));
+							System.out.println(bean.getId() + ","
+									+ bean.getMsgContent() + ","
+									+ bean.getMsgTime() + ","
+									+ bean.getSender());
 						}
-						return null;
+						handler.sendEmptyMessage(1);
+					} else {
+						handler.sendEmptyMessage(0);
 					}
-
-					@Override
-					protected void onPostExecute(Void result) {
-						mListView.onRefreshComplete();
-					}
-				}.execute();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
 		});
 		mViewPager = (ViewPager) findViewById(R.id.face_viewpager);
@@ -424,77 +314,9 @@ public class ChatMainActivity extends BaseActivity {
 		txt_back = (TextView) findViewById(R.id.txt_back);
 		txt1 = (TextView) findViewById(R.id.txt1);
 		txt2 = (TextView) findViewById(R.id.txt2);
-		grd = (ViewPager) findViewById(R.id.grd);
-		mygrd = (GridView) findViewById(R.id.mygrd);
 		final List<Integer> list = new ArrayList<Integer>();
 		list.add(R.drawable.photo);
-		BaseAdapter adapter = new BaseAdapter() {
 
-			@Override
-			public View getView(int arg0, View arg1, ViewGroup arg2) {
-				// TODO Auto-generated method stub
-				arg1 = LayoutInflater.from(getApplicationContext()).inflate(
-						R.layout.item, null);
-				ImageView img = (ImageView) arg1.findViewById(R.id.imger);
-				img.setBackgroundResource(list.get(arg0));
-				return arg1;
-			}
-
-			@Override
-			public long getItemId(int arg0) {
-				// TODO Auto-generated method stub
-				return arg0;
-			}
-
-			@Override
-			public Object getItem(int arg0) {
-				// TODO Auto-generated method stub
-				return arg0;
-			}
-
-			@Override
-			public int getCount() {
-				// TODO Auto-generated method stub
-				return list.size();
-			}
-		};
-		mygrd.setAdapter(adapter);
-		mygrd.setOnItemClickListener(new OnItemClickListener() {
-
-			@Override
-			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
-					long arg3) {
-				// TODO Auto-generated method stub
-				switch (arg2) {
-				case 0:
-					Dialog dialog = new AlertDialog.Builder(
-							ChatMainActivity.this)
-							.setTitle("添加图片")
-							.setPositiveButton("相册",
-									new DialogInterface.OnClickListener() {
-
-										@Override
-										public void onClick(
-												DialogInterface dialog,
-												int which) {
-											openAlbum();
-										}
-									})
-							.setNegativeButton("拍照",
-									new DialogInterface.OnClickListener() {
-										@Override
-										public void onClick(
-												DialogInterface dialog,
-												int which) {
-											takePicture();
-										}
-									}).create();
-					dialog.show();
-					break;
-
-				}
-			}
-		});
 		txt1.setOnClickListener(new OnClickListener() {
 
 			@Override
@@ -504,9 +326,10 @@ public class ChatMainActivity extends BaseActivity {
 				txt1.setBackgroundResource(R.drawable.mbtn);
 				txt2.setTextColor(getResources().getColor(R.color.black));
 				txt2.setBackgroundResource(R.drawable.copyofmbtnr);
+				initStaticFaces(1);
+				InitViewPager(1);
 				mDotsLayout.setVisibility(View.VISIBLE);
 				mViewPager.setVisibility(View.VISIBLE);
-				mygrd.setVisibility(View.GONE);
 			}
 		});
 		txt2.setOnClickListener(new OnClickListener() {
@@ -518,17 +341,17 @@ public class ChatMainActivity extends BaseActivity {
 				txt2.setBackgroundResource(R.drawable.mbtnr);
 				txt1.setTextColor(R.color.black);
 				txt1.setBackgroundResource(R.drawable.copyofmbtn);
-				grd.setVisibility(View.GONE);
-				mDotsLayout.setVisibility(View.GONE);
-				mViewPager.setVisibility(View.GONE);
-				mygrd.setVisibility(View.VISIBLE);
+
+				initStaticFaces(2);
+				InitViewPager(2);
+
+				mDotsLayout.setVisibility(View.VISIBLE);
+				mViewPager.setVisibility(View.VISIBLE);
 			}
 		});
 		txt_back.setOnClickListener(new OnClickListener() {
-
 			@Override
 			public void onClick(View v) {
-				// TODO Auto-generated method stub
 				finish();
 			}
 		});
@@ -548,7 +371,6 @@ public class ChatMainActivity extends BaseActivity {
 			public void onClick(View arg0) {
 				// TODO Auto-generated method stub
 				tag++;
-				mygrd.setVisibility(View.GONE);
 				((InputMethodManager) getSystemService(INPUT_METHOD_SERVICE))
 						.hideSoftInputFromWindow(ChatMainActivity.this
 								.getCurrentFocus().getWindowToken(),
@@ -558,6 +380,8 @@ public class ChatMainActivity extends BaseActivity {
 					mDotsLayout.setVisibility(View.GONE);
 					rel_hint.setVisibility(View.GONE);
 				} else {
+					initStaticFaces(1);
+					InitViewPager(1);
 					mViewPager.setVisibility(View.VISIBLE);
 					mDotsLayout.setVisibility(View.VISIBLE);
 					rel_hint.setVisibility(View.VISIBLE);
@@ -570,76 +394,189 @@ public class ChatMainActivity extends BaseActivity {
 		rel_hint = (RelativeLayout) findViewById(R.id.rel_hint);
 		input = (MyEditText) findViewById(R.id.input_sms);
 		send = (ImageView) findViewById(R.id.send_sms);
-		InitViewPager();
 	}
+
+	@SuppressLint("HandlerLeak")
+	private Handler handler = new Handler() {
+		public void handleMessage(android.os.Message msg) {
+			if (msg.what == 1) {
+				mLvAdapter.notifyDataSetChanged();
+			} else {
+				Toast.makeText(ChatMainActivity.this, "没有更多了！", 2000).show();
+			}
+			new AsyncTask<Void, Void, Void>() {
+				protected Void doInBackground(Void... params) {
+					return null;
+				}
+
+				@Override
+				protected void onPostExecute(Void result) {
+					mListView.onRefreshComplete();
+				}
+			}.execute();
+		};
+	};
 
 	/*
 	 * 初始表情 *
 	 */
-	private void InitViewPager() {
+	private void InitViewPager(int fag) {
+		mDotsLayout.removeAllViews();
+		views = new ArrayList<View>();
 		// 获取页数
-		for (int i = 0; i < getPagerCount(); i++) {
-			views.add(viewPagerItem(i));
-			LayoutParams params = new LayoutParams(16, 16);
-			// LayoutParams params = new LayoutParams(LayoutParams.WRAP_CONTENT,
-			// LayoutParams.WRAP_CONTENT);
-			mDotsLayout.addView(dotsItem(i), params);
+		if (fag == 1) {
+			for (int i = 0; i < getPagerCount(1); i++) {
+				views.add(viewPagerItem(i, fag));
+				LayoutParams params = new LayoutParams(16, 16);
+				// LayoutParams params = new
+				// LayoutParams(LayoutParams.WRAP_CONTENT,
+				// LayoutParams.WRAP_CONTENT);
+
+				mDotsLayout.addView(dotsItem(i), params);
+			}
+		} else if (fag == 2) {
+			for (int i = 0; i < getPagerCount(2); i++) {
+				views.add(viewPagerItem(i, fag));
+				LayoutParams params = new LayoutParams(16, 16);
+				// LayoutParams params = new
+				// LayoutParams(LayoutParams.WRAP_CONTENT,
+				// LayoutParams.WRAP_CONTENT);
+
+				mDotsLayout.addView(dotsItem(i), params);
+			}
+		} else if (fag == 3) {
+			for (int i = 0; i < getPagerCount(3); i++) {
+				views.add(viewPagerItem(i, fag));
+				LayoutParams params = new LayoutParams(16, 16);
+				// LayoutParams params = new
+				// LayoutParams(LayoutParams.WRAP_CONTENT,
+				// LayoutParams.WRAP_CONTENT);
+
+				mDotsLayout.addView(dotsItem(i), params);
+			}
 		}
+
 		FaceVPAdapter mVpAdapter = new FaceVPAdapter(views);
 		mViewPager.setAdapter(mVpAdapter);
 		mDotsLayout.getChildAt(0).setSelected(true);
+
 	}
 
-	private View viewPagerItem(int position) {
+	private View viewPagerItem(int position, int fag) {
 		LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
 		View layout = inflater.inflate(R.layout.face_gridview, null);
 		GridView gridview = (GridView) layout.findViewById(R.id.chart_face_gv);
 		/**
 		 * 注：因为每一页末尾都有一个删除图标，所以每一页的实际表情columns *　rows　－　1; 空出最后一个位置给删除图标
 		 * */
-		List<String> subList = new ArrayList<String>();
-		subList.addAll(staticFacesList
-				.subList(position * (columns * rows - 1),
-						(columns * rows - 1) * (position + 1) > staticFacesList
-								.size() ? staticFacesList.size() : (columns
-								* rows - 1)
-								* (position + 1)));
+
 		// 0-20 20-40 40-60 60-80
 		/**
 		 * 末尾添加删除图标
 		 * */
-		subList.add("emotion_del_normal.png");
-		FaceGVAdapter mGvAdapter = new FaceGVAdapter(subList, this);
-		gridview.setAdapter(mGvAdapter);
-		gridview.setNumColumns(columns);
-		// 单击表情执行的操作
-		gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+		if (fag == 1) {
+			List<String> subList = new ArrayList<String>();
+			subList.addAll(staticFacesList.subList(position
+					* (columns * rows - 1),
+					(columns * rows - 1) * (position + 1) > staticFacesList
+							.size() ? staticFacesList.size()
+							: (columns * rows - 1) * (position + 1)));
+			subList.add("emotion_del_normal.png");
+			FaceGVAdapter mGvAdapter = new FaceGVAdapter(subList, this, fag);
+			gridview.setAdapter(mGvAdapter);
+			gridview.setNumColumns(columns);
+			// gridview.setColumnWidth(30);
+			gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
-			@Override
-			public void onItemClick(AdapterView<?> parent, View view,
-					int position, long id) {
-				// TODO Auto-generated method stub
-				try {
-					String png = ((TextView) ((LinearLayout) view)
-							.getChildAt(1)).getText().toString();
-					if (!png.contains("emotion_del_normal")) {// 如果不是删除图标
-						// input.setText(sb);
-						insert(getFace(png));
-					} else {
-						delete();
+				@Override
+				public void onItemClick(AdapterView<?> parent, View view,
+						int position, long id) {
+					// TODO Auto-generated method stub
+					try {
+						String png = ((TextView) ((LinearLayout) view)
+								.getChildAt(1)).getText().toString();
+						if (!png.contains("emotion_del_normal")) {// 如果不是删除图标
+							// input.setText(sb);
+							insert(getFace(png));
+						} else {
+							delete();
+						}
+
+					} catch (Exception e) {
+						e.printStackTrace();
 					}
-
-				} catch (Exception e) {
-					e.printStackTrace();
 				}
-			}
-		});
+			});
+		} else if (fag == 2) {
+			List<String> subList = new ArrayList<String>();
+			subList.addAll(staticFacesList);
+			FaceGVAdapter mGvAdapter = new FaceGVAdapter(subList, this, fag);
+			gridview.setAdapter(mGvAdapter);
+			WindowManager manager = getWindowManager();
+			Display display = manager.getDefaultDisplay();
+			@SuppressWarnings("deprecation")
+			int width = display.getWidth();
+			gridview.setColumnWidth(width % 3);
+			gridview.setNumColumns(3);
+			// gridview.setColumnWidth(60);
+			gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+				@Override
+				public void onItemClick(AdapterView<?> parent, View view,
+						int position, long id) {
+					// TODO Auto-generated method stub
+					try {
+						String png = ((TextView) ((LinearLayout) view)
+								.getChildAt(1)).getText().toString();
+						insert(getFace(png));
+
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+			});
+		} else if (fag == 3) {
+			List<String> subList = new ArrayList<String>();
+			subList.addAll(staticFacesList);
+			FaceGVAdapter mGvAdapter = new FaceGVAdapter(subList, this, fag);
+			gridview.setAdapter(mGvAdapter);
+			WindowManager manager = getWindowManager();
+			Display display = manager.getDefaultDisplay();
+			@SuppressWarnings("deprecation")
+			int width = display.getWidth();
+			gridview.setColumnWidth(width % 3);
+			gridview.setNumColumns(3);
+			// gridview.setColumnWidth(60);
+			gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+				@Override
+				public void onItemClick(AdapterView<?> parent, View view,
+						int position, long id) {
+					// TODO Auto-generated method stub
+					switch (position) {
+					case 0:
+
+						break;
+					case 1:
+
+						break;
+					case 2:
+
+						break;
+
+					}
+				}
+			});
+		}
+
+		// 单击表情执行的操作
+
 		input.addTextChangedListener(new TextWatcher() {
 
+			@SuppressWarnings("deprecation")
 			@Override
 			public void onTextChanged(CharSequence s, int start, int before,
 					int count) {
-				// TODO Auto-generated method stub
 				if (input.getText().toString().equals("")) {
 					img_adder.setAlpha(255);
 					send.setVisibility(View.GONE);
@@ -647,31 +584,7 @@ public class ChatMainActivity extends BaseActivity {
 					img_adder.setAlpha(0);
 					send.setVisibility(View.VISIBLE);
 				}
-				// try {
-				// if (count == "#[face/png/f_static_000.png]#".length()) {
-				// String tempText = s.subSequence(start, start +
-				// count).toString();
-				// String regex =
-				// "(\\#\\[face/png/f_static_)\\d{3}(.png\\]\\#)";
-				// Pattern p = Pattern.compile(regex);
-				// Matcher m = p.matcher(tempText);
-				// if (m.matches()) {
-				// SpannableStringBuilder sb = new SpannableStringBuilder(
-				// input.getText());
-				// String png = tempText.substring("#[".length(),
-				// tempText.length() - "]#".length());
-				// sb.setSpan(
-				// new ImageSpan(MainActivity.this,
-				// BitmapFactory
-				// .decodeStream(getAssets()
-				// .open(png))),
-				// start, start + count,
-				// Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-				// }
-				// }
-				// } catch (Exception e) {
-				// e.printStackTrace();
-				// }
+
 			}
 
 			@Override
@@ -683,38 +596,26 @@ public class ChatMainActivity extends BaseActivity {
 			@Override
 			// img_adder.setv
 			public void afterTextChanged(Editable s) {
-				// TODO Auto-generated method stub
 
 			}
 		});
-		// 发送
-		// editText.setOnTouchListener(new OnTouchListener() {
-		//
-		// @Override
-		// public boolean onTouch(View v, MotionEvent event) {
-		// // TODO Auto-generated method stub
-		// if(expanded){
-		//
-		// setFaceLayoutExpandState(false);
-		// expanded=false;
-		// }
-		// return false;
-		// }
-		// });
+
 		input.setOnTouchListener(new OnTouchListener() {
 
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
+				rel_hint.setVisibility(View.GONE);
+				mDotsLayout.setVisibility(View.GONE);
+				mViewPager.setVisibility(View.GONE);
 				input.setFocusable(true);
 
 				input.setFocusableInTouchMode(true);
 
 				input.requestFocus();
 
-				InputMethodManager inputManager =
-
-				(InputMethodManager) input.getContext().getSystemService(
-						Context.INPUT_METHOD_SERVICE);
+				InputMethodManager inputManager = (InputMethodManager) input
+						.getContext().getSystemService(
+								Context.INPUT_METHOD_SERVICE);
 
 				inputManager.showSoftInput(input, 0);
 				return false;
@@ -723,48 +624,27 @@ public class ChatMainActivity extends BaseActivity {
 
 		send.setOnClickListener(new Button.OnClickListener() {
 
+			@SuppressWarnings("deprecation")
 			@Override
 			public void onClick(View v) {
-				// TODO Auto-generated method stub
 				if (!TextUtils.isEmpty(input.getText().toString())) {
 					infos.add(getChatInfoTo("", input.getText().toString(), num
-							.getText().toString(), false, time()));
+							.getText().toString(), false,
+							new Date(System.currentTimeMillis())
+									.toLocaleString()));
 					mLvAdapter.setList(infos);
 					mLvAdapter.notifyDataSetChanged();
 					mListView.setSelection(infos.size() - 1);
+					// 构造消息格式
+					String content = input.getText().toString();
+					String fromUserId = getSharedPreferences("qcxx",
+							Context.MODE_PRIVATE).getString("phoneNum", "");
+					String msg = getMessgeBody(content, chatName, fromUserId);
+					mXmppService.sendMsg(chatName, msg);
 					input.setText("");
 				}
 			}
 		});
-
-		/***
-		 * listview下拉刷新
-		 * */
-		// mListView
-		// .setOnRefreshListenerHead(new
-		// DropdownListView.OnRefreshListenerHeader() {
-		//
-		// @Override
-		// public void onRefresh() {
-		// // TODO Auto-generated method stub
-		// new Thread() {
-		// @Override
-		// public void run() {
-		// try {
-		// sleep(1000);
-		// Message msg = mHandler.obtainMessage(0);
-		// mHandler.sendMessage(msg);
-		// } catch (InterruptedException e) {
-		// // TODO Auto-generated catch block
-		// e.printStackTrace();
-		// }
-		//
-		// }
-		//
-		// }.start();
-		// }
-		// });
-
 		return gridview;
 	}
 
@@ -850,25 +730,49 @@ public class ChatMainActivity extends BaseActivity {
 	private ImageView dotsItem(int position) {
 		LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
 		View layout = inflater.inflate(R.layout.dot_image, null);
-		ImageView iv = (ImageView) layout.findViewById(R.id.face_dot);
-		iv.setId(position);
-		return iv;
+		ImageView mb = (ImageView) layout.findViewById(R.id.face_dot);
+		mb.setId(position);
+		return mb;
 	}
 
-	private int getPagerCount() {
+	private int getPagerCount(int fag) {
 		int count = staticFacesList.size();
-		return count % (columns * rows - 1) == 0 ? count / (columns * rows - 1)
-				: count / (columns * rows - 1) + 1;
+		if (fag == 1) {
+
+			return count % (columns * rows - 1) == 0 ? count
+					/ (columns * rows - 1) : count / (columns * rows - 1) + 1;
+		} else if (fag == 2) {
+			return 2;
+		} else if (fag == 3) {
+			return 1;
+		}
+		return 0;
+
 	}
 
-	private void initStaticFaces() {
+	private void initStaticFaces(int fag) {
 		try {
-			staticFacesList = new ArrayList<String>();
-			String[] faces = getAssets().list("face/png");
-			for (int i = 0; i < faces.length; i++) {
-				staticFacesList.add(faces[i]);
+			if (fag == 1) {
+				staticFacesList = new ArrayList<String>();
+				String[] faces = getAssets().list("face/png");
+				for (int i = 0; i < faces.length; i++) {
+					staticFacesList.add(faces[i]);
+				}
+				staticFacesList.remove("emotion_del_normal.png");
+			} else if (fag == 2) {
+				staticFacesList = new ArrayList<String>();
+				String[] faces = getAssets().list("faceer/png");
+				for (int i = 0; i < faces.length; i++) {
+					staticFacesList.add(faces[i]);
+				}
+			} else if (fag == 3) {
+				staticFacesList = new ArrayList<String>();
+				String[] faces = getAssets().list("myface/png");
+				for (int i = 0; i < faces.length; i++) {
+					staticFacesList.add(faces[i]);
+				}
 			}
-			staticFacesList.remove("emotion_del_normal.png");
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -901,69 +805,22 @@ public class ChatMainActivity extends BaseActivity {
 		}
 
 	}
-
-	private String formatTime(int t) {
-		return t >= 10 ? "" + t : "0" + t;// 三元运算符 t>10时取 ""+t
-	}
-
-	public String time() {
-		Calendar c = Calendar.getInstance();
-
-		String time = c.get(Calendar.YEAR) + "-" + // 得到年
-				formatTime(c.get(Calendar.MONTH) + 1) + "-" + // month加一 //月
-				formatTime(c.get(Calendar.DAY_OF_MONTH)) + " " + // 日
-				formatTime(c.get(Calendar.HOUR_OF_DAY)) + ":" + // 时
-				formatTime(c.get(Calendar.MINUTE)) + ":" + // 分
-				formatTime(c.get(Calendar.SECOND)); // 秒
-		System.out.println(time); // 输出
-		return time;
-
-	}
-
 	private ChatInfo getChatInfoTo(String pullname, String message, String fag,
 			boolean falg, String time) {
-		// SimpleDateFormat format = new SimpleDateFormat("yyyy年MM月dd日  HH:mm");
-		// String date = format.format(new Date());
 		ChatInfo info = new ChatInfo();
 		info.content = message;
 		info.pullname = pullname;
 		info.falg = falg;
 		// time=data;
 		info.time = time;
-		// info.time = date;
 		if (fag.equals("")) {
 			info.fromOrTo = 0;
 		} else {
 			info.fromOrTo = Integer.parseInt(fag);
 		}
-		// if ((System.currentTimeMillis() - upTime) > 60000) {
-		// upTime = System.currentTimeMillis();
-		// info.time = DateFormatUtil.getCurrDate(Constant.DATE_PATTERN_1);
-		// } else {
-		// info.time = "";
-		// }
-		// info.time = DateFormatUtil.getCurrDate(Constant.DATE_PATTERN_1);
 		return info;
 	}
 
-	@SuppressLint("HandlerLeak")
-	// private Handler mHandler = new Handler() {
-	//
-	// @Override
-	// public void handleMessage(Message msg) {
-	// switch (msg.what) {
-	// case 0:
-	// mLvAdapter.setList(infos);
-	// mLvAdapter.notifyDataSetChanged();
-	// mListView.onRefreshCompleteHeader();
-	// break;
-	// }
-	// }
-	// };
-	// ((InputMethodManager)getSystemService(INPUT_METHOD_SERVICE)).hideSoftInputFromWindow
-	// (ChatActivity.this.getCurrentFocus().getWindowToken(),
-	// InputMethodManager.HIDE_NOT_ALWAYS);
-	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.chat_main);
@@ -980,11 +837,9 @@ public class ChatMainActivity extends BaseActivity {
 					left.setImageResource(R.drawable.img_chat);
 					inputer.setVisibility(View.VISIBLE);
 					input.setVisibility(View.GONE);
-					mygrd.setVisibility(View.GONE);
 				} else {
 					left.setImageResource(R.drawable.img_yuying);
 					inputer.setVisibility(View.GONE);
-					mygrd.setVisibility(View.GONE);
 					input.setVisibility(View.VISIBLE);
 				}
 
@@ -1004,86 +859,27 @@ public class ChatMainActivity extends BaseActivity {
 			@Override
 			public void onClick(View v) {
 				rel_hint.setVisibility(View.GONE);
-				mDotsLayout.setVisibility(View.GONE);
-				mViewPager.setVisibility(View.GONE);
+				initStaticFaces(3);
+				InitViewPager(3);
+				mDotsLayout.setVisibility(View.VISIBLE);
+				mViewPager.setVisibility(View.VISIBLE);
 				((InputMethodManager) getSystemService(INPUT_METHOD_SERVICE))
 						.hideSoftInputFromWindow(ChatMainActivity.this
 								.getCurrentFocus().getWindowToken(),
 								InputMethodManager.HIDE_NOT_ALWAYS);
-				fag++;
-				if (fag % 2 == 0) {
-					mygrd.setVisibility(View.GONE);
-				} else {
-					mygrd.setVisibility(View.VISIBLE);
-				}
-
-				// TODO Auto-generated method stub
 
 			}
 		});
-		initStaticFaces();
+
 		initViews();
 		mListView.setSelection(infos.size());
-		// final TextView gifTextView = (TextView) findViewById(R.id.text);
-		// SpannableStringBuilder sb = new SpannableStringBuilder();
-		// sb.append("Text followed by animated gif: ");
-		// String dummyText = "dummy";
-		// sb.append(dummyText);
-		// try {
-		//
-		// sb.setSpan(new AnimatedImageSpan(new AnimatedGifDrawable(
-		// getAssets().open("face/gif/f031.gif"),
-		// new AnimatedGifDrawable.UpdateListener() {
-		// @Override
-		// public void update() {
-		// gifTextView.postInvalidate();
-		// }
-		// })), sb.length() - dummyText.length(), sb.length(),
-		// Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-		// } catch (Exception e) {
-		// // TODO Auto-generated catch block
-		// e.printStackTrace();
-		// }
-		// sb.append(dummyText);
-		// try {
-		// sb.setSpan(
-		// new ImageSpan(this, BitmapFactory.decodeStream(getAssets()
-		// .open("face/f007.png"))), sb.length()
-		// - dummyText.length(), sb.length(),
-		// Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-		// } catch (IOException e) {
-		// // TODO Auto-generated catch block
-		// e.printStackTrace();
-		// }
-		//
-		// gifTextView.setText(sb);
-		//
-		// LinearLayout container = (LinearLayout) findViewById(R.id.container);
-		// LayoutParams params = new LayoutParams(LayoutParams.WRAP_CONTENT,
-		// LayoutParams.WRAP_CONTENT);
-		// ImageView ig = new ImageView(this);
-		// ig.setLayoutParams(params);
-		// try {
-		// Bitmap mBitmap = BitmapFactory.decodeStream(getAssets().open(
-		// "face/f007.png"));
-		// ig.setImageBitmap(mBitmap);
-		// container.addView(ig);
-		// } catch (IOException e) {
-		// // TODO Auto-generated catch block
-		// e.printStackTrace();
-		// }
-		//
-		// Face face = new Face();
-		// String[] staticFaces = face.getStaticFaces(this);
-		// String[] dynamicFaces = face.getDynamicFaces(this);
-		// System.out.println(staticFaces.length);
-		// System.out.println(Arrays.toString(staticFaces));
-		// System.out.println(dynamicFaces.length);
-		// System.out.println(Arrays.toString(dynamicFaces));
+		bindXMPPService();
+		IntentFilter filter = new IntentFilter(XmppGlobals.MESSAGE_ACTION);
+		registerReceiver(receiver, filter);
 	}
 
 	@SuppressWarnings("rawtypes")
-	class sortClass implements Comparator {
+	public class sortClass implements Comparator {
 		public int compare(Object arg0, Object arg1) {
 			// LinkedList<ChatInfo> infos = new LinkedList<ChatInfo>();
 			// ChatInfo info = new ChatInfo();
@@ -1093,4 +889,89 @@ public class ChatMainActivity extends BaseActivity {
 			return flag;
 		}
 	}
+
+	private String chatName = "";
+	boolean hasflag = false;
+	BroadcastReceiver receiver = new BroadcastReceiver() {
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			String from = intent.getStringExtra("from");
+			String message = intent.getStringExtra("body");
+			String time = intent.getStringExtra("time");
+			String name = from.substring(0, from.indexOf("@"));
+			if (name.equals(chatName)) {
+				infos.add(getChatInfoTo("", message, 1 + "", false, time));
+				mLvAdapter.notifyDataSetChanged();
+				mListView.setSelection(infos.size() - 1);
+			}
+			// 这里修改所有的已读状态为true
+		}
+	};
+
+	/**
+	 * 绑定XMPP服务 实现开始
+	 */
+	public XmppService mXmppService;
+	ServiceConnection mServiceConnection = new ServiceConnection() {
+
+		@Override
+		public void onServiceDisconnected(ComponentName arg0) {
+			mXmppService = null;
+		}
+
+		@Override
+		public void onServiceConnected(ComponentName arg0, IBinder service) {
+			mXmppService = ((XmppService.XmppBinder) service).getService();
+		}
+	};
+
+	/**
+	 * 解绑服务
+	 */
+	private void unbindXMPPService() {
+		try {
+			unbindService(mServiceConnection);
+		} catch (IllegalArgumentException e) {
+			Log.e("unbindXMPPService", "Service wasn't bound!");
+		}
+	}
+
+	/**
+	 * 绑定XMPP服务 实现结束
+	 */
+
+	/**
+	 * 绑定服务
+	 */
+	private void bindXMPPService() {
+		Intent mServiceIntent = new Intent(this, XmppService.class);
+		// mServiceIntent.setData(chatURI);
+		bindService(mServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
+	}
+
+	@Override
+	protected void onDestroy() {
+		unregisterReceiver(receiver); // 取消receiver
+		unbindXMPPService();
+		super.onDestroy();
+	}
+
+	public String getMessgeBody(String content, String toUserId,
+			String fromUserId) {
+		String type = "1";
+		String timeSend = GlobalUtil.getLocalDate();
+		String fileSize = "0";
+		String timeLen = "0";
+		JSONObject obj = new JSONObject();
+		obj.put("type", type);
+		obj.put("timeSend", timeSend);
+		obj.put("content", content);
+		obj.put("fileSize", fileSize);
+		obj.put("toUserId", toUserId);
+		obj.put("fromUserId", fromUserId);
+		obj.put("timeLen", timeLen);
+		return obj.toString();
+	}
+
 }

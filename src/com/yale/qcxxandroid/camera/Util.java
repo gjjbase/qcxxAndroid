@@ -84,8 +84,8 @@ public class Util {
 		Bitmap pic = BitmapFactory.decodeStream(context.getContentResolver()
 				.openInputStream(imageFilePath), null, op);
 
-		int wRatio = (int) Math.ceil(op.outWidth / (float) dw); // �����ȱ���
-		int hRatio = (int) Math.ceil(op.outHeight / (float) dh); // ����߶ȱ���
+		int wRatio = (int) Math.ceil(op.outWidth / (float) dw);  
+		int hRatio = (int) Math.ceil(op.outHeight / (float) dh);  
 
 		if (wRatio > 1 && hRatio > 1) {
 			if (wRatio > hRatio) {
@@ -94,7 +94,7 @@ public class Util {
 				op.inSampleSize = hRatio;
 			}
 		}
-		op.inJustDecodeBounds = false; // ע�����һ��Ҫ����Ϊfalse����Ϊ�������ǽ�������Ϊtrue����ȡͼƬ�ߴ���
+		op.inJustDecodeBounds = false;  
 		pic = BitmapFactory.decodeStream(context.getContentResolver()
 				.openInputStream(imageFilePath), null, op);
 

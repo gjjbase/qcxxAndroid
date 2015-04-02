@@ -22,7 +22,6 @@ public class MychildeActivity extends BaseActivity {
 	private ThreadUtil thread;
 	@SuppressLint("HandlerLeak")
 	public Handler mhandler = new Handler() {
-		@SuppressWarnings("unused")
 		public void handleMessage(Message msg) {
 			super.handleMessage(msg);
 			switch (msg.what) {

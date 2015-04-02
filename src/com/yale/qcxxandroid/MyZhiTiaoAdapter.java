@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-import com.yale.qcxxandroid.base.CircularImage;
 import com.yale.qcxxandroid.base.OnDeleteListioner;
 import com.yale.qcxxandroid.bean.ZhiTiao;
 

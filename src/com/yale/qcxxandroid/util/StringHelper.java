@@ -1,12 +1,13 @@
 package com.yale.qcxxandroid.util;
 
+import android.annotation.SuppressLint;
 import net.sourceforge.pinyin4j.PinyinHelper;
 import net.sourceforge.pinyin4j.format.HanyuPinyinCaseType;
 import net.sourceforge.pinyin4j.format.HanyuPinyinOutputFormat;
 import net.sourceforge.pinyin4j.format.HanyuPinyinToneType;
 import net.sourceforge.pinyin4j.format.HanyuPinyinVCharType;
-import net.sourceforge.pinyin4j.format.exception.BadHanyuPinyinOutputFormatCombination;
 
+@SuppressLint("DefaultLocale")
 public class StringHelper {
     /** 
      * 得到 全拼 
@@ -61,7 +62,8 @@ public class StringHelper {
     /** 
      * 得到中文首字母缩写 
      */  
-    public static String getPinYinHeadChar(String str) {  
+    @SuppressLint("DefaultLocale")
+	public static String getPinYinHeadChar(String str) {  
         String convert = "";  
         for (int j = 0; j < str.length(); j++) {  
             char word = str.charAt(j);  

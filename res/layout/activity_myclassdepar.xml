@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.yale.qcxxandroid.base.MtScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="wrap_content" >
+    android:layout_height="fill_parent"
+    android:background="@color/bg_color" >
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -21,7 +22,9 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
+                android:clickable="true"
                 android:drawableLeft="@drawable/mm_submenu"
+                android:onClick="backs"
                 android:text="班级"
                 android:textColor="@color/black"
                 android:textSize="18sp" />
@@ -111,7 +114,7 @@
                 android:background="#a3a3a3" />
         </RelativeLayout>
 
-        <ListView
+        <com.yale.qcxxandroid.base.AllListView
             android:id="@+id/mylist"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
@@ -154,7 +157,7 @@
                 android:background="#a3a3a3" />
         </RelativeLayout>
 
-        <ListView
+        <com.yale.qcxxandroid.base.AllListView
             android:id="@+id/list"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"

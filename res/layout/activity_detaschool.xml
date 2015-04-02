@@ -4,7 +4,6 @@
     android:layout_height="match_parent"
     android:background="@color/bg_color"
     android:orientation="vertical" >
-
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="45dp"
@@ -58,11 +57,12 @@
             android:id="@+id/sf_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
+            android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
+            android:drawableRight="@drawable/mm_submenu_normaler"
             android:gravity="center"
             android:paddingLeft="10dp"
-            android:text="省份"
+            android:text="未选择"
             android:textColor="@color/black"
             android:textSize="18sp" />
 
@@ -100,10 +100,12 @@
             android:id="@+id/sc_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
+			android:layout_centerVertical="true"
+			android:layout_alignParentRight="true"
+			android:drawableRight="@drawable/mm_submenu_normaler"            
             android:gravity="center"
             android:paddingLeft="10dp"
-            android:text="省份"
+            android:text="未选择"
             android:textColor="@color/black"
             android:textSize="18sp" />
 
@@ -141,10 +143,12 @@
             android:id="@+id/xy_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:drawableRight="@drawable/mm_submenu_normaler"
             android:gravity="center"
             android:paddingLeft="10dp"
-            android:text="省份"
+            android:text="未选择"
             android:textColor="@color/black"
             android:textSize="18sp" />
 

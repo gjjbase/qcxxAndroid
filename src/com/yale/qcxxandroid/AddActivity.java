@@ -1,16 +1,6 @@
 package com.yale.qcxxandroid;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import android.annotation.SuppressLint;
-import android.content.AsyncQueryHandler;
-import android.content.ContentResolver;
-import android.content.ContentValues;
-import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -25,48 +15,7 @@ import com.yale.qcxxandroid.base.BaseActivity;
 
 public class AddActivity extends BaseActivity {
 	private ListView list;
-	private AsyncQueryHandler asyncQuery;
-	private static final String NAME = "name", NUMBER = "number",
-			SORT_KEY = "sort_key";
-	private List<ContentValues> lister;
 	private RelativeLayout rel_add;
-
-	@SuppressLint("HandlerLeak")
-	private class MyAsyncQueryHandler extends AsyncQueryHandler {
-
-		public MyAsyncQueryHandler(ContentResolver cr) {
-			super(cr);
-
-		}
-
-		protected void onQueryComplete(int token, Object cookie, Cursor cursor) {
-			if (cursor != null && cursor.getCount() > 0) {
-				lister = new ArrayList<ContentValues>();
-				cursor.moveToFirst();
-				for (int i = 0; i < cursor.getCount(); i++) {
-					ContentValues cv = new ContentValues();
-					cursor.moveToPosition(i);
-					String name = cursor.getString(1);
-					String number = cursor.getString(2);
-					String sortKey = cursor.getString(3);
-					if (number.startsWith("+86")) {
-						cv.put(NAME, name);
-						cv.put(NUMBER, number.substring(3)); // 去掉+86
-						cv.put(SORT_KEY, sortKey);
-					} else {
-						cv.put(NAME, name);
-						cv.put(NUMBER, number);
-						cv.put(SORT_KEY, sortKey);
-					}
-					lister.add(cv);
-					Log.i("num", number);
-				}
-			}
-
-		}
-
-	}
-
 	public void onback(View v) {
 		finish();
 	}
@@ -77,17 +26,13 @@ public class AddActivity extends BaseActivity {
 		setContentView(R.layout.activity_add);
 		list = (ListView) findViewById(R.id.list);
 		rel_add = (RelativeLayout) findViewById(R.id.rel_add);
-		asyncQuery = new MyAsyncQueryHandler(getContentResolver());
-		Uri uri = Uri.parse("content://com.android.contacts/data/phones");
-		String[] projection = { "_id", "display_name", "data1", "sort_key" };
-		asyncQuery.startQuery(0, null, uri, projection, null, null,
-				"sort_key COLLATE LOCALIZED asc");
+		Pholis(true);
 		rel_add.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				if (lister.size() != 0) {
+				if (phonelist.size() != 0) {
 					BaseAdapter adapter = new BaseAdapter() {
 
 						@Override
@@ -100,9 +45,9 @@ public class AddActivity extends BaseActivity {
 									.findViewById(R.id.txt_right);
 							TextView txt_left = (TextView) convertView
 									.findViewById(R.id.txt_left);
-							txt_left.setText(lister.get(position).getAsString(
+							txt_left.setText(phonelist.get(position).getAsString(
 									NAME));
-							txt_right.setText(lister.get(position).getAsString(
+							txt_right.setText(phonelist.get(position).getAsString(
 									NUMBER));
 							return convertView;
 						}
@@ -122,7 +67,7 @@ public class AddActivity extends BaseActivity {
 						@Override
 						public int getCount() {
 							// TODO Auto-generated method stub
-							return lister.size();
+							return phonelist.size();
 						}
 					};
 					list.setAdapter(adapter);

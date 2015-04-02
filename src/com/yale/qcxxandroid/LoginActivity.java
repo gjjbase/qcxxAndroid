@@ -17,6 +17,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.PopupWindow;
+import android.widget.Toast;
 
 import com.yale.qcxxandroid.base.AlertDialoger;
 import com.yale.qcxxandroid.base.BaseActivity;
@@ -25,6 +26,7 @@ import com.yale.qcxxandroid.base.Welcome;
 import com.yale.qcxxandroid.util.ThreadUtil;
 
 @SuppressLint("HandlerLeak")
+@SuppressWarnings("unused")
 public class LoginActivity extends BaseActivity {
 	private Intent intent;
 	private Bundle bundle;
@@ -120,6 +122,10 @@ public class LoginActivity extends BaseActivity {
 		});
 		login = (Button) this.findViewById(R.id.login);
 		forgetPasswd = (Button) this.findViewById(R.id.forgetPasswd);
+		// if (getIntent().getExtras().getBoolean("true", false) == true) {
+		// userName.setText(getIntent().getExtras().getString("name"));
+		// passWord.setText(getIntent().getExtras().getString("psw"));
+		// }
 	}
 
 	public void loginBackClick(View v) { // 标题栏 返回按钮
@@ -153,6 +159,11 @@ public class LoginActivity extends BaseActivity {
 						"returnJson");
 				try {
 					JSONArray joA = new JSONArray(returnJson);
+					if (joA == null) {
+						Toast.makeText(LoginActivity.this, "登录失败！", 3000)
+								.show();
+						return;
+					}
 					JSONObject jo = joA.getJSONObject(0);
 					if (!StringUtils.isEmpty(jo.get("userId").toString())) {
 						editor.putString("number", uName);
@@ -214,13 +225,11 @@ public class LoginActivity extends BaseActivity {
 							intent.setClass(LoginActivity.this,
 									MainActivity.class);
 							startActivity(intent);
-							finish();
 						} else {
 							intent.setClass(LoginActivity.this, Welcome.class);
 							startActivity(intent);
 							editor.putBoolean("true", true);
 							editor.commit();
-							finish();
 						}
 
 						finish();

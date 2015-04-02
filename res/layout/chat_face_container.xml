@@ -46,10 +46,10 @@
 
         <GridView
             android:id="@+id/mygrd"
-            android:listSelector="@color/transparent"
             style="@style/AnimBottom"
             android:layout_width="fill_parent"
             android:layout_height="150dp"
+            android:listSelector="@color/transparent"
             android:numColumns="4"
             android:visibility="gone" >
         </GridView>

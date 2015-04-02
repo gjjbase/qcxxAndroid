@@ -5,6 +5,7 @@ import java.util.Date;
 
 import com.yale.qcxxandroid.R;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.GestureDetector;
@@ -25,6 +26,7 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+@SuppressLint("SimpleDateFormat")
 public class MyBaseListView extends ListView implements OnScrollListener,
 		OnItemLongClickListener, GestureDetector.OnGestureListener,
 		View.OnTouchListener {
@@ -46,13 +48,17 @@ public class MyBaseListView extends ListView implements OnScrollListener,
 	private TextView lastUpdatedTextView;
 	private ImageView arrowImageView;
 	private ProgressBar progressBar;
+	@SuppressWarnings("unused")
 	private ImageView footArrowImageView;
+	@SuppressWarnings("unused")
 	private ProgressBar footProgressBar;
+	@SuppressWarnings("unused")
 	private TextView footTipsTextView;
 	private RotateAnimation animation;
 	private RotateAnimation reverseAnimation;
 	// 用于保证startY的值在一个完整的touch事件中只被记录一次
 	private boolean isRecored;
+	@SuppressWarnings("unused")
 	private int headContentWidth;
 	private int headContentHeight;
 	private int startY;
@@ -65,6 +71,7 @@ public class MyBaseListView extends ListView implements OnScrollListener,
 	private GestureDetector mDetector;
 	private OnDeleteListioner mOnDeleteListioner;
 	private int position;
+	@SuppressWarnings("unused")
 	private float velocityX, velocityY;
 	private ListViewonSingleTapUpListenner thisonSingleTapUpListenner;
 
@@ -349,6 +356,7 @@ public class MyBaseListView extends ListView implements OnScrollListener,
 
 	// “估计”headView的width以及height
 	// ViewGroup是一个可以包含子View的容器，是布局文件和View容器的基类
+	@SuppressWarnings("deprecation")
 	private void measureView(View child) {
 		// ViewGroup.LayoutParams类是布局参数的子类
 		ViewGroup.LayoutParams p = child.getLayoutParams();

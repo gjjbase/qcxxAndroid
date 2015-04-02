@@ -49,6 +49,7 @@ public class  BaseListView extends ListView implements OnScrollListener,
 	private RotateAnimation reverseAnimation;
 	// 用于保证startY的值在一个完整的touch事件中只被记录一次
 	private boolean isRecored;
+	@SuppressWarnings("unused")
 	private int headContentWidth;
 	private int headContentHeight;
 	private int startY;
@@ -61,6 +62,7 @@ public class  BaseListView extends ListView implements OnScrollListener,
 	private GestureDetector mDetector;
 	private OnDeleteListioner mOnDeleteListioner;
 	private int position;
+	@SuppressWarnings("unused")
 	private float velocityX, velocityY;
 	private ListViewonSingleTapUpListenner thisonSingleTapUpListenner;
 
@@ -338,6 +340,7 @@ public class  BaseListView extends ListView implements OnScrollListener,
 
 	// “估计”headView的width以及height
 	// ViewGroup是一个可以包含子View的容器，是布局文件和View容器的基类
+	@SuppressWarnings("deprecation")
 	private void measureView(View child) {
 		// ViewGroup.LayoutParams类是布局参数的子类
 		ViewGroup.LayoutParams p = child.getLayoutParams();

@@ -10,14 +10,11 @@ import android.view.View.OnClickListener;
 import android.widget.LinearLayout;
 
 import com.yale.qcxxandroid.R;
-import com.yale.qcxxandroid.ShowActivity;
-import com.yale.qcxxandroid.ShowListActivity;
 
 public class MainTopMoreDialog extends Activity {
 	//private MyDialog dialog;
 	private LinearLayout layout;
 	private Intent intent = new Intent();
-	private Bundle bundle = new Bundle();
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);

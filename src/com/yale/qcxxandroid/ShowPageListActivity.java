@@ -32,7 +32,6 @@ import com.yale.qcxxandroid.util.ThreadUtil;
 
 public class ShowPageListActivity extends BaseActivity {
 	private Intent intent = new Intent();
-	private Bundle bundle = new Bundle();
 	private ThreadUtil thread;
 	private ViewPager viewPager;
 	private List<View> views; // 滑动的view片集合
@@ -288,7 +287,6 @@ public class ShowPageListActivity extends BaseActivity {
 											"点赞2", 3000).show();
 								}
 							});
-							String path = "file:///android_asset/logo.png";
 							// slideimg.add();
 						} catch (Exception e) {
 							// TODO: handle exception

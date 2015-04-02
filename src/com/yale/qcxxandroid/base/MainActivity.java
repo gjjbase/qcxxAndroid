@@ -17,6 +17,7 @@ import com.yale.qcxxandroid.MyActivityManager;
 import com.yale.qcxxandroid.R;
 import com.yale.qcxxandroid.ShowActivity;
 import com.yale.qcxxandroid.YouthActivity;
+import com.yale.qcxxandroid.chat.xmpp.XmppService;
 
 @SuppressWarnings("deprecation")
 public class MainActivity extends TabActivity {
@@ -71,6 +72,8 @@ public class MainActivity extends TabActivity {
 				.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
 						getResources().getDrawable(R.drawable.img_qingchun),
 						null, null);
+		Intent intent = new Intent(MainActivity.this, XmppService.class);
+		startService(intent);
 	}
 
 	class MainOnclickListener implements OnClickListener {

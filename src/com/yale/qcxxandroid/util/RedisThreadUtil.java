@@ -25,6 +25,7 @@ public class RedisThreadUtil extends Thread {
 	private double longitude;
 	private SharedPreferences sp;
 	private int type;
+	@SuppressWarnings("unused")
 	private Activity activity;
 	private FlippingLoadingDialog progressDialog = null;
 	public RedisThreadUtil(Handler handler) {

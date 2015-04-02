@@ -1,9 +1,6 @@
 package com.yale.qcxxandroid;
 
-import java.io.BufferedInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +18,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -29,7 +25,6 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
-import android.util.Base64;
 import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
@@ -51,13 +46,13 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.j256.ormlite.dao.Dao;
 import com.yale.qcxxandroid.base.BaseActivity;
 import com.yale.qcxxandroid.bean.PicUpload;
 import com.yale.qcxxandroid.camera.ImgFileListActivity;
 import com.yale.qcxxandroid.util.DataHelper;
+import com.yale.qcxxandroid.util.GlobalUtil;
 import com.yale.qcxxandroid.util.ThreadUtil;
 
 public class ShowPubActivity extends BaseActivity {
@@ -88,129 +83,6 @@ public class ShowPubActivity extends BaseActivity {
 	EditText content;
 	Spinner spi;
 
-	public static void readBitmapAutoSize(String filePath, ImageView jpgView) {
-		// outWidth和outHeight是目标图片的最大宽度和高度，用作限制
-		FileInputStream fs = null;
-		BufferedInputStream bs = null;
-		try {
-			fs = new FileInputStream(filePath);
-			bs = new BufferedInputStream(fs);
-			BitmapFactory.Options options = setBitmapOption(filePath);
-			bm = BitmapFactory.decodeStream(bs, null, options);
-			jpgView.setImageBitmap(bm);
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				bs.close();
-				fs.close();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-	}
-
-	public String Bitmap2Base64(Bitmap bitmap) {
-		try {
-			// 先将bitmap转换为普通的字节数组
-			ByteArrayOutputStream out = new ByteArrayOutputStream();
-			bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
-			out.flush();
-			out.close();
-			byte[] buffer = out.toByteArray();
-			// 将普通字节数组转换为base64数组
-			String encode = Base64.encodeToString(buffer, Base64.DEFAULT);
-			// // string = Base64.encodeToString(bytes, Base64.DEFAULT);
-			return encode;
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
-
-	// 将文件路径转化为Bitmap string 类型
-	public String bitmap64(String filepath) {
-		FileInputStream fs = null;
-		BufferedInputStream bs = null;
-		Bitmap bt = null;
-		String encode = null;
-		BitmapFactory.Options options = null;
-		try {
-			fs = new FileInputStream(filepath);
-			bs = new BufferedInputStream(fs);
-			options = setBitmapOption(filepath);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		bt = BitmapFactory.decodeStream(bs, null, options);
-		try {
-			// 先将bitmap转换为普通的字节数组
-			ByteArrayOutputStream out = new ByteArrayOutputStream();
-			bt.compress(Bitmap.CompressFormat.JPEG, 100, out);
-			out.flush();
-			out.close();
-			byte[] buffer = out.toByteArray();
-			// 将普通字节数组转换为base64数组
-			encode = new String(Base64.encode(buffer, Base64.DEFAULT), "UTF-8");
-			// // encode = Base64.encodeToString(bytes, Base64.DEFAULT);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		try {
-			bs.close();
-			fs.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return encode;
-
-	}
-
-	public static Bitmap BitmapAutoSize(String filePath) {
-		// outWidth和outHeight是目标图片的最大宽度和高度，用作限制
-		FileInputStream fs = null;
-		BufferedInputStream bs = null;
-		BitmapFactory.Options options = null;
-		try {
-			fs = new FileInputStream(filePath);
-			bs = new BufferedInputStream(fs);
-			options = setBitmapOption(filePath);
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				bs.close();
-				fs.close();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-		return BitmapFactory.decodeStream(bs, null, options);
-	}
-
-	private static BitmapFactory.Options setBitmapOption(String file) {
-		BitmapFactory.Options opt = new BitmapFactory.Options();
-		opt.inJustDecodeBounds = true;
-		// 设置只是解码图片的边距，此操作目的是度量图片的实际宽度和高度
-		BitmapFactory.decodeFile(file, opt);
-
-		// int outWidth = opt.outWidth; // 获得图片的实际高和宽
-		// int outHeight = opt.outHeight;
-		opt.inDither = false;
-		opt.inPreferredConfig = Bitmap.Config.RGB_565;
-		// 设置加载图片的颜色数为16bit，默认是RGB_8888，表示24bit颜色和透明通道，但一般用不上
-		opt.inSampleSize = 5;
-		// 设置缩放比,1表示原比例，2表示原来的四分之一....
-		// 计算缩放比
-		// if (outWidth != 0 && outHeight != 0 && width != 0 && height != 0) {
-		// int sampleSize = (outWidth / width + outHeight / height) / 2;
-		// opt.inSampleSize = sampleSize;
-		// }
-
-		opt.inJustDecodeBounds = false;// 最后把标志复原
-		return opt;
-	}
-
 	public void init() {
 		threadutil = new ThreadUtil(mhandler);
 		String methodStr = "[{'com.yale.qcxx.sessionbean.show.impl.ShowsSessionBean':'saveShows'}]";
@@ -230,7 +102,7 @@ public class ShowPubActivity extends BaseActivity {
 				System.out.println(pic.getPicToken() + "///111"
 						+ pic.getPicUrl());
 				// toast(pic.getPicToken() + "///111" + pic.getPicUrl());
-				String base = bitmap64(pic.getPicUrl());
+				String base = ImageTools.bitmap64(pic.getPicUrl());
 				str.append(base + "++yale");
 				// ++DEDADARR
 				// ++JOSKLASLD
@@ -239,7 +111,7 @@ public class ShowPubActivity extends BaseActivity {
 			}
 			try {
 				if (content.getText().toString().equals("")) {
-					toast("说点什么吧");
+					GlobalUtil.toast("说点什么吧", getApplicationContext());
 				} else {
 					View layou = getLayoutInflater().inflate(R.layout.img_item,
 							null);
@@ -287,6 +159,7 @@ public class ShowPubActivity extends BaseActivity {
 					JSONArray jso = new JSONArray(returnJson);
 					JSONObject jsoo = jso.getJSONObject(0);
 					if (jsoo.getString("returnStr").equals("true")) {
+						@SuppressWarnings("unused")
 						String url = getIntent().getExtras().getInt("tager")
 								+ "";
 						if (getIntent().getExtras().getInt("tager") == 2) {
@@ -302,18 +175,18 @@ public class ShowPubActivity extends BaseActivity {
 									.putExtras(bundle);
 							startActivity(intent);
 						}
-						toast("发布成功");
+						GlobalUtil.toast("发布成功", getApplicationContext());
 					} else {
-						toast("发布失败");
+						GlobalUtil.toast("发布失败", getApplicationContext());
 					}
 				} catch (Exception e) {
 					// TODO: handle exception
-					toast("发布失败");
+					GlobalUtil.toast("发布失败", getApplicationContext());
 				}
 
 				break;
 			case 2:
-				toast("网络连接失败");
+				GlobalUtil.toast("网络连接失败", getApplicationContext());
 				break;
 
 			}
@@ -509,10 +382,6 @@ public class ShowPubActivity extends BaseActivity {
 		}
 	}
 
-	public void toast(String msg) {
-		Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
-	}
-
 	private void txt_arr(TextView[] view, int falg) {
 		for (int i = 0; i < view.length; i++) {
 			view[i].setTextColor(getResources().getColor(R.color.textcol));
@@ -657,7 +526,8 @@ public class ShowPubActivity extends BaseActivity {
 				});
 
 			} else {
-				readBitmapAutoSize(picList.get(position).getPicUrl(), imger);
+				ImageTools.readBitmapAutoSize(bm, picList.get(position)
+						.getPicUrl(), imger);
 			}
 
 			return convertView;

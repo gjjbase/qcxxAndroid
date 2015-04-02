@@ -1,7 +1,6 @@
 package com.yale.qcxxandroid;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import org.json.JSONArray;
@@ -9,7 +8,6 @@ import org.json.JSONException;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
-import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -35,8 +33,6 @@ import com.yale.qcxxandroid.util.ThreadUtil;
 public class MyClassActivity extends BaseActivity {
 	private TextView back;
 	private TextView img_add;
-	private Bundle bundle;
-	private ArrayList<HashMap<String, Object>> lister;
 	@SuppressWarnings("unused")
 	private SimpleAdapter adaptera;
 	private ThreadUtil thread;
@@ -47,6 +43,7 @@ public class MyClassActivity extends BaseActivity {
 	private JSONArray jsoo;
 	private int[] img = { R.drawable.xiuxiu6, R.drawable.xiuxiu7 };
 
+	@SuppressLint("HandlerLeak")
 	private void init() {
 
 		Handler handler = new Handler() {

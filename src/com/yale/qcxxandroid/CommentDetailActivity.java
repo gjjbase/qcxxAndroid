@@ -1,34 +1,17 @@
 package com.yale.qcxxandroid;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.support.v4.view.ViewPager;
-import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.text.Html;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.ImageView.ScaleType;
 import android.widget.ListView;
-import android.widget.TextView;
 
-import com.yale.qcxxandroid.base.PicPagerAdapter;
 import com.yale.qcxxandroid.base.BaseActivity;
 import com.yale.qcxxandroid.base.CircularImage;
 import com.yale.qcxxandroid.bean.Comment;
-import com.yale.qcxxandroid.bean.Photo;
 
 public class CommentDetailActivity extends BaseActivity {
 	CircularImage myPic;

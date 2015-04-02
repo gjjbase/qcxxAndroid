@@ -104,7 +104,7 @@
                     android:background="#a3a3a3" />
             </RelativeLayout>
 
-            <ListView
+            <com.yale.qcxxandroid.base.AllListView
                 android:id="@+id/list"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"

@@ -109,7 +109,6 @@
                         <RelativeLayout
                             android:layout_width="fill_parent"
                             android:layout_height="50dp"
-                            android:layout_weight="1"
                             android:background="@drawable/horizontal_preference_single_item"
                             android:clickable="true"
                             android:orientation="horizontal" >
@@ -256,7 +255,8 @@
             android:layout_height="fill_parent"
             android:layout_marginTop="40dp"
             android:background="@color/white"
-            android:focusable="true"
+            android:onClick="click"
+            android:clickable="true"
             android:orientation="vertical"
             android:visibility="gone" >
 
