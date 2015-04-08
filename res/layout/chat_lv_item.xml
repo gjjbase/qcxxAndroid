@@ -25,6 +25,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:background="#00000000"
+            android:descendantFocusability="blocksDescendants"
             android:orientation="horizontal"
             android:visibility="visible" >
 

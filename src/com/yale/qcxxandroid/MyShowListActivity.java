@@ -108,10 +108,9 @@ public class MyShowListActivity extends BaseActivity {
 			}
 		};
 		threadUtil = new ThreadUtil(handler);
-		String methodStr = "[{'com.yale.qcxx.sessionbean.member.impl.UserInfoSessionBean':'getUserInfo'}]";
+		String methodStr = "[{'" + Globals.MEMBER_SESSIOM
+				+ ".UserInfoSessionBean':'getUserInfo'}]";
 		String jsonParamStr = "[{'userId':" + sp.getString("userId", "") + "}]";
-		// String jsonParamStr = "[{'userId':" + sp.getString("userId", "") +
-		// "}]";
 		threadUtil.doStartWebServicerequestWebService(MyShowListActivity.this,
 				jsonParamStr, methodStr, true);
 
@@ -258,7 +257,7 @@ public class MyShowListActivity extends BaseActivity {
 								// String bitm =
 								// "http://202.103.1.2/qcxxweb/upload/images/G14C3080A6639B3FE30FFDC4/G14C3080A6749C3FD3C424F8.jpg";
 								String bitm = Globals.PHT_URL
-										+ "/qcxxweb/upload/images/"
+										+ "/upload/images/"
 										+ jsoo.getJSONObject(j).getString(
 												"showsId") + "/" + ster[j]
 										+ ".jpg";

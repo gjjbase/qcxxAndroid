@@ -13,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.yale.qcxxandroid.base.BaseActivity;
+import com.yale.qcxxandroid.util.Globals;
 import com.yale.qcxxandroid.util.ThreadUtil;
 
 public class MychildeActivity extends BaseActivity {
@@ -44,7 +45,8 @@ public class MychildeActivity extends BaseActivity {
 
 	public void init(String name) {
 		thread = new ThreadUtil(mhandler);
-		String methodStr = "[{'com.yale.qcxx.sessionbean.member.impl.UserInfoSessionBean':'updateUserInfo'}]";
+		String methodStr = "[{'" + Globals.MEMBER_SESSIOM
+				+ ".UserInfoSessionBean':'updateUserInfo'}]";
 		String jsonParamStr = "[{'userId':" + sp.getString("userId", "")
 				+ ",'columnName':" + name + ",'columnValue':"
 				+ edt.getText().toString() + "}]";

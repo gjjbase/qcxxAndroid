@@ -23,6 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.yale.qcxxandroid.base.BaseActivity;
+import com.yale.qcxxandroid.util.Globals;
 import com.yale.qcxxandroid.util.ThreadUtil;
 
 public class MyClassActivityOther extends BaseActivity {
@@ -83,7 +84,8 @@ public class MyClassActivityOther extends BaseActivity {
 
 	private void init() {
 		threadutil = new ThreadUtil(mhandler);
-		String methodStr = "[{'com.yale.qcxx.sessionbean.comm.impl.CommonDataSessionBean':'listOfClass'}]";
+		String methodStr = "[{'" + Globals.COMM_SESSION
+				+ ".CommonDataSessionBean':'listOfClass'}]";
 
 		JSONArray jsonArr = new JSONArray();
 		String classes = sp.getString("classes", "");// 班级'5,13'
@@ -251,8 +253,11 @@ public class MyClassActivityOther extends BaseActivity {
 										jso.getJSONObject(position)
 												.getJSONArray("classesList")
 												.getJSONObject(arg2)
-												.getString("cdMc"));//cdid 班级id/
-								bundle.putString("cdid", jso.getJSONObject(position)
+												.getString("cdMc"));// cdid
+																	// 班级id/
+								bundle.putString(
+										"cdid",
+										jso.getJSONObject(position)
 												.getJSONArray("classesList")
 												.getJSONObject(arg2)
 												.getString("cdId"));

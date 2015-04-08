@@ -56,7 +56,6 @@ public class RegditActivity1 extends BaseActivity {
 	private String base;
 
 	private void ini() {
-		// com.yale.qcxxssionbean.member.impl.UserInfoSessionBean
 		thread = new ThreadUtil(handler);
 		int tag = 0;
 		if (sexValue.getText().toString().equals("男")) {
@@ -64,7 +63,7 @@ public class RegditActivity1 extends BaseActivity {
 		} else if (sexValue.getText().toString().equals("女")) {
 			tag = 1;
 		} else {
-			tag=2;
+			tag = 2;
 		}
 		String jsonParamStr = "[{'phoneNum':"
 				+ getIntent().getExtras().getString("phoneNum") + ",'headImg':"
@@ -72,7 +71,8 @@ public class RegditActivity1 extends BaseActivity {
 				+ ",'sex':" + tag + ",'nickName':" + "'"
 				+ nc.getText().toString() + "'" + "}]";
 
-		String methodStr = "[{'com.yale.qcxx.sessionbean.member.impl.UserInfoSessionBean':'saveUserInfo'}]";
+		String methodStr = "[{'" + Globals.MEMBER_SESSIOM
+				+ ".UserInfoSessionBean':'saveUserInfo'}]";
 		thread.doStartWebServicerequestWebService(RegditActivity1.this,
 				jsonParamStr, methodStr, true);
 	}

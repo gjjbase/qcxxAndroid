@@ -44,8 +44,8 @@ public class ShowPageListActivity extends BaseActivity {
 
 	private void praise(String pmrid, String youid) {
 		thread = new ThreadUtil(handler);
-		// "[{'com.yale.qcxx.sessionbean.comm.impl.CommonDataSessionBean':'saveCommonAction'}]"
-		String methodStr = "[{'com.yale.qcxx.sessionbean.comm.impl.CommonDataSessionBean':'saveCommonAction'}]";
+		String methodStr = "[{'" + Globals.COMM_SESSION
+				+ ".CommonDataSessionBean':'saveCommonAction'}]";
 		String jsonParamStr = "[{'me_id':" + sp.getString("userId", "")
 				+ ",'primary_id':" + "'" + pmrid + "'" + ",'action_type':" + 2
 				+ ",'your_id':" + 1 + "}]";
@@ -88,7 +88,8 @@ public class ShowPageListActivity extends BaseActivity {
 	@SuppressLint("HandlerLeak")
 	public void ini() {
 		thread = new ThreadUtil(mhandler);// com.yale.qcxx.sessionbean.member.impl
-		String methodStr = "[{'com.yale.qcxx.sessionbean.show.impl.ShowsSessionBean':'showshowMain'}]";
+		String methodStr = "[{'" + Globals.SHOW_SESSION
+				+ ".ShowsSessionBean':'showshowMain'}]";
 		String jsonParamStr = "[{'userId':" + sp.getString("userId", "") + "}]";
 		thread.doStartWebServicerequestWebService(getParent(), jsonParamStr,
 				methodStr, true);
@@ -206,14 +207,13 @@ public class ShowPageListActivity extends BaseActivity {
 										// TODO Auto-generated catch block
 										e.printStackTrace();
 									}
-									Toast.makeText(getApplicationContext(),
-											"点赞", 3000).show();
+									toast("点赞", getApplicationContext());
 								}
 							});
 							// public static final String WSDL_URL =
 							// "http://202.103.1.30/qcxxweservice/";
 							String bitm1 = Globals.PHT_URL
-									+ "/qcxxweb/upload/images/"
+									+ "/upload/images/"
 									+ wojsar.getJSONObject(i).getString(
 											"showsId")
 									+ "/"
@@ -249,7 +249,7 @@ public class ShowPageListActivity extends BaseActivity {
 							yal = Integer.parseInt(topcount2.getText()
 									.toString());
 							String bitm2 = Globals.PHT_URL
-									+ "/qcxxweb/upload/images/"
+									+ "/upload/images/"
 									+ manjsarr.getJSONObject(i).getString(
 											"showsId")
 									+ "/"
@@ -283,8 +283,7 @@ public class ShowPageListActivity extends BaseActivity {
 										// TODO Auto-generated catch block
 										e.printStackTrace();
 									}
-									Toast.makeText(getApplicationContext(),
-											"点赞2", 3000).show();
+									toast("点赞2", getApplicationContext());
 								}
 							});
 							// slideimg.add();

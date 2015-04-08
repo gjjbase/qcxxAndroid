@@ -8,20 +8,14 @@ public final class Globals {
 	/** 是否自动登录 */
 	public static final String ISLOGINAUTO = "is_login_auto";
 	/** WSDL的路径 **/
-	// public static final String WSDL_URL =
-	// "http://202.103.1.86/zdfwebservice/";
-	// public static final String WSDL_URL =
-	// "http://202.103.1.14:8080/qcxxweservice/";
 
-	public static final String WSDL_URL = "http://202.103.1.27/qcxxweservice/";
-	public static final String PHT_URL = "http://202.103.1.26";// 27
+	public static final String WSDL_URL = "http://202.103.1.67:8080/qcxxweservice/";
+	public static final String PHT_URL = "http://121.41.111.107:8080/wechat";// 27
 	// public static final String WSDL_URL =
 	// "http://121.41.111.107:8080/qcxxweservice/";
-	// public static final String PHT_URL = "http://121.41.111.107:8080";
-	// public static final String WSDL_URL =
-	// "http://202.103.1.2:8080/qcxxweservice/";
-	// public static final String WSDL_URL =
-	// "http://121.41.111.107:8080/qcxxweservice/";
+	// public static final String PHT_URL =
+	// "http://121.41.111.107:8080/wechat";// 27
+
 	/** 用于控制台日志 **/
 	public static final String TAG = "System.out";
 	/** 通用，所有webservice的调用都要经过这个 **/
@@ -34,6 +28,7 @@ public final class Globals {
 	// 接口前缀
 	public static final String MEMBER_SESSIOM = "com.yale.qcxx.sessionbean.member.impl";
 	public static final String SHOW_SESSION = "com.yale.qcxx.sessionbean.show.impl";
+	public static final String COMM_SESSION = "com.yale.qcxx.sessionbean.comm.impl";
 	// 秀秀的排序标示
 	public static final int XX_ORDER_BY_NEW = 0;// 最新
 	public static final int XX_ORDER_BY_SCHOOL = 1;// 本校
@@ -56,6 +51,7 @@ public final class Globals {
 	public static final int SHOW_AC = 2;// 活动show
 	public static final int SHOW_SX = 3;// 实习show
 	// 好友状态
+	public static final int FRIEND_REQUEST_APP = -4;//已邀请
 	public static final int FRIEND_IN_SYS = -3;// 系统中已经注册
 	public static final int FRIEND_INIT = -2;// 初始化
 	public static final int FRIEND_WAIT = -1;// 等待添加

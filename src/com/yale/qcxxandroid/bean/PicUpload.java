@@ -11,16 +11,6 @@ public class PicUpload {
 	String picToken;
 	@DatabaseField(columnName = "picUrl", canBeNull = false)
 	String picUrl;
-	@DatabaseField(columnName = "newFrd", canBeNull = false)
-	String newFrd;
-
-	public String getNewFrd() {
-		return newFrd;
-	}
-
-	public void setNewFrd(String newFrd) {
-		this.newFrd = newFrd;
-	}
 
 	public String getPicUrl() {
 		return picUrl;

@@ -1,14 +1,19 @@
 package com.yale.qcxxandroid.chat;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.boyaa.speech.SpeechController;
 import com.nineoldandroids.view.ViewHelper;
 import com.yale.qcxxandroid.ImageTools;
 import com.yale.qcxxandroid.R;
+import com.yale.qcxxandroid.chat.xmpp.XmppGlobals;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -19,8 +24,10 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Environment;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
+import android.text.TextUtils;
 import android.text.style.ImageSpan;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -111,11 +118,7 @@ public class ChatLVAdapter extends BaseAdapter {
 		if (list.get(position).fromOrTo == 1) {
 			hodler.toContainer.setVisibility(View.GONE);
 			hodler.fromContainer.setVisibility(View.VISIBLE);
-			// if (falg == 1) {
-			// hodler.fromContainer.setVisibility(View.GONE);
-			// hodler.img_otherhint.setVisibility(View.VISIBLE);
-			// hodler.img_otherhint.setImageResource(R.drawable.demo5);
-			if (list.get(position).falg == true) {
+			if (list.get(position).falg.equals(XmppGlobals.MessageType.picture)) {
 				hodler.fromContent.setVisibility(View.GONE);
 				hodler.img_otherhint.setVisibility(View.VISIBLE);
 				hodler.img_otherhint.setOnClickListener(new OnClickListener() {
@@ -128,12 +131,26 @@ public class ChatLVAdapter extends BaseAdapter {
 				});
 				ImageTools.readBitmapAutoSize(bm, list.get(position).pullname,
 						hodler.img_otherhint);
-			} else {
+			} else if (list.get(position).falg
+					.equals(XmppGlobals.MessageType.text)) {
 				hodler.img_otherhint.setVisibility(View.GONE);
 				hodler.fromContent.setVisibility(View.VISIBLE);
 				SpannableStringBuilder sb = handler(hodler.fromContent,
 						list.get(position).content);
 				hodler.fromContent.setText(sb);
+				hodler.time.setText(list.get(position).time);
+			} else if (list.get(position).falg
+					.equals(XmppGlobals.MessageType.sound)) {
+				hodler.img_otherhint.setVisibility(View.GONE);
+				hodler.fromContent.setVisibility(View.VISIBLE);
+				/*
+				 * SpannableStringBuilder sb = handler(hodler.fromContent,
+				 * list.get(position).content);
+				 */
+				String path = list.get(position).content;
+				hodler.fromContent.setText("语音");
+				hodler.fromContent.setOnClickListener(new SoundOnclickListener(
+						mContext, path));
 				hodler.time.setText(list.get(position).time);
 			}
 			// }
@@ -145,7 +162,7 @@ public class ChatLVAdapter extends BaseAdapter {
 			//
 			// hodler.fromContainer.setVisibility(View.GONE);
 			// hodler.img_hint.setVisibility(View.VISIBLE);
-			if (list.get(position).falg == true) {
+			if (list.get(position).falg.equals(XmppGlobals.MessageType.picture)) {
 				hodler.img_hint.setVisibility(View.VISIBLE);
 				hodler.img_hint.setOnClickListener(new OnClickListener() {
 
@@ -158,12 +175,26 @@ public class ChatLVAdapter extends BaseAdapter {
 				hodler.toContent.setVisibility(View.GONE);
 				ImageTools.readBitmapAutoSize(bm, list.get(position).pullname,
 						hodler.img_hint);
-			} else {
+			} else if (list.get(position).falg
+					.equals(XmppGlobals.MessageType.text)) {
 				hodler.toContent.setVisibility(View.VISIBLE);
 				hodler.img_hint.setVisibility(View.GONE);
 				SpannableStringBuilder sb = handler(hodler.toContent,
 						list.get(position).content);
 				hodler.toContent.setText(sb);
+				hodler.time.setText(list.get(position).time);
+			} else if (list.get(position).falg
+					.equals(XmppGlobals.MessageType.sound)) {
+				hodler.toContent.setVisibility(View.VISIBLE);
+				hodler.img_hint.setVisibility(View.GONE);
+				/*
+				 * SpannableStringBuilder sb = handler(hodler.fromContent,
+				 * list.get(position).content);
+				 */
+				String path = list.get(position).content;
+				hodler.toContent.setText("语音");
+				hodler.toContent.setOnClickListener(new SoundOnclickListener(
+						mContext, path));
 				hodler.time.setText(list.get(position).time);
 			}
 			// // if(share.getInt("falger", 1)==true){
@@ -172,22 +203,22 @@ public class ChatLVAdapter extends BaseAdapter {
 			// // readBitmapAutoSize("", 100, 100, hodler.img_hint);
 			// }
 		}
-		hodler.fromContent.setOnClickListener(new View.OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-
-			}
-		});
-		hodler.toContent.setOnClickListener(new View.OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-
-			}
-		});
+		/*
+		 * hodler.fromContent.setOnClickListener(new View.OnClickListener() {
+		 * 
+		 * @Override public void onClick(View v) { // TODO Auto-generated method
+		 * stub
+		 * 
+		 * } });
+		 */
+		/*
+		 * hodler.toContent.setOnClickListener(new View.OnClickListener() {
+		 * 
+		 * @Override public void onClick(View v) { // TODO Auto-generated method
+		 * stub
+		 * 
+		 * } });
+		 */
 
 		hodler.fromContent.setOnLongClickListener(new popAction(convertView,
 				position, list.get(position).fromOrTo));
@@ -199,16 +230,28 @@ public class ChatLVAdapter extends BaseAdapter {
 	private SpannableStringBuilder handler(final TextView gifTextView,
 			String content) {
 		SpannableStringBuilder sb = new SpannableStringBuilder(content);
-		String regex = "(\\#\\[face/png/f_static_)\\d{3}(.png\\]\\#)";
+		String regex = null, num = null, gif = null;
+		if (content.contains("faceer")) {
+			regex = "(\\#\\[faceer/png/f_static_)\\d{3}(.png\\]\\#)";
+		} else if (content.contains("face")) {
+			regex = "(\\#\\[face/png/f_static_)\\d{3}(.png\\]\\#)";
+		}
+
 		Pattern p = Pattern.compile(regex);
 		Matcher m = p.matcher(content);
 		while (m.find()) {
 			String tempText = m.group();
 			try {
-				String num = tempText.substring(
-						"#[face/png/f_static_".length(), tempText.length()
-								- ".png]#".length());
-				String gif = "face/gif/f" + num + ".gif";
+				if (content.contains("faceer")) {
+					num = tempText.substring("#[faceer/png/f_static_".length(),
+							tempText.length() - ".png]#".length());
+					gif = "faceer/gif/f" + num + ".gif";
+				} else if (content.contains("face")) {
+					num = tempText.substring("#[face/png/f_static_".length(),
+							tempText.length() - ".png]#".length());
+					gif = "face/gif/f" + num + ".gif";
+				}
+
 				/**
 				 * */
 				InputStream is = mContext.getAssets().open(gif);
@@ -424,6 +467,47 @@ public class ChatLVAdapter extends BaseAdapter {
 			}
 		});
 
+	}
+
+	private class SoundOnclickListener implements OnClickListener {
+		private String path;
+		@SuppressWarnings("unused")
+		private Context context;
+		private int mSampleRate = 8000; // 播放的速度
+		SpeechController mSpeechController;
+
+		public SoundOnclickListener(Context context, String path) {
+			this.context = context;
+			this.path = path;
+		}
+
+		@Override
+		public void onClick(View view) {
+			String tempFileName = Environment.getExternalStorageDirectory()
+					.getAbsolutePath().toString()
+					+ path;
+			mSpeechController = SpeechController.getInstance();
+			mSpeechController.setDebug(true);
+			mSpeechController.setRecordingMaxTime(25);
+			if (TextUtils.isEmpty(tempFileName)) {
+				return;
+			}
+			FileInputStream fileInputStream;
+			try {
+				File file = new File(tempFileName);
+				if (file.exists()) {
+					fileInputStream = new FileInputStream(file);
+					mSpeechController.play(fileInputStream, mSampleRate,
+							tempFileName);
+				} else {
+					Toast.makeText(mContext, "文件已损坏", 2000).show();
+				}
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+				// throw new IllegalStateException("input file not found", e);
+			}
+			// messageTextView.setText("正在播放....");
+		}
 	}
 
 }

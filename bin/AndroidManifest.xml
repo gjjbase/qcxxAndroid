@@ -6,7 +6,6 @@
   	  <uses-sdk
         android:minSdkVersion="14"
         android:targetSdkVersion="18" />
-    
     <!-- 声明自定义权限 -->  
     <permission  
             android:name="com.yale.qcxxandroid.XMPPMessageReciver" 
@@ -29,6 +28,7 @@
         <!-- PopwindActivity -->
 		<activity android:name=".base.BaseActivity" android:configChanges="orientation|keyboardHidden" android:theme="@android:style/Theme.NoTitleBar" android:windowSoftInputMode="adjustResize"/>
 		<activity android:name=".AddnewFrdACtivity" android:configChanges="orientation|keyboardHidden" android:theme="@android:style/Theme.NoTitleBar" android:windowSoftInputMode="adjustResize"/>
+		<activity android:name=".NearActivity" android:configChanges="orientation|keyboardHidden" android:theme="@android:style/Theme.NoTitleBar" android:windowSoftInputMode="adjustResize"/>
 		<activity android:name=".FrdMesgActivity" android:configChanges="orientation|keyboardHidden" android:theme="@android:style/Theme.NoTitleBar" android:windowSoftInputMode="adjustResize"/>
 		<activity android:name=".SinActivity" android:configChanges="orientation|keyboardHidden" android:theme="@android:style/Theme.NoTitleBar" android:windowSoftInputMode="adjustPan"/>
 		<activity android:name=".ImageViewActivity" android:configChanges="orientation|keyboardHidden" android:theme="@android:style/Theme.NoTitleBar" android:windowSoftInputMode="adjustPan"/>
@@ -65,7 +65,7 @@
 		<activity android:name=".ShowNewActivity" android:configChanges="orientation|keyboardHidden"  android:theme="@android:style/Theme.NoTitleBar" android:windowSoftInputMode="adjustPan"/>
 		<activity android:name=".MySchoolActivity" android:configChanges="orientation|keyboardHidden"  android:theme="@android:style/Theme.NoTitleBar" android:windowSoftInputMode="adjustPan"/>
 		<activity android:name=".ShowListActivity" android:configChanges="orientation|keyboardHidden"  android:theme="@android:style/Theme.NoTitleBar" android:windowSoftInputMode="adjustPan"/>
-		<activity android:name=".ShowPubActivity" android:configChanges="orientation|keyboardHidden"  android:theme="@android:style/Theme.NoTitleBar" android:windowSoftInputMode="adjustPan"/>
+		<activity android:name=".ShowPubActivity" android:configChanges="orientation|keyboardHidden"  android:theme="@android:style/Theme.DeviceDefault.NoActionBar" android:windowSoftInputMode="adjustPan"/>
     	<activity android:name=".CommentDetailActivity" android:configChanges="orientation|keyboardHidden" android:theme="@android:style/Theme.NoTitleBar" android:windowSoftInputMode="adjustPan"  />
     	<activity android:name=".ShowPageListActivity" android:configChanges="orientation|keyboardHidden" android:theme="@android:style/Theme.NoTitleBar" android:windowSoftInputMode="adjustPan"  />
     	<activity android:name=".ClassMailActivity" android:configChanges="orientation|keyboardHidden"  android:theme="@android:style/Theme.NoTitleBar" android:windowSoftInputMode="adjustPan"/>
@@ -125,9 +125,8 @@
     	</application>
     	
 
- 
+ <uses-permission android:name="android.permission.SEND_SMS"/> 
 <uses-permission android:name="android.permission.KILL_BACKGROUND_PROCESSES"/>
-
 <uses-permission android:name="android.permission.RESTART_PACKAGES"/>
 <uses-permission android:name="android.permission.WAKE_LOCK" />
 <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" /> 

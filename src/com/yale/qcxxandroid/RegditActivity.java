@@ -26,7 +26,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.provider.Settings.Global;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Gravity;
@@ -39,7 +38,6 @@ import android.widget.EditText;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.yale.qcxxandroid.base.BaseActivity;
 import com.yale.qcxxandroid.util.Globals;
@@ -197,9 +195,6 @@ public class RegditActivity extends BaseActivity implements
 		});
 		ssq = (RelativeLayout) findViewById(R.id.ssq);
 		schoolAndCollege = (TextView) findViewById(R.id.schoolAndCollege);
-		// sf_name.setText(sp.getString("sf_name", ""));
-		// sc_name.setText(sp.getString("sc_name", ""));
-		// xy_name.setText(sp.getString("xy_name", ""));
 		schoolAndCollege.setText(sp.getString("sf_name", "")
 				+ sp.getString("sc_name", "") + sp.getString("xy_name", ""));
 		Num.addTextChangedListener(new TextWatcher() {
@@ -242,13 +237,6 @@ public class RegditActivity extends BaseActivity implements
 				intent.setClass(getApplicationContext(),
 						DeteShooleActivity.class);
 				startActivity(intent);
-				// if (pop.isShowing()) {
-				// // 隐藏窗口，如果设置了点击窗口外小时即不需要此方式隐藏
-				// pop.dismiss();
-				// } else {
-				// // 显示窗口 
-				// pop.showAtLocation(v, Gravity.BOTTOM, 0, 0);
-				// }
 			}
 		});
 		mViewProvince = (WheelView) view.findViewById(R.id.id_province);

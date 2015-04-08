@@ -18,6 +18,7 @@ import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 
 import com.yale.qcxxandroid.base.BaseActivity;
+import com.yale.qcxxandroid.util.Globals;
 import com.yale.qcxxandroid.util.ThreadUtil;
 
 public class SchoolDetaActivity extends BaseActivity {
@@ -34,11 +35,10 @@ public class SchoolDetaActivity extends BaseActivity {
 
 	private void ini() {
 		thread = new ThreadUtil(myhandler);
-		String methodStr = "[{'com.yale.qcxx.sessionbean.comm.impl.CommonDataSessionBean':'listCommonData'}]";
+		String methodStr = "[{'" + Globals.COMM_SESSION
+				+ ".CommonDataSessionBean':'listCommonData'}]";
 		String jsonParamStr = "[{'cdType':" + 7 + ",'cdParendId':"
 				+ sp.getString("cdParendId", "") + "}]";
-		// String jsonParamStr = "[{'userId':" + sp.getString("userId", "") +
-		// "}]";
 		thread.doStartWebServicerequestWebService(SchoolDetaActivity.this,
 				jsonParamStr, methodStr, true);
 	}

@@ -54,8 +54,8 @@ public class ShowListActivity extends BaseActivity {
 
 	private void praise(String pmrid, String youid) {
 		threadUtil = new ThreadUtil(handler);
-		// "[{'com.yale.qcxx.sessionbean.comm.impl.CommonDataSessionBean':'saveCommonAction'}]"
-		String methodStr = "[{'com.yale.qcxx.sessionbean.comm.impl.CommonDataSessionBean':'saveCommonAction'}]";
+		String methodStr = "[{'" + Globals.COMM_SESSION
+				+ ".CommonDataSessionBean':'saveCommonAction'}]";
 		String jsonParamStr = "[{'me_id':" + sp.getString("userId", "")
 				+ ",'primary_id':" + "'" + pmrid + "'" + ",'action_type':" + 2
 				+ ",'your_id':" + youid + "}]";
@@ -79,16 +79,16 @@ public class ShowListActivity extends BaseActivity {
 					if (jo.getString("returnStr").equals("true")) {
 
 					} else {
-						Toast.makeText(getApplicationContext(), "点赞失败", 3000);
+						toast("点赞失败", getApplicationContext());
 					}
 				} catch (Exception e) {
 					// TODO: handle exception
-					Toast.makeText(getApplicationContext(), "网络连接失败", 3000);
+					toast("网络连接失败", getApplicationContext());
 				}
 
 				break;
 			case 2:
-				Toast.makeText(getApplicationContext(), "网络连接失败", 3000);
+				toast("网络连接失败", getApplicationContext());
 				break;
 
 			}
@@ -97,7 +97,8 @@ public class ShowListActivity extends BaseActivity {
 
 	private void init() {
 		thread = new ThreadUtil(mhandler);
-		String methodStr = "[{'com.yale.qcxx.sessionbean.show.impl.ShowsSessionBean':'listOfShows'}]";
+		String methodStr = "[{'" + Globals.SHOW_SESSION
+				+ ".ShowsSessionBean':'listOfShows'}]";
 		String jsonParamStr = "[{'aa':" + 1 + "}]";
 		thread.doStartWebServicerequestWebService(ShowListActivity.this,
 				jsonParamStr, methodStr, true);
@@ -143,7 +144,7 @@ public class ShowListActivity extends BaseActivity {
 								// String bitm =
 								// "http://202.103.1.2/qcxxweb/upload/images/G14C3080A6639B3FE30FFDC4/G14C3080A6749C3FD3C424F8.jpg";
 								String bitm = Globals.PHT_URL
-										+ "/qcxxweb/upload/images/"
+										+ "/upload/images/"
 										+ jsoo.getJSONObject(j).getString(
 												"showsId") + "/" + ster[j]
 										+ ".jpg";

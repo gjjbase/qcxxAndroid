@@ -66,7 +66,10 @@ public class MyClasslActivityDepar extends BaseActivity {
 			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 					long arg3) {
 				// TODO Auto-generated method stub
-				Toast.makeText(getApplicationContext(), "跳到班级", 3000).show();
+				bundle.putString("data", "2");
+				intent.setClass(getApplicationContext(),
+						MyClassActivityitem.class).putExtras(bundle);
+				startActivity(intent);
 			}
 		});
 		mylist.setOnItemClickListener(new OnItemClickListener() {
@@ -75,7 +78,10 @@ public class MyClasslActivityDepar extends BaseActivity {
 			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 					long arg3) {
 				// TODO Auto-generated method stub
-				Toast.makeText(getApplicationContext(), "跳到班级", 3000).show();
+				bundle.putString("data", "2");
+				intent.setClass(getApplicationContext(),
+						MyClassActivityitem.class).putExtras(bundle);
+				startActivity(intent);
 			}
 		});
 	}

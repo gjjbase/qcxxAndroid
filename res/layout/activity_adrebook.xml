@@ -43,20 +43,20 @@
                     android:text="返回"
                     android:textColor="@color/black"
                     android:textSize="18sp" />
-	
+
                 <TextView
-                    android:onClick="txtadd"
                     android:layout_width="wrap_content"
-                    android:layout_marginRight="10dp"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
+                    android:layout_marginRight="10dp"
                     android:clickable="true"
+                    android:onClick="txtadd"
                     android:paddingLeft="5dp"
                     android:text="添加"
                     android:textColor="@color/black"
                     android:textSize="18sp" />
-	
+
                 <View
                     android:layout_width="fill_parent"
                     android:layout_height="0.5dp"
@@ -211,7 +211,7 @@
             android:layout_gravity="center"
             android:background="@drawable/show_head_toast_bg"
             android:gravity="center"
-            android:textColor="#ffffffff"
+            android:textColor="@color/white"
             android:textSize="30.0dip"
             android:visibility="invisible" />
 
@@ -290,7 +290,7 @@
             android:id="@+id/bomlist"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:background="@color/gray_font"
+            android:background="@color/gray"
             android:clickable="true" />
     </LinearLayout>
 

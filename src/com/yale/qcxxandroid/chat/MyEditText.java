@@ -19,13 +19,13 @@ import android.widget.Toast;
 public class MyEditText extends EditText implements
 		MenuItem.OnMenuItemClickListener {
 	private static final int ID_SELECTION_MODE = android.R.id.selectTextMode;
-	  // Selection context mode
-  
+	// Selection context mode
+
 	private static final int ID_SELECT_ALL = android.R.id.selectAll;
-    private static final int ID_CUT = android.R.id.cut;
-    private static final int ID_COPY = android.R.id.copy;
-    private static final int ID_PASTE = android.R.id.paste;
-    
+	private static final int ID_CUT = android.R.id.cut;
+	private static final int ID_COPY = android.R.id.copy;
+	private static final int ID_PASTE = android.R.id.paste;
+
 	private final Context mContext;
 
 	/*
@@ -48,10 +48,10 @@ public class MyEditText extends EditText implements
 
 	@Override
 	protected void onCreateContextMenu(ContextMenu menu) {
-//		menu.add(0, ID_PASTE, 0, "粘贴").setOnMenuItemClickListener(this);
-//		menu.add(0, ID_CUT, 1, "剪切").setOnMenuItemClickListener(this);
-//		menu.add(0, ID_COPY, 1, "复制").setOnMenuItemClickListener(this);
-//		menu.add(0, ID_SELECT_ALL, 1, "全选").setOnMenuItemClickListener(this);
+		// menu.add(0, ID_PASTE, 0, "粘贴").setOnMenuItemClickListener(this);
+		// menu.add(0, ID_CUT, 1, "剪切").setOnMenuItemClickListener(this);
+		// menu.add(0, ID_COPY, 1, "复制").setOnMenuItemClickListener(this);
+		// menu.add(0, ID_SELECT_ALL, 1, "全选").setOnMenuItemClickListener(this);
 		super.onCreateContextMenu(menu);
 	}
 

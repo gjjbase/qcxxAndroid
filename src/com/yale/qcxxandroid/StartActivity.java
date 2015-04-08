@@ -16,6 +16,7 @@ import android.widget.PopupWindow;
 import com.yale.qcxxandroid.base.AlertDialoger;
 import com.yale.qcxxandroid.base.BaseActivity;
 import com.yale.qcxxandroid.base.MainActivity;
+import com.yale.qcxxandroid.util.Globals;
 import com.yale.qcxxandroid.util.ThreadUtil;
 
 public class StartActivity extends BaseActivity {
@@ -32,7 +33,8 @@ public class StartActivity extends BaseActivity {
 			if (!StringUtils.isEmpty(sp.getString("number", ""))
 					&& !StringUtils.isEmpty(sp.getString("passWord", ""))) {
 				threadUtil = new ThreadUtil(handler);
-				String methodStr = "[{'com.yale.qcxx.sessionbean.member.impl.UserInfoSessionBean':'getUserInfo'}]";
+				String methodStr = "[{'" + Globals.MEMBER_SESSIOM
+						+ ".UserInfoSessionBean':'getUserInfo'}]";
 				String jsonParamStr = "[{'number':"
 						+ sp.getString("number", "") + ",'password':"
 						+ sp.getString("passWord", "") + "}]";

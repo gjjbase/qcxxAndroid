@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.yale.qcxxandroid.base.BaseActivity;
+import com.yale.qcxxandroid.util.Globals;
 import com.yale.qcxxandroid.util.ThreadUtil;
 
 public class MyDetailActivity extends BaseActivity {
@@ -122,7 +123,8 @@ public class MyDetailActivity extends BaseActivity {
 			}
 		};
 		thread = new ThreadUtil(handler);
-		String methodStr = "[{'com.yale.qcxx.sessionbean.member.impl.UserInfoSessionBean':'getUserInfo'}]";
+		String methodStr = "[{'" + Globals.MEMBER_SESSIOM
+				+ ".UserInfoSessionBean':'getUserInfo'}]";
 		String jsonParamStr = "[{'userId':"
 				+ getIntent().getExtras().getString("id") + "}]";
 		// String jsonParamStr = "[{'userId':" + sp.getString("userId", "") +

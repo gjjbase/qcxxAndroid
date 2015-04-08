@@ -1,6 +1,11 @@
 package com.yale.qcxxandroid.chat;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -10,7 +15,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import net.sf.json.JSONObject;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.dao.GenericRawResults;
@@ -19,7 +25,7 @@ import com.yale.qcxxandroid.base.MyBaseListView;
 import com.yale.qcxxandroid.R;
 import com.yale.qcxxandroid.base.BaseActivity;
 import com.yale.qcxxandroid.base.MyBaseListView.OnRefreshListener;
-import com.yale.qcxxandroid.bean.MessageBean;
+import com.yale.qcxxandroid.bean.XmppMsgBean;
 import com.yale.qcxxandroid.chat.xmpp.XmppGlobals;
 import com.yale.qcxxandroid.chat.xmpp.XmppService;
 import com.yale.qcxxandroid.util.DataHelper;
@@ -52,6 +58,7 @@ import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.style.ImageSpan;
+import android.util.Base64;
 import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
@@ -59,7 +66,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.View.OnClickListener;
-import android.view.View.OnLongClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup.LayoutParams;
 import android.view.inputmethod.InputMethodManager;
@@ -99,8 +105,191 @@ public class ChatMainActivity extends BaseActivity {
 	static Bitmap bm;
 	private ImageView img_adder;
 	RelativeLayout rel_hint;
-	private ImageView left, inputer;
+	private ImageView left;
+	private ButtonRecorder inputer;
 	private int falg;
+
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.chat_main);
+		img_adder = (ImageView) findViewById(R.id.img_adder);
+		left = (ImageView) findViewById(R.id.left);
+		inputer = (ButtonRecorder) findViewById(R.id.inputer);
+		left.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				falg++;
+				if (falg % 2 == 0) {
+					left.setImageResource(R.drawable.img_chat);
+					inputer.setVisibility(View.VISIBLE);
+					input.setVisibility(View.GONE);
+				} else {
+					left.setImageResource(R.drawable.img_yuying);
+					inputer.setVisibility(View.GONE);
+					input.setVisibility(View.VISIBLE);
+				}
+			}
+		});
+		/*
+		 * inputer.setOnLongClickListener(new OnLongClickListener() {
+		 * 
+		 * @Override public boolean onLongClick(View v) { // TODO Auto-generated
+		 * method stub Toast.makeText(getApplicationContext(), "说话",
+		 * 3000).show(); return false; } });
+		 */
+		img_adder.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				rel_hint.setVisibility(View.GONE);
+				initStaticFaces(3);
+				InitViewPager(3);
+				mDotsLayout.setVisibility(View.VISIBLE);
+				mViewPager.setVisibility(View.VISIBLE);
+				((InputMethodManager) getSystemService(INPUT_METHOD_SERVICE))
+						.hideSoftInputFromWindow(ChatMainActivity.this
+								.getCurrentFocus().getWindowToken(),
+								InputMethodManager.HIDE_NOT_ALWAYS);
+
+			}
+		});
+
+		initViews();
+		mListView.setSelection(infos.size());
+		bindXMPPService();
+		// 新消息监听
+		IntentFilter filter = new IntentFilter(XmppGlobals.MESSAGE_ACTION);
+		registerReceiver(receiver, filter);
+		// mListView.setSelection(infos.size());
+		// 消息发送是否成功的广播监听
+		IntentFilter filter2 = new IntentFilter(XmppGlobals.SENDMSG_ISUCCESSED);
+		registerReceiver(receiverCast, filter2);
+		// 发送语音消息的广播监听
+		IntentFilter filter3 = new IntentFilter(
+				XmppGlobals.ACTION_RECORDER_SEND);
+		registerReceiver(reciverSoundSend, filter3);
+
+	}
+
+	private BroadcastReceiver receiverCast = new BroadcastReceiver() {
+
+		@Override
+		public void onReceive(Context arg0, Intent intent) {
+			boolean flag = intent.getBooleanExtra("IsSuccess", false);
+			if (flag) {
+				Toast.makeText(ChatMainActivity.this, "发送成功！", 2000).show();
+			} else {
+				Toast.makeText(ChatMainActivity.this, "发送失败！", 2000).show();
+			}
+		}
+	};
+	private BroadcastReceiver reciverSoundSend = new BroadcastReceiver() {
+
+		@SuppressWarnings("deprecation")
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			String fileName = intent.getStringExtra("fileName");
+			if (fileName == null || fileName.equals("")) {
+				Toast.makeText(ChatMainActivity.this, "录制语音出错！", 2000).show();
+			} else {
+				infos.add(getChatInfoTo("", fileName, num.getText().toString(),
+						XmppGlobals.MessageType.sound,
+						new Date(System.currentTimeMillis()).toLocaleString()));
+				mLvAdapter.setList(infos);
+				mLvAdapter.notifyDataSetChanged();
+				mListView.setSelection(infos.size() - 1);
+				// 讲文件转换为base64字符串
+				String absolutePath = Environment.getExternalStorageDirectory()
+						.getAbsolutePath().toString()
+						+ fileName;
+				try {
+					String content = encodeBase64File(absolutePath);
+					String fromUserId = getSharedPreferences("qcxx",
+							Context.MODE_PRIVATE).getString("phoneNum", "");
+					String type = XmppGlobals.MessageType.sound; // 语音消息
+					byte[] myfie = Base64.decode(content, Base64.CRLF);
+					String path = Environment.getExternalStorageDirectory()
+							.getAbsolutePath().toString()
+							+ "/qcxx/";
+					byte2File(myfie, path, "text.qcxx");
+					XmppMsgBean bean = new XmppMsgBean();
+					bean.setChatTopic(chatName);
+					bean.setContent(content);
+					bean.setFileSize(fileName);
+					bean.setFromUserId(fromUserId);
+					bean.setMsgtype(0);
+					bean.setReaded(false);
+					bean.setTimeLen(fileName);
+					bean.setTimeSend(GlobalUtil.getLocalDate());
+					bean.setToUserId(chatName);
+					bean.setType(type);
+					mXmppService.sendMsg(bean);
+				} catch (FileNotFoundException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+	};
+
+	public static String encodeBase64File(String path) throws Exception {
+		File file = new File(path);
+		FileInputStream inputFile = new FileInputStream(file);
+		byte[] buffer = new byte[(int) file.length()];
+		inputFile.read(buffer);
+		inputFile.close();
+		String paths = Environment.getExternalStorageDirectory()
+				.getAbsolutePath().toString()
+				+ "/qcxx/";
+		byte2File(buffer, paths, "textAAAA.qcxx");
+		return Base64.encodeToString(buffer, Base64.CRLF);
+	}
+
+	public static boolean byte2File(byte[] buf, String filePath, String fileName) {
+		boolean flag = true;
+		BufferedOutputStream bos = null;
+		FileOutputStream fos = null;
+		File file = null;
+		try {
+			File dir = new File(filePath);
+			if (!dir.exists()) {
+				boolean flags = dir.mkdirs();
+				System.out.println(flags);
+			}
+			file = new File(filePath + fileName);
+			file.createNewFile();
+			fos = new FileOutputStream(file);
+			bos = new BufferedOutputStream(fos);
+			bos.write(buf);
+		} catch (Exception e) {
+			e.printStackTrace();
+			flag = false;
+		} finally {
+			if (bos != null) {
+				try {
+					bos.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+			if (fos != null) {
+				try {
+					fos.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return flag;
+	}
 
 	// 拍照
 	public void takePicture() {
@@ -164,10 +353,10 @@ public class ChatMainActivity extends BaseActivity {
 		}
 		if (sp.getInt("falger", 3) == 1) {
 			infos.add(getChatInfoTo(realPath, "", num.getText().toString(),
-					true, ""));
+					XmppGlobals.MessageType.picture, ""));
 		} else if (sp.getInt("falger", 3) == 0) {
 			infos.add(getChatInfoTo(picFileFullName, "", num.getText()
-					.toString(), true, ""));
+					.toString(), XmppGlobals.MessageType.picture, ""));
 		}
 
 		mLvAdapter.setList(infos);
@@ -197,50 +386,45 @@ public class ChatMainActivity extends BaseActivity {
 	private void initViews() {
 		chatName = getIntent().getExtras().getString("name");
 		mListView = (MyBaseListView) findViewById(R.id.message_chat_listview);
-		/*
-		 * Dao<MessageBean, Integer> messageDao =
-		 * DataHelper.getInstance(ChatMainActivity.this).getMessageDAO();
-		 * PreparedQuery<MessageBean> query;
-		 */
 		try {
-			/*
-			 * Where<MessageBean, Integer> qeuryBuidler=
-			 * messageDao.queryBuilder().orderBy("msgTime",
-			 * true).where().eq("sender", chatName).or().eq("reciver",
-			 * chatName); query = qeuryBuidler.prepare(); List<MessageBean> lsit
-			 * = messageDao.query(query);
-			 */
-			Dao<MessageBean, Integer> messageDao = DataHelper.getInstance(
-					ChatMainActivity.this).getMessageDAO();
-			String sql = "select * from messageBean where sender = '"
-					+ chatName + "' or reciver = '" + chatName
-					+ "' order by msgTime desc limit 5";
-			GenericRawResults<MessageBean> rawResults = messageDao.queryRaw(
-					sql, new RawRowMapper<MessageBean>() {
+			Dao<XmppMsgBean, Integer> messageDao = DataHelper.getInstance(
+					ChatMainActivity.this).getXmppMsgDAO();
+			String sql = "select * from xmppMsgBean where chatTopic = '"
+					+ chatName + "' order by timeSend desc limit 5";
+			GenericRawResults<XmppMsgBean> rawResults = messageDao.queryRaw(
+					sql, new RawRowMapper<XmppMsgBean>() {
 						@Override
-						public MessageBean mapRow(String[] columnNames,
+						public XmppMsgBean mapRow(String[] columnNames,
 								String[] resultColumns) throws SQLException {
-							MessageBean bean = new MessageBean();
-							bean.setSender(resultColumns[0]);
-							bean.setMsgContent(resultColumns[1]);
-							bean.setMsgTime(resultColumns[2]);
-							bean.setReciver(resultColumns[3]);
+							XmppMsgBean bean = new XmppMsgBean();
+							bean.setChatTopic(resultColumns[0]);
+							bean.setContent(resultColumns[1]);
+							bean.setFileSize(resultColumns[2]);
+							bean.setFromUserId(resultColumns[3]);
+							bean.setType(resultColumns[4]);
+							bean.setToUserId(resultColumns[5]);
+							bean.setTimeSend(resultColumns[6]);
+							bean.setTimeLen(resultColumns[7]);
+							bean.setMsgtype(Integer.parseInt(resultColumns[8]));
 							bean.setReaded(Boolean
-									.parseBoolean(resultColumns[4]));
-							bean.setMsgtype(Integer.parseInt(resultColumns[5]));
-							bean.setId(Integer.parseInt(resultColumns[6]));
-							bean.setType(Integer.parseInt(resultColumns[7]));
+									.parseBoolean(resultColumns[9]));
+							bean.setId(Integer.parseInt(resultColumns[10]));
 							return bean;
 						}
 					});
 			// there should be 1 result
-			List<MessageBean> results = rawResults.getResults();
-			if (results != null) {
-				for (int i = results.size() - 1; i > 0; i--) {
-					MessageBean msg = results.get(i - 1);
-					infos.add(getChatInfoTo(msg.getSender(),
-							msg.getMsgContent(), msg.getMsgtype() + "", false,
-							msg.getMsgTime()));
+			List<XmppMsgBean> results = rawResults.getResults();
+			if (results != null && results.size() > 0) {
+				for (int i = results.size(); i > 0; i--) {
+					XmppMsgBean msg = results.get(i - 1);
+					if (!msg.isReaded()) {
+						msg.setReaded(true);
+						int a = messageDao.update(msg);
+						System.out.println(a + "");
+					}
+					infos.add(getChatInfoTo(msg.getFromUserId(),
+							msg.getContent(), msg.getMsgtype() + "",
+							msg.getType(), msg.getTimeSend()));
 				}
 			}
 		} catch (SQLException e) {
@@ -255,46 +439,46 @@ public class ChatMainActivity extends BaseActivity {
 					int num = 0;
 					if (infos != null && infos.size() > 0)
 						num = infos.size() - 1;
-					Dao<MessageBean, Integer> messageDao = DataHelper
-							.getInstance(ChatMainActivity.this).getMessageDAO();
-					String sql = "select * from messageBean where sender = '"
-							+ chatName + "' or reciver = '" + chatName
-							+ "' order by msgTime desc limit " + (num + 5);
-					GenericRawResults<MessageBean> rawResults = messageDao
-							.queryRaw(sql, new RawRowMapper<MessageBean>() {
+					Dao<XmppMsgBean, Integer> messageDao = DataHelper
+							.getInstance(ChatMainActivity.this).getXmppMsgDAO();
+					String sql = "select * from xmppMsgBean where chatTopic = '"
+							+ chatName
+							+ "' order by timeSend desc limit "
+							+ (num + 5);
+					GenericRawResults<XmppMsgBean> rawResults = messageDao
+							.queryRaw(sql, new RawRowMapper<XmppMsgBean>() {
 								@Override
-								public MessageBean mapRow(String[] columnNames,
+								public XmppMsgBean mapRow(String[] columnNames,
 										String[] resultColumns)
 										throws SQLException {
-									MessageBean bean = new MessageBean();
-									bean.setSender(resultColumns[0]);
-									bean.setMsgContent(resultColumns[1]);
-									bean.setMsgTime(resultColumns[2]);
-									bean.setReciver(resultColumns[3]);
-									bean.setReaded(Boolean
-											.parseBoolean(resultColumns[4]));
+									XmppMsgBean bean = new XmppMsgBean();
+									bean.setChatTopic(resultColumns[0]);
+									bean.setContent(resultColumns[1]);
+									bean.setFileSize(resultColumns[2]);
+									bean.setFromUserId(resultColumns[3]);
+									bean.setType(resultColumns[4]);
+									bean.setToUserId(resultColumns[5]);
+									bean.setTimeSend(resultColumns[6]);
+									bean.setTimeLen(resultColumns[7]);
 									bean.setMsgtype(Integer
-											.parseInt(resultColumns[5]));
+											.parseInt(resultColumns[8]));
+									bean.setReaded(Boolean
+											.parseBoolean(resultColumns[9]));
 									bean.setId(Integer
-											.parseInt(resultColumns[6]));
-									bean.setType(Integer
-											.parseInt(resultColumns[7]));
+											.parseInt(resultColumns[10]));
 									return bean;
 								}
 							});
 					// there should be 1 result
-					List<MessageBean> results = rawResults.getResults();
+					List<XmppMsgBean> results = rawResults.getResults();
 					if (results != null && results.size() > (num + 1)) {
 						infos.clear();
 						for (int i = results.size(); i > 0; i--) {
-							MessageBean bean = results.get(i - 1);
-							infos.add(getChatInfoTo(bean.getSender(),
-									bean.getMsgContent(), bean.getMsgtype()
-											+ "", false, bean.getMsgTime()));
-							System.out.println(bean.getId() + ","
-									+ bean.getMsgContent() + ","
-									+ bean.getMsgTime() + ","
-									+ bean.getSender());
+							XmppMsgBean bean = results.get(i - 1);
+							infos.add(getChatInfoTo(bean.getFromUserId(),
+									bean.getContent(), bean.getMsgtype() + "",
+									bean.getType(), bean.getTimeSend()));
+							// System.out.println(bean.getId()+","+bean.getMsgContent()+","+bean.getMsgTime()+","+bean.getSender());
 						}
 						handler.sendEmptyMessage(1);
 					} else {
@@ -307,6 +491,7 @@ public class ChatMainActivity extends BaseActivity {
 				}
 			}
 		});
+
 		mViewPager = (ViewPager) findViewById(R.id.face_viewpager);
 		image_face = (ImageView) findViewById(R.id.image_face);
 		num = (EditText) findViewById(R.id.num);
@@ -394,6 +579,95 @@ public class ChatMainActivity extends BaseActivity {
 		rel_hint = (RelativeLayout) findViewById(R.id.rel_hint);
 		input = (MyEditText) findViewById(R.id.input_sms);
 		send = (ImageView) findViewById(R.id.send_sms);
+		// 单击表情执行的操作
+		input.addTextChangedListener(new TextWatcher() {
+
+			@SuppressWarnings("deprecation")
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before,
+					int count) {
+				if (input.getText().toString().equals("")) {
+					img_adder.setAlpha(255);
+					send.setVisibility(View.GONE);
+				} else {
+					img_adder.setAlpha(0);
+					send.setVisibility(View.VISIBLE);
+				}
+
+			}
+
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count,
+					int after) {
+				// TODO Auto-generated method stub
+			}
+
+			@Override
+			// img_adder.setv
+			public void afterTextChanged(Editable s) {
+
+			}
+		});
+
+		input.setOnTouchListener(new OnTouchListener() {
+
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				rel_hint.setVisibility(View.GONE);
+				mDotsLayout.setVisibility(View.GONE);
+				mViewPager.setVisibility(View.GONE);
+				input.setFocusable(true);
+
+				input.setFocusableInTouchMode(true);
+
+				input.requestFocus();
+
+				InputMethodManager inputManager = (InputMethodManager) input
+						.getContext().getSystemService(
+								Context.INPUT_METHOD_SERVICE);
+
+				inputManager.showSoftInput(input, 0);
+				return false;
+			}
+		});
+
+		send.setOnClickListener(new Button.OnClickListener() {
+
+			@SuppressWarnings("deprecation")
+			@Override
+			public void onClick(View v) {
+				if (!TextUtils.isEmpty(input.getText().toString())) {
+					infos.add(getChatInfoTo("", input.getText().toString(), num
+							.getText().toString(),
+							XmppGlobals.MessageType.text,
+							new Date(System.currentTimeMillis())
+									.toLocaleString()));
+					mLvAdapter.setList(infos);
+					mLvAdapter.notifyDataSetChanged();
+					mListView.setSelection(infos.size() - 1);
+					// 构造消息格式
+					String content = input.getText().toString();
+					String fromUserId = getSharedPreferences("qcxx",
+							Context.MODE_PRIVATE).getString("phoneNum", "");
+					// String msg = getMessgeBody(content, chatName,
+					// fromUserId);
+					String type = XmppGlobals.MessageType.text;
+					XmppMsgBean bean = new XmppMsgBean();
+					bean.setChatTopic(chatName);
+					bean.setContent(content);
+					bean.setFileSize("0");
+					bean.setFromUserId(fromUserId);
+					bean.setMsgtype(0);
+					bean.setReaded(false);
+					bean.setTimeLen("0");
+					bean.setTimeSend(GlobalUtil.getLocalDate());
+					bean.setToUserId(chatName);
+					bean.setType(type);
+					mXmppService.sendMsg(bean);
+					input.setText("");
+				}
+			}
+		});
 	}
 
 	@SuppressLint("HandlerLeak")
@@ -568,83 +842,6 @@ public class ChatMainActivity extends BaseActivity {
 				}
 			});
 		}
-
-		// 单击表情执行的操作
-
-		input.addTextChangedListener(new TextWatcher() {
-
-			@SuppressWarnings("deprecation")
-			@Override
-			public void onTextChanged(CharSequence s, int start, int before,
-					int count) {
-				if (input.getText().toString().equals("")) {
-					img_adder.setAlpha(255);
-					send.setVisibility(View.GONE);
-				} else {
-					img_adder.setAlpha(0);
-					send.setVisibility(View.VISIBLE);
-				}
-
-			}
-
-			@Override
-			public void beforeTextChanged(CharSequence s, int start, int count,
-					int after) {
-				// TODO Auto-generated method stub
-			}
-
-			@Override
-			// img_adder.setv
-			public void afterTextChanged(Editable s) {
-
-			}
-		});
-
-		input.setOnTouchListener(new OnTouchListener() {
-
-			@Override
-			public boolean onTouch(View v, MotionEvent event) {
-				rel_hint.setVisibility(View.GONE);
-				mDotsLayout.setVisibility(View.GONE);
-				mViewPager.setVisibility(View.GONE);
-				input.setFocusable(true);
-
-				input.setFocusableInTouchMode(true);
-
-				input.requestFocus();
-
-				InputMethodManager inputManager = (InputMethodManager) input
-						.getContext().getSystemService(
-								Context.INPUT_METHOD_SERVICE);
-
-				inputManager.showSoftInput(input, 0);
-				return false;
-			}
-		});
-
-		send.setOnClickListener(new Button.OnClickListener() {
-
-			@SuppressWarnings("deprecation")
-			@Override
-			public void onClick(View v) {
-				if (!TextUtils.isEmpty(input.getText().toString())) {
-					infos.add(getChatInfoTo("", input.getText().toString(), num
-							.getText().toString(), false,
-							new Date(System.currentTimeMillis())
-									.toLocaleString()));
-					mLvAdapter.setList(infos);
-					mLvAdapter.notifyDataSetChanged();
-					mListView.setSelection(infos.size() - 1);
-					// 构造消息格式
-					String content = input.getText().toString();
-					String fromUserId = getSharedPreferences("qcxx",
-							Context.MODE_PRIVATE).getString("phoneNum", "");
-					String msg = getMessgeBody(content, chatName, fromUserId);
-					mXmppService.sendMsg(chatName, msg);
-					input.setText("");
-				}
-			}
-		});
 		return gridview;
 	}
 
@@ -805,8 +1002,9 @@ public class ChatMainActivity extends BaseActivity {
 		}
 
 	}
+
 	private ChatInfo getChatInfoTo(String pullname, String message, String fag,
-			boolean falg, String time) {
+			String falg, String time) {
 		ChatInfo info = new ChatInfo();
 		info.content = message;
 		info.pullname = pullname;
@@ -821,68 +1019,9 @@ public class ChatMainActivity extends BaseActivity {
 		return info;
 	}
 
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.chat_main);
-		img_adder = (ImageView) findViewById(R.id.img_adder);
-		left = (ImageView) findViewById(R.id.left);
-		inputer = (ImageView) findViewById(R.id.inputer);
-		left.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				falg++;
-				if (falg % 2 == 0) {
-					left.setImageResource(R.drawable.img_chat);
-					inputer.setVisibility(View.VISIBLE);
-					input.setVisibility(View.GONE);
-				} else {
-					left.setImageResource(R.drawable.img_yuying);
-					inputer.setVisibility(View.GONE);
-					input.setVisibility(View.VISIBLE);
-				}
-
-			}
-		});
-		inputer.setOnLongClickListener(new OnLongClickListener() {
-
-			@Override
-			public boolean onLongClick(View v) {
-				// TODO Auto-generated method stub
-				Toast.makeText(getApplicationContext(), "说话", 3000).show();
-				return false;
-			}
-		});
-		img_adder.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				rel_hint.setVisibility(View.GONE);
-				initStaticFaces(3);
-				InitViewPager(3);
-				mDotsLayout.setVisibility(View.VISIBLE);
-				mViewPager.setVisibility(View.VISIBLE);
-				((InputMethodManager) getSystemService(INPUT_METHOD_SERVICE))
-						.hideSoftInputFromWindow(ChatMainActivity.this
-								.getCurrentFocus().getWindowToken(),
-								InputMethodManager.HIDE_NOT_ALWAYS);
-
-			}
-		});
-
-		initViews();
-		mListView.setSelection(infos.size());
-		bindXMPPService();
-		IntentFilter filter = new IntentFilter(XmppGlobals.MESSAGE_ACTION);
-		registerReceiver(receiver, filter);
-	}
-
 	@SuppressWarnings("rawtypes")
 	public class sortClass implements Comparator {
 		public int compare(Object arg0, Object arg1) {
-			// LinkedList<ChatInfo> infos = new LinkedList<ChatInfo>();
-			// ChatInfo info = new ChatInfo();
 			ChatInfo user0 = (ChatInfo) arg0;
 			ChatInfo user1 = (ChatInfo) arg1;
 			int flag = user0.time.compareTo(user1.time);
@@ -896,16 +1035,25 @@ public class ChatMainActivity extends BaseActivity {
 
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			String from = intent.getStringExtra("from");
-			String message = intent.getStringExtra("body");
-			String time = intent.getStringExtra("time");
-			String name = from.substring(0, from.indexOf("@"));
+			XmppMsgBean bean = (XmppMsgBean) intent
+					.getSerializableExtra("body");
+			String name = bean.getFromUserId();
+			String content = bean.getContent();
+			String time = bean.getTimeSend();
+			bean.setReaded(true);
+			try {
+				Dao<XmppMsgBean, Integer> messageDao = DataHelper.getInstance(
+						ChatMainActivity.this).getXmppMsgDAO();
+				messageDao.update(bean); // 修改该好友的收到的的消息为已读
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 			if (name.equals(chatName)) {
-				infos.add(getChatInfoTo("", message, 1 + "", false, time));
+				infos.add(getChatInfoTo("", content, 1 + "", bean.getType(),
+						time));
 				mLvAdapter.notifyDataSetChanged();
 				mListView.setSelection(infos.size() - 1);
 			}
-			// 这里修改所有的已读状态为true
 		}
 	};
 
@@ -946,31 +1094,35 @@ public class ChatMainActivity extends BaseActivity {
 	 */
 	private void bindXMPPService() {
 		Intent mServiceIntent = new Intent(this, XmppService.class);
-		// mServiceIntent.setData(chatURI);
 		bindService(mServiceIntent, mServiceConnection, BIND_AUTO_CREATE);
 	}
 
 	@Override
 	protected void onDestroy() {
 		unregisterReceiver(receiver); // 取消receiver
+		unregisterReceiver(receiverCast);
+		unregisterReceiver(reciverSoundSend);
 		unbindXMPPService();
 		super.onDestroy();
 	}
 
-	public String getMessgeBody(String content, String toUserId,
+	public String getMessgeBody(String type, String content, String toUserId,
 			String fromUserId) {
-		String type = "1";
 		String timeSend = GlobalUtil.getLocalDate();
 		String fileSize = "0";
 		String timeLen = "0";
 		JSONObject obj = new JSONObject();
-		obj.put("type", type);
-		obj.put("timeSend", timeSend);
-		obj.put("content", content);
-		obj.put("fileSize", fileSize);
-		obj.put("toUserId", toUserId);
-		obj.put("fromUserId", fromUserId);
-		obj.put("timeLen", timeLen);
+		try {
+			obj.put("type", type);
+			obj.put("timeSend", timeSend);
+			obj.put("content", content);
+			obj.put("fileSize", fileSize);
+			obj.put("toUserId", toUserId);
+			obj.put("fromUserId", fromUserId);
+			obj.put("timeLen", timeLen);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
 		return obj.toString();
 	}
 

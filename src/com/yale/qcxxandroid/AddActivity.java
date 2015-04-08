@@ -9,13 +9,13 @@ import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.yale.qcxxandroid.base.BaseActivity;
 
 public class AddActivity extends BaseActivity {
 	private ListView list;
 	private RelativeLayout rel_add;
+
 	public void onback(View v) {
 		finish();
 	}
@@ -45,10 +45,10 @@ public class AddActivity extends BaseActivity {
 									.findViewById(R.id.txt_right);
 							TextView txt_left = (TextView) convertView
 									.findViewById(R.id.txt_left);
-							txt_left.setText(phonelist.get(position).getAsString(
-									NAME));
-							txt_right.setText(phonelist.get(position).getAsString(
-									NUMBER));
+							txt_left.setText(phonelist.get(position)
+									.getAsString(NAME));
+							txt_right.setText(phonelist.get(position)
+									.getAsString(NUMBER));
 							return convertView;
 						}
 
@@ -72,8 +72,7 @@ public class AddActivity extends BaseActivity {
 					};
 					list.setAdapter(adapter);
 				} else {
-					Toast.makeText(getApplicationContext(), "当前通讯录没有联系人", 3000)
-							.show();
+					toast("当前通讯录没有联系人", getApplicationContext());
 				}
 			}
 		});

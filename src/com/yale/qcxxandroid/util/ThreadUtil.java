@@ -36,7 +36,6 @@ public class ThreadUtil extends Thread {
 		}
 		this.start();
 	}
-	
 	@Override
 	public void run() {
 		super.run();

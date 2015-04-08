@@ -54,6 +54,7 @@ import com.yale.qcxxandroid.chat.ChatMainActivity;
 import com.yale.qcxxandroid.chat.xmpp.XmppGlobals;
 import com.yale.qcxxandroid.util.DataHelper;
 import com.yale.qcxxandroid.util.ThreadUtil;
+import com.yale.qcxxandroid.util.ViewThread;
 
 public class YouthActivity extends BaseActivity {
 	private Intent intent = new Intent();
@@ -174,46 +175,6 @@ public class YouthActivity extends BaseActivity {
 		}
 	};
 
-	// private void initData() {
-	// jsonList.clear();
-	// searchListObj.clear();
-	// try {
-	// JSONObject tmp = new JSONObject();
-	// tmp.put("nc", "王玮");
-	// tmp.put("content", "在？");
-	// tmp.put("pubtime", "5分钟前");
-	// jsonList.add(tmp);
-	// JSONObject tmp1 = new JSONObject();
-	// tmp1.put("nc", "陈路");
-	// tmp1.put("content", "收到回复");
-	// tmp1.put("pubtime", "6分钟前");
-	// jsonList.add(tmp1);
-	// JSONObject tmp2 = new JSONObject();
-	// tmp2.put("nc", "邱老师");
-	// tmp2.put("content", "一起出来吃个饭吧");
-	// tmp2.put("pubtime", "7分钟前");
-	// jsonList.add(tmp2);
-	// } catch (JSONException e) {
-	// e.printStackTrace();
-	// }
-	// msgAdapter = new MsgAdapter(YouthActivity.this, jsonList);
-	// msgAdapter.setOnDeleteListioner(YouthActivity.this);
-	// listView.setAdapter(msgAdapter);
-	// try {
-	// JSONObject tmp = new JSONObject();
-	// tmp.put("name", "华中科技大学计算机学院");
-	// searchListObj.add(tmp);
-	// JSONObject tmp1 = new JSONObject();
-	// tmp1.put("name", "武汉大学传媒系");
-	// searchListObj.add(tmp1);
-	// JSONObject tmp2 = new JSONObject();
-	// tmp2.put("name", "KJ2010班");
-	// searchListObj.add(tmp2);
-	// } catch (JSONException e) {
-	// e.printStackTrace();
-	// }
-	// searchAdapter = new SearchAdapter(YouthActivity.this, searchListObj);
-	// }
 	@SuppressLint("HandlerLeak")
 	public void init() {
 		Handler handler = new Handler() {
@@ -243,6 +204,13 @@ public class YouthActivity extends BaseActivity {
 
 	public void click(View v) {
 		Log.i("0000", "点击");
+	}
+
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		new ViewThread(getApplicationContext(), R.layout.youth_activity);
+		super.onResume();
 	}
 
 	@SuppressWarnings("deprecation")
@@ -286,15 +254,9 @@ public class YouthActivity extends BaseActivity {
 				// try {
 				TextView nc = (TextView) arg1.findViewById(R.id.nc);
 				bundle.putString("name", nc.getText().toString());
-				// bundle.putString("name",
-				// jsonList.get(position).getString("nc"));
 				intent.setClass(YouthActivity.this, ChatMainActivity.class)
 						.putExtras(bundle);
 				startActivity(intent);
-				// } catch (JSONException e) {
-				// TODO Auto-generated catch block
-				// e.printStackTrace();
-				// }
 
 			}
 		});
@@ -384,17 +346,6 @@ public class YouthActivity extends BaseActivity {
 				startActivity(intent);
 			}
 		});
-		// qc_add = (LinearLayout) view.findViewById(R.id.qc_add);
-		// qc_add.setOnClickListener(new OnClickListener() {
-		// @Override
-		// public void onClick(View arg0) {
-		// pop.dismiss();
-		// Intent intent = new Intent(YouthActivity.this,
-		// YouthAddFriendActivity.class);
-		// startActivity(intent);
-		// overridePendingTransition(R.anim.push_up_in, 0);
-		// }
-		// });
 		initData();
 		IntentFilter filter = new IntentFilter(XmppGlobals.MESSAGE_ACTION);
 		registerReceiver(receiver, filter);

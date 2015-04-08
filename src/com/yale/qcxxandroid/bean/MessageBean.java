@@ -3,12 +3,14 @@ package com.yale.qcxxandroid.bean;
 import java.io.Serializable;
 
 import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.table.DatabaseTable;
 
 /**
  * 消息类
  * @author kindlion
  *
  */
+@DatabaseTable(tableName="MessageBean")
 public class MessageBean implements Serializable{
 
 	/**

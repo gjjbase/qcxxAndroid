@@ -1,6 +1,7 @@
 /actionsheet.xml/1.1/Fri Jan 30 09:01:55 2015//
-/activity_add.xml/1.1/Mon Mar  9 03:12:42 2015//
-/activity_adrebook.xml/1.1/Mon Mar 30 03:37:59 2015//
+/activity_add.xml/1.2/Wed Apr  8 02:19:07 2015//
+/activity_addnewfrd.xml/1.1/Wed Apr  1 09:39:57 2015//
+/activity_adrebook.xml/1.3/Fri Apr  3 19:03:14 2015//
 /activity_cont.xml/1.1/Fri Mar 20 05:20:13 2015//
 /activity_detaschool.xml/1.2/Mon Mar 30 04:31:19 2015//
 /activity_fabu.xml/1.1/Tue Mar 10 06:44:56 2015//
@@ -20,16 +21,18 @@
 /activitycollection.xml/1.1/Mon Mar  2 13:59:56 2015//
 /activitycomment.xml/1.1/Mon Mar 30 16:01:54 2015//
 /activityzhifu.xml/1.1/Wed Mar 11 16:07:28 2015//
+/activtiy_near.xml/1.1/Fri Apr  3 17:54:56 2015//
 /activtiy_zhanghao.xml/1.1/Thu Mar 12 12:10:20 2015//
-/actvity_datactivity.xml/1.2/Mon Mar 30 03:37:59 2015//
+/actvity_datactivity.xml/1.3/Thu Apr  2 04:35:44 2015//
+/addalitem.xml/1.1/Sat Apr  4 09:20:55 2015//
 /additem.xml/1.1/Fri Mar 27 03:01:54 2015//
 /alert_dialog.xml/1.1/Thu Jan 29 15:02:40 2015//
 /base_listview_foot.xml/1.1/Mon Dec 15 04:14:46 2014//
 /base_listview_head.xml/1.1/Thu Feb  5 13:48:40 2015//
 /chat_face_container.xml/1.2/Mon Mar 30 14:31:05 2015//
 /chat_item_copy_delete_menu.xml/1.1/Thu Feb  5 07:45:16 2015//
-/chat_lv_item.xml/1.1/Tue Mar 10 11:38:14 2015//
-/chat_main.xml/1.2/Mon Mar 30 14:32:07 2015//
+/chat_lv_item.xml/1.2/Wed Apr  8 02:19:07 2015//
+/chat_main.xml/1.4/Sat Apr  4 09:47:52 2015//
 /class_activity.xml/1.1/Tue Mar 24 15:48:32 2015//
 /class_mail_activity.xml/1.1/Tue Mar  3 09:21:01 2015//
 /comment_detaill_activity.xml/1.1/Wed Jan 28 10:50:09 2015//
@@ -50,6 +53,7 @@
 /item.xml/1.1/Tue Mar 10 06:19:21 2015//
 /itembookactivity.xml/1.1/Fri Mar 27 07:57:57 2015//
 /itemmark.xml/1.1/Thu Mar 12 05:43:46 2015//
+/itemnearactivity.xml/1.1/Fri Apr  3 17:58:35 2015//
 /login_activity.xml/1.2/Mon Mar 30 15:10:06 2015//
 /main_activity.xml/1.1/Sun Mar  1 08:09:46 2015//
 /main_top_more_dialog.xml/1.1/Sun Jan 25 17:29:34 2015//
@@ -65,7 +69,7 @@
 /my_show_list_page_layout.xml/1.1/Thu Feb  5 05:00:33 2015//
 /my_zhi_tiao_adapter.xml/1.1/Mon Mar  9 12:17:04 2015//
 /my_zhitiao_activity.xml/1.1/Sun Mar  1 09:44:25 2015//
-/myclass_actiivtyitem.xml/1.2/Mon Mar 30 16:31:25 2015//
+/myclass_actiivtyitem.xml/1.3/Thu Apr  2 17:42:52 2015//
 /myclass_activity.xml/1.1/Thu Mar  5 05:51:51 2015//
 /myclass_item.xml/1.1/Thu Jan 29 18:03:14 2015//
 /myclass_other.xml/1.1/Thu Jan 29 16:08:55 2015//
@@ -74,7 +78,8 @@
 /mydetail_activity.xml/1.1/Fri Mar 20 17:54:05 2015//
 /myschool_activity.xml/1.1/Wed Mar  4 09:02:10 2015//
 /myshow_layout.xml/1.1/Wed Mar 25 16:17:20 2015//
-/photogrally.xml/1.1/Thu Mar 19 08:28:43 2015//
+/newfditem.xml/1.1/Wed Apr  1 10:20:21 2015//
+/photogrally.xml/1.2/Fri Apr  3 14:57:45 2015//
 /popup_select1.xml/1.1/Fri Feb 27 06:54:20 2015//
 /popup_select3.xml/1.1/Tue Mar  3 03:49:53 2015//
 /popupwindow.xml/1.1/Mon Feb  2 07:48:31 2015//
@@ -102,7 +107,7 @@
 /welcome5.xml/1.1/Sat Feb 28 10:19:28 2015//
 /welcome_door.xml/1.1/Sat Jan 24 05:08:14 2015//
 /youth_activity.xml/1.2/Tue Mar 31 05:59:38 2015//
-/youth_addfriend_activity.xml/1.2/Tue Mar 31 05:53:44 2015//
+/youth_addfriend_activity.xml/1.4/Sat Apr  4 10:02:15 2015//
 /youth_start_qun_activity.xml/1.1/Sun Feb  1 14:44:35 2015//
 /youth_xxhd_activity.xml/1.1/Tue Mar 10 08:11:24 2015//
 /youth_xxhd_gift_adapter.xml/1.1/Sat Jan 31 11:43:26 2015//

@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -30,6 +31,8 @@ import com.yale.qcxxandroid.base.BaseActivity;
 import com.yale.qcxxandroid.base.PicPagerAdapter;
 import com.yale.qcxxandroid.base.MyBaseListView.OnRefreshListener;
 import com.yale.qcxxandroid.bean.Shows;
+import com.yale.qcxxandroid.util.GlobalUtil;
+import com.yale.qcxxandroid.util.Globals;
 import com.yale.qcxxandroid.util.ThreadUtil;
 
 public class MyClassActivityCont extends BaseActivity {
@@ -44,50 +47,7 @@ public class MyClassActivityCont extends BaseActivity {
 	private TextView txtliuyan;
 	private Intent intent = new Intent();
 	private Bundle bundle = new Bundle();
-
-	@SuppressLint("HandlerLeak")
-	private void init() {
-
-		Handler handler = new Handler() {
-			public void handleMessage(Message msg) {
-				super.handleMessage(msg);
-				switch (msg.what) {
-				case 1:
-
-					@SuppressWarnings("unused")
-					String returnJson = (String) msg.getData().getString(
-							"returnJson");
-					// try {
-					// jsoo = new JSONArray(returnJson);
-					// adapter = new Adapter(MyClassActivityCont.this, falg,
-					// jsoo);
-					// conlist.setAdapter(adapter);
-					// } catch (JSONException e) {
-					// // TODO Auto-generated catch block
-					// e.printStackTrace();
-					// }
-					break;
-				case 2:
-
-					break;
-
-				}
-			}
-		};
-		thread = new ThreadUtil(handler);
-		String methodStr = "[{'com.yale.qcxx.sessionbean.comm.impl.CommonDataSessionBean':'myClassDetail'}]";
-
-		String jsonParamStr = "[{'signType':" + 1 + ",'commentType':" + 1
-				+ ",'primaryId':"
-				+ getIntent().getExtras().getString("classlist")
-				+ ",'pubType':" + 0 + ",'orderBy':" + 4 + "}]";// primaryid 班级ID
-		// String jsonParamStr = "[{'signType':" + 1 + ",'commentType':" + 1
-		// + ",'primaryId':" + bundle.getString("cdId") + ",'pubType':" + 0 +
-		// ",'orderBy':" + 4
-		// + "}]";// primaryid 班级ID
-		thread.doStartWebServicerequestWebService(MyClassActivityCont.this,
-				jsonParamStr, methodStr, true);
-	}
+	private String TIME, CMD;
 
 	public String stringbuff(String[] array) {
 		StringBuffer stringbu = new StringBuffer();
@@ -115,12 +75,6 @@ public class MyClassActivityCont extends BaseActivity {
 			this.tag = tag;
 		}
 
-		// public Adapter(Context context, int tag, JSONArray jsoo) {
-		// this.context = context;
-		// this.tag = tag;
-		// this.jsoo = jsoo;
-		// }
-
 		public int getCount() {
 			switch (tag) {
 			case 1:
@@ -137,33 +91,8 @@ public class MyClassActivityCont extends BaseActivity {
 
 			}
 			return length;
-
-			// try {
-			// switch (tag) {
-			// case 1:
-			//
-			// length = jsoo.getJSONObject(0)
-			// .getJSONArray("userClassList").length();
-			// break;
-			// case 2:
-			// length = jsoo.getJSONObject(0).getJSONArray("showList")
-			// .length();
-			// break;
-			//
-			// case 4:
-			// length = jsoo.getJSONObject(0).getJSONArray("commentList")
-			// .length();
-			// break;
-			//
-			// }
-			// return length;
-			// } catch (JSONException e) {
-			// e.printStackTrace();
-			// return 0;
-			// }
 		}
 
-		@Override
 		public Object getItem(int position) {
 			return position;
 		}
@@ -425,10 +354,6 @@ public class MyClassActivityCont extends BaseActivity {
 
 			@Override
 			public void onRefresh() {
-				// TODO Auto-generated method stub
-
-				// editor.putBoolean("fasle", true);
-				// editor.commit();
 				new AsyncTask<Void, Void, Void>() {
 					protected Void doInBackground(Void... params) {
 
@@ -487,7 +412,80 @@ public class MyClassActivityCont extends BaseActivity {
 		});
 		adapter = new Adapter(MyClassActivityCont.this, falg);
 		conlist.setAdapter(adapter);
-		init();
+		init(falg);
+	}
 
+	@SuppressLint("HandlerLeak")
+	private void init(final int bundler) {
+
+		Handler handler = new Handler() {
+			public void handleMessage(Message msg) {
+				super.handleMessage(msg);
+				switch (msg.what) {
+				case 1:
+					String returnJson = (String) msg.getData().getString(
+							"returnJson");
+					try {
+						switch (bundler) {
+						case 1:
+							jsoo = new JSONArray(returnJson);
+							break;
+						case 2:
+
+							break;
+						case 4:
+
+							break;
+						}
+						break;
+					} catch (Exception e) {
+						// TODO: handle exception
+					}
+
+				case 2:
+
+					break;
+				}
+			}
+		};
+		thread = new ThreadUtil(handler);
+		String methodStr = null, jsonParamStr = null;
+		// 1班级活动 2 班级秀秀 4班级留言
+		switch (bundler) {
+		case 1:
+
+			break;
+		case 2:// listOfshow
+			methodStr = "[{'" + Globals.COMM_SESSION
+					+ ".CommonDataSessionBean':'listOfshow'}]";
+			jsonParamStr = "[{'pubType':" + 2 + ",'primaryId':"
+					+ getIntent().getExtras().getString("classlist")
+					+ ",'orderBy':" + 4 + "}]";
+			break;
+		case 4:
+			Log.i("**************", GlobalUtil.TIME());
+			TIME = (GlobalUtil.TIME().substring(2));
+			String comidd = TIME.substring(0, TIME.length() - 1) + "."
+					+ TIME.substring(TIME.length() - 1, TIME.length());
+			CMD = comidd.replace(" ", "");
+			methodStr = "[{'" + Globals.COMM_SESSION
+					+ ".CommonDataSessionBean':'commentList'}]";
+			jsonParamStr = "[{'commentType':" + 1 + ",'primaryId':"
+					+ getIntent().getExtras().getString("classlist")
+					+ ",'commentId':" + CMD + "}]";
+			break;
+
+		}
+		// primaryId 班级id //commentId 根据时间的150324150302.微妙毫毛
+
+		// String methodStr =
+		// "[{'com.yale.qcxx.sessionbean.comm.impl.CommonDataSessionBean':'myClassDetail'}]";
+		//
+		// String jsonParamStr = "[{'signType':" + 1 + ",'commentType':" + 1
+		// + ",'primaryId':"
+		// + getIntent().getExtras().getString("classlist")
+		// + ",'pubType':" + 0 + ",'orderBy':" + 4 + "}]";// primaryid 班级ID
+		thread.doStartWebServicerequestWebService(MyClassActivityCont.this,
+				jsonParamStr, methodStr, true);
 	}
 }

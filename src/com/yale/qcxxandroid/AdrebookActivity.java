@@ -16,6 +16,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.Settings.Global;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -42,6 +43,9 @@ import com.yale.qcxxandroid.DetaActivity.SortModel;
 import com.yale.qcxxandroid.SideBar.OnTouchingLetterChangedListener;
 import com.yale.qcxxandroid.base.BaseActivity;
 import com.yale.qcxxandroid.bean.PicUpload;
+import com.yale.qcxxandroid.chat.ChatMainActivity;
+import com.yale.qcxxandroid.util.GlobalUtil;
+import com.yale.qcxxandroid.util.Globals;
 import com.yale.qcxxandroid.util.StringHelper;
 import com.yale.qcxxandroid.util.ThreadUtil;
 
@@ -72,9 +76,10 @@ public class AdrebookActivity extends BaseActivity {
 	public void init() {
 
 		thread = new ThreadUtil(handler);
-		String methodStr = "[{'com.yale.qcxx.sessionbean.member.impl.UserInfoSessionBean':'myFriendList'}]";
+		String methodStr = "[{'" + Globals.MEMBER_SESSIOM
+				+ ".UserInfoSessionBean':'myFriendList'}]";
 		String jsonParamStr = "[{'userId':" + sp.getString("userId", "")
-				+ ",'actionId':" + 100 + "}]";
+				+ ",'actionId':" + -100 + "}]";
 		thread.doStartWebServicerequestWebService(AdrebookActivity.this,
 				jsonParamStr, methodStr, true);
 
@@ -89,22 +94,15 @@ public class AdrebookActivity extends BaseActivity {
 			case 1:
 				String returnJson = (String) msg.getData().getString(
 						"returnJson");
+
 				try {
-					jsoo = new JSONArray(returnJson);
-					// JSONObject parm = new JSONObject();
-					// if (picList.isEmpty() == false) {
-					// try {
-					// picList = picUploadDAO.queryForAll();
-					//
-					// } catch (SQLException e) {
-					// // TODO Auto-generated catch block
-					// e.printStackTrace();
-					// }
-					// for (PicUpload pic : picList) {
-					//
-					// }
-					// } else {
-					// }
+					JSONArray jsa = new JSONArray(returnJson);
+					jsoo = new JSONArray();
+					for (int i = 0; i < jsa.length(); i++) {
+						if (jsa.getJSONObject(i).getInt("actionId") == Globals.FRIEND_HAS) {
+							jsoo.put(jsa.getJSONObject(i));
+						}
+					}
 					SourceDateList = filledData(jsoo);
 					// 根据a-z进行排序源数据
 					Collections.sort(SourceDateList, pinyinComparator);
@@ -150,6 +148,18 @@ public class AdrebookActivity extends BaseActivity {
 	public void txtadd(View v) {
 		intent.setClass(getApplicationContext(), AddnewFrdACtivity.class);
 		startActivity(intent);
+	}
+
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		try {
+			init();
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+
+		super.onResume();
 	}
 
 	public void onCreate(Bundle savedInstanceState) {
@@ -423,9 +433,11 @@ public class AdrebookActivity extends BaseActivity {
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
 				// 这里要利用adapter.getItem(position)来获取当前position所对应的对象
-				Toast.makeText(getApplication(),
-						((SortModel) adapter.getItem(position)).getName(),
-						Toast.LENGTH_SHORT).show();
+				bundle.putString("name",
+						((SortModel) adapter.getItem(position)).getName());
+				intent.setClass(getApplicationContext(), ChatMainActivity.class)
+						.putExtras(bundle);
+				startActivity(intent);
 			}
 		});
 
@@ -436,11 +448,10 @@ public class AdrebookActivity extends BaseActivity {
 
 		for (int i = 0; i < jso.length(); i++) {
 			SortModel sortModel = new SortModel();
-			sortModel.setName(jso.getJSONObject(i).getJSONObject("userInfo")
-					.getString("nickName"));
+			sortModel.setName(jso.getJSONObject(i).getString("actionMemo"));
 			// 汉字转换成拼音
 			String pinyin = characterParser.getSelling(jso.getJSONObject(i)
-					.getJSONObject("userInfo").getString("nickName"));
+					.getString("actionMemo"));
 			String sortString = pinyin.substring(0, 1).toUpperCase();
 
 			// 正则表达式，判断首字母是否是英文字母

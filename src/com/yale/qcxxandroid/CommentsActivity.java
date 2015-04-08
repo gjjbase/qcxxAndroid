@@ -50,7 +50,9 @@ import com.yale.qcxxandroid.chat.ChatInfo;
 import com.yale.qcxxandroid.chat.FaceGVAdapter;
 import com.yale.qcxxandroid.chat.FaceVPAdapter;
 import com.yale.qcxxandroid.chat.MyEditText;
+import com.yale.qcxxandroid.chat.xmpp.XmppGlobals;
 import com.yale.qcxxandroid.util.GlobalUtil;
+import com.yale.qcxxandroid.util.Globals;
 import com.yale.qcxxandroid.util.ThreadUtil;
 
 public class CommentsActivity extends BaseActivity {
@@ -72,7 +74,9 @@ public class CommentsActivity extends BaseActivity {
 
 	private void init(String date) {
 		thread = new ThreadUtil(mhandler);
-		String methodStr = "[{'com.yale.qcxx.sessionbean.comm.impl.CommonDataSessionBean':'saveComment'}]";
+		String methodStr = "[{'" + Globals.COMM_SESSION
+				+ ".CommonDataSessionBean':'saveComment'}]";
+
 		String jsonParamStr = "[{'user_id':" + sp.getString("userId", "")
 				+ ",'primary_id':" + getIntent().getExtras().getString("prid")
 				+ ",'comment_type':" + 0 + ",'your_id':"
@@ -205,7 +209,7 @@ public class CommentsActivity extends BaseActivity {
 	}
 
 	private ChatInfo getChatInfoTo(String pullname, String message, String fag,
-			boolean falg, String time) {
+			String falg, String time) {
 		// SimpleDateFormat format = new SimpleDateFormat("yyyy年MM月dd日  HH:mm");
 		// String date = format.format(new Date());
 		ChatInfo info = new ChatInfo();
@@ -342,7 +346,7 @@ public class CommentsActivity extends BaseActivity {
 				// TODO Auto-generated method stub
 				if (!TextUtils.isEmpty(input_sms.getText().toString())) {
 					infos.add(getChatInfoTo("", input_sms.getText().toString(),
-							"1", false, time()));
+							"1", XmppGlobals.MessageType.text, time()));
 					mLvAdapter.setList(infos);
 					mLvAdapter.notifyDataSetChanged();
 					list.setSelection(infos.size() - 1);
@@ -438,13 +442,20 @@ public class CommentsActivity extends BaseActivity {
 		// chat.fromOrTo=0;
 		// infos.add(chat);getExtras();
 
-		infos.add(getChatInfoTo("", "武汉亦鸟科技", "1", false, "1987-10-28"));
-		infos.add(getChatInfoTo("", "武汉亦鸟科技", "1", false, "1987-10-27"));
-		infos.add(getChatInfoTo("", "青春秀秀", "1", false, "1987-10-26"));
-		infos.add(getChatInfoTo("", "武汉亦鸟科技", "1", false, "1987-10-25"));
-		infos.add(getChatInfoTo("", "武汉亦鸟科技", "1", false, "1987-10-24"));
-		infos.add(getChatInfoTo("", "青春秀秀", "1", false, "1987-10-23"));
-		infos.add(getChatInfoTo("", "武汉亦鸟科技", "1", false, "1987-10-22"));
+		infos.add(getChatInfoTo("", "武汉亦鸟科技", "1",
+				XmppGlobals.MessageType.text, "1987-10-28"));
+		infos.add(getChatInfoTo("", "武汉亦鸟科技", "1",
+				XmppGlobals.MessageType.text, "1987-10-27"));
+		infos.add(getChatInfoTo("", "青春秀秀", "1", XmppGlobals.MessageType.text,
+				"1987-10-26"));
+		infos.add(getChatInfoTo("", "武汉亦鸟科技", "1",
+				XmppGlobals.MessageType.text, "1987-10-25"));
+		infos.add(getChatInfoTo("", "武汉亦鸟科技", "1",
+				XmppGlobals.MessageType.text, "1987-10-24"));
+		infos.add(getChatInfoTo("", "青春秀秀", "1", XmppGlobals.MessageType.text,
+				"1987-10-23"));
+		infos.add(getChatInfoTo("", "武汉亦鸟科技", "1",
+				XmppGlobals.MessageType.text, "1987-10-22"));
 		mLvAdapter = new ChatLVAdapter(CommentsActivity.this, infos);
 		list.setAdapter(mLvAdapter);
 		list.setOnTouchListener(new OnTouchListener() {
@@ -490,7 +501,8 @@ public class CommentsActivity extends BaseActivity {
 		});
 		InitViewPager();
 	}
-	//时间比较
+
+	// 时间比较
 	// private String mathc(String str) {
 	// Pattern p = Pattern.compile("\\(qemu\\)");
 	// // 假设你接受到的字符串为"I have a problem (qemu) about this"

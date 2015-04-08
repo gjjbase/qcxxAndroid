@@ -13,6 +13,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -26,7 +27,10 @@ import android.widget.TextView;
 import com.yale.qcxxandroid.base.MarqueTextView;
 import com.yale.qcxxandroid.base.MoveTab;
 import com.yale.qcxxandroid.base.ZhiTiaoTabActivity;
+import com.yale.qcxxandroid.util.GlobalUtil;
+import com.yale.qcxxandroid.util.Globals;
 import com.yale.qcxxandroid.util.ThreadUtil;
+import com.yale.qcxxandroid.util.ViewThread;
 
 @SuppressWarnings("deprecation")
 public class ShowActivity extends TabActivity {
@@ -44,6 +48,7 @@ public class ShowActivity extends TabActivity {
 	int index = 0;
 	private TextView txt_myshow, txt_msg, txt_msger;
 	protected SharedPreferences sp = null;
+	private Editor edit;
 
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
@@ -83,7 +88,8 @@ public class ShowActivity extends TabActivity {
 	@SuppressLint("HandlerLeak")
 	private void ini() {
 		thread = new ThreadUtil(myhandler);// com.yale.qcxx.sessionbean.member.impl
-		String methodStr = "[{'com.yale.qcxx.sessionbean.show.impl.ShowsSessionBean':'showshowMain'}]";
+		String methodStr = "[{'" + Globals.SHOW_SESSION
+				+ ".ShowsSessionBean':'showshowMain'}]";
 		String jsonParamStr = "[{'userId':" + sp.getString("userId", "") + "}]";
 		thread.doStartWebServicerequestWebService(ShowActivity.this,
 				jsonParamStr, methodStr, true);
@@ -102,7 +108,13 @@ public class ShowActivity extends TabActivity {
 					JSONObject jo = joA.getJSONObject(0);
 					txt_msg.setText(jo.getInt("countZitiao") + "");
 					txt_msger.setText(jo.getInt("countMyShow") + "");
-
+					edit = sp.edit();
+					edit.putString("msgnum", txt_msger.getText().toString());
+					edit.commit();
+					if (!sp.getString("msgnum", "").equals(
+							jo.getInt("countMyShow") + "")) {
+						GlobalUtil.toast("来纸条了", getApplicationContext());
+					}
 				} catch (Exception e) {
 					// TODO: handle exception
 				}
@@ -114,6 +126,12 @@ public class ShowActivity extends TabActivity {
 			}
 
 		}
+	};
+
+	protected void onResume() {
+		ini();
+		new ViewThread(getApplicationContext(), R.layout.show_activity);
+		super.onResume();
 	};
 
 	public void onCreate(Bundle savedInstanceState) {

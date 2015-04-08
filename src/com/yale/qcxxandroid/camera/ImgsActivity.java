@@ -28,6 +28,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.ImageView.ScaleType;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.RelativeLayout;
@@ -100,7 +101,7 @@ public class ImgsActivity extends BaseActivity {
 				relativeLayout2.getMeasuredHeight() - 10);
 		ImageView imageView = new ImageView(this);
 		imageView.setLayoutParams(params);
-		imageView.setBackgroundResource(R.drawable.demo5);
+		imageView.setScaleType(ScaleType.CENTER_CROP);
 		float alpha = 100;
 		imageView.setAlpha(alpha);
 		util.imgExcute(imageView, imgCallBack, filepath);
@@ -208,8 +209,6 @@ public class ImgsActivity extends BaseActivity {
 				e.printStackTrace();
 			}
 		}
-		intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 		startActivity(intent);
-
 	}
 }

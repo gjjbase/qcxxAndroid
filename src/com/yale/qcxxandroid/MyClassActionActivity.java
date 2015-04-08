@@ -24,6 +24,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.yale.qcxxandroid.base.BaseActivity;
+import com.yale.qcxxandroid.util.Globals;
 import com.yale.qcxxandroid.util.ThreadUtil;
 
 public class MyClassActionActivity extends BaseActivity {
@@ -63,7 +64,8 @@ public class MyClassActionActivity extends BaseActivity {
 
 	public void init() {
 		thread = new ThreadUtil(handler);
-		String methodStr = "[{'com.yale.qcxx.sessionbean.comm.impl.CommonDataSessionBean':'listOfClass'}]";
+		String methodStr = "[{'" + Globals.MEMBER_SESSIOM
+				+ ".CommonDataSessionBean':'listOfClass'}]";
 		JSONArray jsonArr = new JSONArray();
 		String classes = sp.getString("classes", "");// 班级'5,13'
 

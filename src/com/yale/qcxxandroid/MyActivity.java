@@ -24,6 +24,7 @@ import android.widget.ImageView.ScaleType;
 import com.yale.qcxxandroid.base.BaseActivity;
 import com.yale.qcxxandroid.base.ZhiTiaoTabActivity;
 import com.yale.qcxxandroid.util.GlobalUtil;
+import com.yale.qcxxandroid.util.Globals;
 import com.yale.qcxxandroid.util.ThreadUtil;
 
 public class MyActivity extends BaseActivity {
@@ -76,7 +77,8 @@ public class MyActivity extends BaseActivity {
 	public void init() {
 
 		thread = new ThreadUtil(mhandler);
-		String methodStr = "[{'com.yale.qcxx.sessionbean.member.impl.UserInfoSessionBean':'getUserInfo'}]";
+		String methodStr = "[{'" + Globals.MEMBER_SESSIOM
+				+ ".UserInfoSessionBean':'getUserInfo'}]";
 		String jsonParamStr = "[{'userId':" + sp.getString("userId", "") + "}]";
 		thread.doStartWebServicerequestWebService(MyActivity.this,
 				jsonParamStr, methodStr, true);

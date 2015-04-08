@@ -13,7 +13,7 @@ public class ChatInfo implements Serializable {
 	public String time;
 	public int fromOrTo;// 0 是收到的消息，1是发送的消息
 	public String pullname;
-	public boolean falg=true;
+	public String falg;
 
 	@Override
 	public String toString() {

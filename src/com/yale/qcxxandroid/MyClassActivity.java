@@ -27,6 +27,7 @@ import android.widget.Toast;
 
 import com.yale.qcxxandroid.base.BaseActivity;
 import com.yale.qcxxandroid.base.MyClassotherGridview;
+import com.yale.qcxxandroid.util.Globals;
 import com.yale.qcxxandroid.util.ThreadUtil;
 
 @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
@@ -150,7 +151,8 @@ public class MyClassActivity extends BaseActivity {
 			}
 		};
 		thread = new ThreadUtil(handler);
-		String methodStr = "[{'com.yale.qcxx.sessionbean.comm.impl.CommonDataSessionBean':'myClassDetail'}]";
+		String methodStr = "[{'" + Globals.MEMBER_SESSIOM
+				+ ".CommonDataSessionBean':'myClassDetail'}]";
 
 		String jsonParamStr = "[{'signType':" + 1 + ",'commentType':" + 1
 				+ ",'primaryId':" + 5 + ",'pubType':" + 0 + ",'orderBy':" + 4

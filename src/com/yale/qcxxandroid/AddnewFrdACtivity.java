@@ -18,11 +18,13 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.yale.qcxxandroid.base.BaseActivity;
+import com.yale.qcxxandroid.util.ThreadUtil;
 
 public class AddnewFrdACtivity extends BaseActivity {
 	public ListView list;
 	public List<Map<String, Object>> mylist = new ArrayList<Map<String, Object>>();
 	public Intent intent = new Intent();
+	public ThreadUtil thread;
 
 	public void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub

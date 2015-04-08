@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.yale.qcxxandroid.base.BaseActivity;
 
@@ -27,18 +26,18 @@ public class SinActivity extends BaseActivity {
 	}
 
 	public void xuanyan(View v) {
-		Toast.makeText(getApplicationContext(), "宣言", 3000).show();
+		toast("宣言", getApplicationContext());
 	}
 
 	public void caiyi(View v) {
-		Toast.makeText(getApplicationContext(), "才艺", 3000).show();
+		toast("才艺", getApplicationContext());
 	}
 
 	public void zhuanye(View v) {
-		Toast.makeText(getApplicationContext(), "专业", 3000).show();
+		toast("专业", getApplicationContext());
 	}
 
 	public void aihao(View v) {
-		Toast.makeText(getApplicationContext(), "爱好", 3000).show();
+		toast("爱好", getApplicationContext());
 	}
 }

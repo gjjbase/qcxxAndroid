@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
+	   <!-- Disable the given check in this project -->
     <!-- 注册 -->
     <string name="xxjxy">学校和学院</string>
     <string name="regtit1">请确认您的学校、学校及入学年份</string>
@@ -34,12 +34,13 @@
     <string name="xx">秀秀</string>
     <string name="bj">班级</string>
     <string name="my">我的</string>
-
+	  
     <!-- 青春相关 -->
     <string name="youth_pyq">朋友圈</string>
     <string name="youth_gzq">公众圈</string>
     <string name="youth_gbb">隔壁班</string>
     <string name="youth_xxhd">秀秀活动</string>
+     <!-- Disable the given check in this project -->
     <string name="youth_search">班、系、校</string>
     <string name="xxhd_gift">礼品</string>
     <string name="xxhd_xm">选美</string>

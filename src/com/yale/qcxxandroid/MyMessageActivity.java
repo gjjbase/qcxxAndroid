@@ -1,9 +1,6 @@
 package com.yale.qcxxandroid;
 
-import java.io.BufferedInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
@@ -29,7 +26,6 @@ import android.content.Intent;
 import android.content.res.AssetManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.media.ExifInterface;
@@ -39,7 +35,6 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
-import android.util.Base64;
 import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
@@ -98,132 +93,6 @@ public class MyMessageActivity extends BaseActivity implements
 
 	private TextView nick_name;
 
-	public static void readBitmapAutoSize(String filePath, int outWidth,
-			int outHeight, ImageView jpgView) {
-		// outWidth和outHeight是目标图片的最大宽度和高度，用作限制
-		FileInputStream fs = null;
-		BufferedInputStream bs = null;
-		try {
-			fs = new FileInputStream(filePath);
-			bs = new BufferedInputStream(fs);
-			BitmapFactory.Options options = setBitmapOption(filePath, outWidth,
-					outHeight);
-			bm = BitmapFactory.decodeStream(bs, null, options);
-			jpgView.setImageBitmap(bm);
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				bs.close();
-				fs.close();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-	}
-
-	public String Bitmap2Base64(Bitmap bitmap) {
-		try {
-			// 先将bitmap转换为普通的字节数组
-			ByteArrayOutputStream out = new ByteArrayOutputStream();
-			bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
-			out.flush();
-			out.close();
-			byte[] buffer = out.toByteArray();
-			// 将普通字节数组转换为base64数组
-			String encode = Base64.encodeToString(buffer, Base64.DEFAULT);
-			// // string = Base64.encodeToString(bytes, Base64.DEFAULT);
-			return encode;
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
-
-	// 将文件路径转化为Bitmap string 类型
-	public String bitmap64(String filepath) {
-		FileInputStream fs = null;
-		BufferedInputStream bs = null;
-		Bitmap bt = null;
-		String encode = null;
-		BitmapFactory.Options options = null;
-		try {
-			fs = new FileInputStream(filepath);
-			bs = new BufferedInputStream(fs);
-			options = setBitmapOption(filepath, 100, 100);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		bt = BitmapFactory.decodeStream(bs, null, options);
-		try {
-			// 先将bitmap转换为普通的字节数组
-			ByteArrayOutputStream out = new ByteArrayOutputStream();
-			bt.compress(Bitmap.CompressFormat.JPEG, 100, out);
-			out.flush();
-			out.close();
-			byte[] buffer = out.toByteArray();
-			// 将普通字节数组转换为base64数组
-			encode = Base64.encodeToString(buffer, Base64.DEFAULT);
-			// // string = Base64.encodeToString(bytes, Base64.DEFAULT);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		try {
-			bs.close();
-			fs.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return encode;
-
-	}
-
-	public static Bitmap BitmapAutoSize(String filePath) {
-		// outWidth和outHeight是目标图片的最大宽度和高度，用作限制
-		FileInputStream fs = null;
-		BufferedInputStream bs = null;
-		BitmapFactory.Options options = null;
-		try {
-			fs = new FileInputStream(filePath);
-			bs = new BufferedInputStream(fs);
-			options = setBitmapOption(filePath, 100, 100);
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				bs.close();
-				fs.close();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-		return BitmapFactory.decodeStream(bs, null, options);
-	}
-
-	private static BitmapFactory.Options setBitmapOption(String file,
-			int width, int height) {
-		BitmapFactory.Options opt = new BitmapFactory.Options();
-		opt.inJustDecodeBounds = true;
-		// 设置只是解码图片的边距，此操作目的是度量图片的实际宽度和高度
-		BitmapFactory.decodeFile(file, opt);
-
-		int outWidth = opt.outWidth; // 获得图片的实际高和宽
-		int outHeight = opt.outHeight;
-		opt.inDither = false;
-		opt.inPreferredConfig = Bitmap.Config.RGB_565;
-		// 设置加载图片的颜色数为16bit，默认是RGB_8888，表示24bit颜色和透明通道，但一般用不上
-		opt.inSampleSize = 1;
-		// 设置缩放比,1表示原比例，2表示原来的四分之一....
-		// 计算缩放比
-		if (outWidth != 0 && outHeight != 0 && width != 0 && height != 0) {
-			int sampleSize = (outWidth / width + outHeight / height) / 2;
-			opt.inSampleSize = sampleSize;
-		}
-
-		opt.inJustDecodeBounds = false;// 最后把标志复原
-		return opt;
-	}
-
 	// 拍照
 	public void takePicture() {
 		String state = Environment.getExternalStorageState();
@@ -259,7 +128,7 @@ public class MyMessageActivity extends BaseActivity implements
 			if (resultCode == RESULT_OK) {
 
 				// toast("获取图片成功，path=" + picFileFullName);
-				readBitmapAutoSize(picFileFullName, 100, 100, img_tuxiang);
+				ImageTools.readBitmapAutoSize(bm, picFileFullName, img_tuxiang);
 
 			} else if (resultCode == RESULT_CANCELED) {
 				// 用户取消了图像捕获
@@ -275,7 +144,7 @@ public class MyMessageActivity extends BaseActivity implements
 					// Log.e(tag, "获取图片成功，path="+realPath);
 					// toast("获取图片成功，path=" + realPath);
 					//
-					readBitmapAutoSize(realPath, 100, 100, img_tuxiang);
+					ImageTools.readBitmapAutoSize(bm, realPath, img_tuxiang);
 				} else {
 					// Log.e(tag, "从相册获取图片失败");
 				}
@@ -283,28 +152,6 @@ public class MyMessageActivity extends BaseActivity implements
 		}
 		alert.dismiss();
 	}
-
-	// private void setImageView(String realPath) {
-	// Bitmap bmp = BitmapFactory.decodeFile(realPath);
-	// int degree = readPictureDegree(realPath);
-	// if (degree <= 0) {
-	// img_tuxiang.setImageBitmap(bmp);
-	// } else {
-	// // Log.e(tag, "rotate:"+degree);
-	// // 创建操作图片是用的matrix对象
-	// Matrix matrix = new Matrix();
-	// // 旋转图片动作
-	// matrix.postRotate(degree);
-	// // 创建新图片
-	// Bitmap resizedBitmap = Bitmap.createBitmap(bmp, 0, 0,
-	// bmp.getWidth() / 4, bmp.getHeight() / 4, matrix, true);
-	// img_tuxiang.setImageBitmap(resizedBitmap);
-	// }
-	// if (bmp != null && bmp.isRecycled()) {
-	// bmp.recycle();
-	// bmp = null;
-	// }
-	// }
 
 	/**
 	 * This method is used to get real path of file from from uri<br/>
@@ -364,10 +211,6 @@ public class MyMessageActivity extends BaseActivity implements
 		}
 		return degree;
 	}
-
-	// public void toast(String msg) {
-	// Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
-	// }
 
 	@SuppressLint("InlinedApi")
 	@SuppressWarnings("deprecation")
@@ -487,166 +330,6 @@ public class MyMessageActivity extends BaseActivity implements
 		}
 	}
 
-	@SuppressLint("InlinedApi")
-	// private void dialg() {
-	// WindowManager manager = getWindowManager();
-	// Display display = manager.getDefaultDisplay();
-	//
-	// int width = display.getWidth();
-	// alert = new AlertDialog.Builder(this).create();
-	// alert.requestWindowFeature(Window.FEATURE_NO_TITLE);
-	// alert.getWindow().setGravity(Gravity.BOTTOM);
-	// alert.show();
-	// alert.getWindow().setLayout(width, LayoutParams.WRAP_CONTENT);
-	// alert.getWindow().setContentView(R.layout.time_layout);
-	// final com.yale.qcxxandroid.dick.WheelView wv_year;
-	// final com.yale.qcxxandroid.dick.WheelView wv_month;
-	// final com.yale.qcxxandroid.dick.WheelView wv_day;
-	//
-	// final int START_YEAR = 1990, END_YEAR = 2100;
-	//
-	// Calendar calendar = Calendar.getInstance();
-	// year = calendar.get(Calendar.YEAR);
-	// month = calendar.get(Calendar.MONTH);
-	// day = calendar.get(Calendar.DATE);
-	//
-	// // 添加大小月月份并将其转换为list,方便之后的判断
-	// String[] months_big = { "1", "3", "5", "7", "8", "10", "12" };
-	// String[] months_little = { "4", "6", "9", "11" };
-	//
-	// final List<String> list_big = Arrays.asList(months_big);
-	// final List<String> list_little = Arrays.asList(months_little);
-	// wv_year = (com.yale.qcxxandroid.dick.WheelView) alert
-	// .findViewById(R.id.year);
-	// wv_year.setAdapter(new NumericWheelAdapter(START_YEAR, END_YEAR));//
-	// 设置"年"的显示数据
-	// wv_year.setCyclic(true);// 可循环滚动
-	// wv_year.setLabel("年");// 添加文字
-	// wv_year.setCurrentItem(year - START_YEAR);// 初始化时显示的数据
-	//
-	// wv_month = (com.yale.qcxxandroid.dick.WheelView) alert
-	// .findViewById(R.id.month);
-	// wv_month.setAdapter(new NumericWheelAdapter(1, 12));
-	// wv_month.setCyclic(true);
-	// wv_month.setLabel("月");
-	// wv_month.setCurrentItem(month);
-	//
-	// wv_day = (com.yale.qcxxandroid.dick.WheelView) alert
-	// .findViewById(R.id.day);
-	// wv_day.setCyclic(true);
-	// // 判断大小月及是否闰年,用来确定"日"的数据
-	// if (list_big.contains(String.valueOf(month + 1))) {
-	// wv_day.setAdapter(new NumericWheelAdapter(1, 31));
-	// } else if (list_little.contains(String.valueOf(month + 1))) {
-	// wv_day.setAdapter(new NumericWheelAdapter(1, 30));
-	// } else {
-	// // 闰年
-	// if ((year % 4 == 0 && year % 100 != 0) || year % 400 == 0)
-	// wv_day.setAdapter(new NumericWheelAdapter(1, 29));
-	// else
-	// wv_day.setAdapter(new NumericWheelAdapter(1, 28));
-	// }
-	// wv_day.setLabel("日");
-	// wv_day.setCurrentItem(day - 1);
-	//
-	// OnWheelChangedListener wheelListener_year = new OnWheelChangedListener()
-	// {
-	// @SuppressLint("ResourceAsColor")
-	// public void onChanged(com.yale.qcxxandroid.dick.WheelView wheel,
-	// int oldValue, int newValue) {
-	// year_num = newValue + START_YEAR;
-	// // 判断大小月及是否闰年,用来确定"日"的数据
-	// if (list_big
-	// .contains(String.valueOf(wv_month.getCurrentItem() + 1))) {
-	// wv_day.setAdapter(new NumericWheelAdapter(1, 31));
-	// } else if (list_little.contains(String.valueOf(wv_month
-	// .getCurrentItem() + 1))) {
-	// wv_day.setAdapter(new NumericWheelAdapter(1, 30));
-	// } else {
-	// if ((year_num % 4 == 0 && year_num % 100 != 0)
-	// || year_num % 400 == 0)
-	// wv_day.setAdapter(new NumericWheelAdapter(1, 29));
-	// else
-	// wv_day.setAdapter(new NumericWheelAdapter(1, 28));
-	// }
-	// year = newValue + START_YEAR;
-	// // txt.setText(String.valueOf(year) + "年" + String.valueOf(month
-	// // + 1)
-	// // + "月" + String.valueOf(day) + "天" + String.valueOf(hour) +
-	// // "小时"
-	// // + String.valueOf(minute) + "分");
-	// birthday.setText(String.valueOf(year) + "-"
-	// + String.valueOf(month) + "-" + String.valueOf(day));
-	// }
-	// };
-	// // 添加"月"监听
-	// OnWheelChangedListener wheelListener_month = new OnWheelChangedListener()
-	// {
-	// public void onChanged(com.yale.qcxxandroid.dick.WheelView wheel,
-	// int oldValue, int newValue) {
-	// month_num = newValue + 1;
-	// // 判断大小月及是否闰年,用来确定"日"的数据
-	// if (list_big.contains(String.valueOf(month_num))) {
-	// wv_day.setAdapter(new NumericWheelAdapter(1, 31));
-	// } else if (list_little.contains(String.valueOf(month_num))) {
-	// wv_day.setAdapter(new NumericWheelAdapter(1, 30));
-	// } else {
-	// if (((wv_year.getCurrentItem() + START_YEAR) % 4 == 0 && (wv_year
-	// .getCurrentItem() + START_YEAR) % 100 != 0)
-	// || (wv_year.getCurrentItem() + START_YEAR) % 400 == 0)
-	// wv_day.setAdapter(new NumericWheelAdapter(1, 29));
-	// else
-	// wv_day.setAdapter(new NumericWheelAdapter(1, 28));
-	// }
-	// month = newValue + 1;
-	//
-	// birthday.setText(String.valueOf(year) + "-"
-	// + String.valueOf(month) + "-" + String.valueOf(day));
-	//
-	// Log.i("###################", String.valueOf(oldValue + 1));
-	// // if (year_num != 0) {
-	// // Toast.makeText(
-	// // getApplicationContext(),
-	// // String.valueOf(year_num) + "年"
-	// // + String.valueOf(month_num) + "月", 3000)
-	// // .show();
-	// // } else {
-	// // Toast.makeText(
-	// // getApplicationContext(),
-	// // String.valueOf(year) + "年"
-	// // + String.valueOf(month_num) + "月", 3000)
-	// // .show();
-	// // }
-	//
-	// }
-	// };
-	// OnWheelChangedListener wheelListener_day = new OnWheelChangedListener() {
-	//
-	// @Override
-	// public void onChanged(com.yale.qcxxandroid.dick.WheelView wheel,
-	// int oldValue, int newValue) {
-	// // TODO Auto-generated method stub
-	// day = newValue + 1;
-	//
-	// birthday.setText(String.valueOf(year) + "-"
-	// + String.valueOf(month) + "-" + String.valueOf(day));
-	//
-	// }
-	//
-	// };
-	//
-	// wv_year.addChangingListener(wheelListener_year);
-	// wv_month.addChangingListener(wheelListener_month);
-	// wv_day.addChangingListener(wheelListener_day);
-	// // 根据屏幕密度来指定选择器字体的大小
-	// int textSize = 0;
-	//
-	// textSize = 45;
-	//
-	// wv_day.TEXT_SIZE = textSize;
-	// wv_month.TEXT_SIZE = textSize;
-	// wv_year.TEXT_SIZE = textSize;
-	// }
 	private void txt_arr(TextView[] view, int falg) {
 		for (int i = 0; i < view.length; i++) {
 			view[i].setTextColor(getResources().getColor(R.color.textcol));

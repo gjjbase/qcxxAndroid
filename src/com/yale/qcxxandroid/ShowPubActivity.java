@@ -53,6 +53,7 @@ import com.yale.qcxxandroid.bean.PicUpload;
 import com.yale.qcxxandroid.camera.ImgFileListActivity;
 import com.yale.qcxxandroid.util.DataHelper;
 import com.yale.qcxxandroid.util.GlobalUtil;
+import com.yale.qcxxandroid.util.Globals;
 import com.yale.qcxxandroid.util.ThreadUtil;
 
 public class ShowPubActivity extends BaseActivity {
@@ -85,7 +86,8 @@ public class ShowPubActivity extends BaseActivity {
 
 	public void init() {
 		threadutil = new ThreadUtil(mhandler);
-		String methodStr = "[{'com.yale.qcxx.sessionbean.show.impl.ShowsSessionBean':'saveShows'}]";
+		String methodStr = "[{'" + Globals.SHOW_SESSION
+				+ ".ShowsSessionBean':'saveShows'}]";
 		share = getSharedPreferences("qcxx", Context.MODE_PRIVATE);
 		JSONArray jso = new JSONArray();
 		JSONObject jsoo = new JSONObject();
@@ -93,21 +95,12 @@ public class ShowPubActivity extends BaseActivity {
 			try {
 				picList = picUploadDAO.queryForAll();
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			StringBuffer str = new StringBuffer();
 			for (PicUpload pic : picList) {
-				// Log.i("+++++", pic.getPicUrl());
-				System.out.println(pic.getPicToken() + "///111"
-						+ pic.getPicUrl());
-				// toast(pic.getPicToken() + "///111" + pic.getPicUrl());
 				String base = ImageTools.bitmap64(pic.getPicUrl());
 				str.append(base + "++yale");
-				// ++DEDADARR
-				// ++JOSKLASLD
-
-				Log.i("#############", str.toString());
 			}
 			try {
 				if (content.getText().toString().equals("")) {
@@ -141,9 +134,11 @@ public class ShowPubActivity extends BaseActivity {
 				e.printStackTrace();
 			}
 			jso.put(jsoo);
+			threadutil.doStartWebServicerequestWebService(ShowPubActivity.this,
+					jso.toString(), methodStr, true);
+		} else {
+			toast("图片不能为空", getApplicationContext());
 		}
-		threadutil.doStartWebServicerequestWebService(ShowPubActivity.this,
-				jso.toString(), methodStr, true);
 
 	}
 
@@ -180,7 +175,6 @@ public class ShowPubActivity extends BaseActivity {
 						GlobalUtil.toast("发布失败", getApplicationContext());
 					}
 				} catch (Exception e) {
-					// TODO: handle exception
 					GlobalUtil.toast("发布失败", getApplicationContext());
 				}
 
@@ -222,7 +216,7 @@ public class ShowPubActivity extends BaseActivity {
 				init();
 			}
 		});
-		dataHelper = DataHelper.getInstance(this);
+		dataHelper = DataHelper.getInstance(ShowPubActivity.this);
 		picUploadDAO = dataHelper.gePicUploadDataDAO();
 		adpter = new Adapter(ShowPubActivity.this, picList);
 		grd.setAdapter(adpter);
@@ -305,7 +299,6 @@ public class ShowPubActivity extends BaseActivity {
 	protected void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
-
 		if (bm != null && bm.isRecycled()) {
 			bm.recycle();
 			bm = null;
@@ -326,6 +319,12 @@ public class ShowPubActivity extends BaseActivity {
 	@Override
 	protected void onDestroy() {
 		// TODO Auto-generated method stub
+		try {
+			picUploadDAO.delete(picList);
+		} catch (java.sql.SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} // 删除
 		super.onDestroy();
 
 	}

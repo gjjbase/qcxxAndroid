@@ -57,26 +57,26 @@ public class ClassActivity extends BaseActivity {
 				.putExtras(bundle);
 		startActivity(intent);
 	}
-
+	//通讯录
 	public void adressbook(View v) {
 		intent.setClass(ClassActivity.this, AdrebookActivity.class);
 		startActivity(intent);
 	}
-
+	//隔壁班级
 	public void nextClass(View v) {
 
 		bundle.putInt("data", 1);
-		intent.setClass(ClassActivity.this, MyClassActivityitem.class)
+		intent.setClass(ClassActivity.this, NearActivity.class)
 				.putExtras(bundle);
 		startActivity(intent);
 	}
-
+	//摇摇
 	public void onShake(View v) {
 
 		intent.setClass(ClassActivity.this, ShakeActivity.class);
 		startActivity(intent);
 	}
-
+	//院系
 	public void deparClass(View v) {
 
 		bundle.putInt("falg", 1);

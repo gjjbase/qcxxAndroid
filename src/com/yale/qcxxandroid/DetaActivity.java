@@ -37,6 +37,7 @@ import android.widget.Toast;
 
 import com.yale.qcxxandroid.SideBar.OnTouchingLetterChangedListener;
 import com.yale.qcxxandroid.base.BaseActivity;
+import com.yale.qcxxandroid.util.Globals;
 import com.yale.qcxxandroid.util.StringHelper;
 import com.yale.qcxxandroid.util.ThreadUtil;
 
@@ -58,7 +59,8 @@ public class DetaActivity extends BaseActivity {
 	@SuppressLint("HandlerLeak")
 	private void ini() {
 		thread = new ThreadUtil(myhandler);
-		String methodStr = "[{'com.yale.qcxx.sessionbean.comm.impl.CommonDataSessionBean':'listCommonData'}]";
+		String methodStr = "[{'" + Globals.COMM_SESSION
+				+ ".CommonDataSessionBean':'listCommonData'}]";
 		String jsonParamStr = null;
 		if (getIntent().getExtras().getString("typ").equals("1")) {
 			jsonParamStr = "[{'cdType':" + 7 + "}]";
