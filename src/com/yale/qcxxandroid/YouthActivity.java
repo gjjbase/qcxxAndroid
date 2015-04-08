@@ -24,7 +24,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -46,24 +45,26 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.dao.GenericRawResults;
+import com.j256.ormlite.dao.RawRowMapper;
 import com.j256.ormlite.stmt.Where;
 import com.yale.qcxxandroid.base.BaseActivity;
 import com.yale.qcxxandroid.base.BaseListView;
-import com.yale.qcxxandroid.bean.MessageBean;
+import com.yale.qcxxandroid.bean.XmppMsgBean;
 import com.yale.qcxxandroid.chat.ChatMainActivity;
 import com.yale.qcxxandroid.chat.xmpp.XmppGlobals;
+import com.yale.qcxxandroid.chat.xmpp.XmppService;
 import com.yale.qcxxandroid.util.DataHelper;
 import com.yale.qcxxandroid.util.ThreadUtil;
-import com.yale.qcxxandroid.util.ViewThread;
 
 public class YouthActivity extends BaseActivity {
 	private Intent intent = new Intent();
 	private Bundle bundle = new Bundle();
 	private BaseListView listView;
 	private ListView searchList;
-	private MsgAdapter msgAdapter;
+	private YouthMsgAdapter msgAdapter;
 	private SearchAdapter searchAdapter;
-	private LinearLayout xxhd, qc_qun, bottom, lin_top;
+	private LinearLayout xxhd, qc_qun, qc_ad, bottom, lin_top;
 	RelativeLayout shade;
 	private ImageView add;
 	private List<JSONObject> jsonList = new ArrayList<JSONObject>();
@@ -71,7 +72,7 @@ public class YouthActivity extends BaseActivity {
 	private EditText search;
 	private LinearLayout title;
 	private TextView cancel;
-	@SuppressWarnings("unused")
+	private LinearLayout lin_bg;
 	private ThreadUtil thread;
 	private LayoutTransition mTransitioner;
 
@@ -162,7 +163,6 @@ public class YouthActivity extends BaseActivity {
 
 	}
 
-	@SuppressLint("HandlerLeak")
 	Handler handlerSlideImg = new Handler() {
 		@Override
 		public void handleMessage(Message msg) {
@@ -175,10 +175,48 @@ public class YouthActivity extends BaseActivity {
 		}
 	};
 
-	@SuppressLint("HandlerLeak")
+	// private void initData() {
+	// jsonList.clear();
+	// searchListObj.clear();
+	// try {
+	// JSONObject tmp = new JSONObject();
+	// tmp.put("nc", "王玮");
+	// tmp.put("content", "在？");
+	// tmp.put("pubtime", "5分钟前");
+	// jsonList.add(tmp);
+	// JSONObject tmp1 = new JSONObject();
+	// tmp1.put("nc", "陈路");
+	// tmp1.put("content", "收到回复");
+	// tmp1.put("pubtime", "6分钟前");
+	// jsonList.add(tmp1);
+	// JSONObject tmp2 = new JSONObject();
+	// tmp2.put("nc", "邱老师");
+	// tmp2.put("content", "一起出来吃个饭吧");
+	// tmp2.put("pubtime", "7分钟前");
+	// jsonList.add(tmp2);
+	// } catch (JSONException e) {
+	// e.printStackTrace();
+	// }
+	// msgAdapter = new YouthMsgAdapter(YouthActivity.this, jsonList);
+	// msgAdapter.setOnDeleteListioner(YouthActivity.this);
+	// listView.setAdapter(msgAdapter);
+	// try {
+	// JSONObject tmp = new JSONObject();
+	// tmp.put("name", "华中科技大学计算机学院");
+	// searchListObj.add(tmp);
+	// JSONObject tmp1 = new JSONObject();
+	// tmp1.put("name", "武汉大学传媒系");
+	// searchListObj.add(tmp1);
+	// JSONObject tmp2 = new JSONObject();
+	// tmp2.put("name", "KJ2010班");
+	// searchListObj.add(tmp2);
+	// } catch (JSONException e) {
+	// e.printStackTrace();
+	// }
+	// searchAdapter = new SearchAdapter(YouthActivity.this, searchListObj);
+	// }
 	public void init() {
 		Handler handler = new Handler() {
-			@SuppressWarnings("unused")
 			public void handerMessage(Message msg) {
 				super.handleMessage(msg);
 				switch (msg.what) {
@@ -202,18 +240,6 @@ public class YouthActivity extends BaseActivity {
 		thread = new ThreadUtil(handler);
 	}
 
-	public void click(View v) {
-		Log.i("0000", "点击");
-	}
-
-	@Override
-	protected void onResume() {
-		// TODO Auto-generated method stub
-		new ViewThread(getApplicationContext(), R.layout.youth_activity);
-		super.onResume();
-	}
-
-	@SuppressWarnings("deprecation")
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.youth_activity);
@@ -222,12 +248,14 @@ public class YouthActivity extends BaseActivity {
 		title = (LinearLayout) findViewById(R.id.title);
 		listView = (BaseListView) findViewById(R.id.qcList);
 		searchList = (ListView) findViewById(R.id.searchList);
+		lin_bg = (LinearLayout) findViewById(R.id.lin_bg);
 		xxhd = (LinearLayout) findViewById(R.id.xxhd);
 		bottom = (LinearLayout) findViewById(R.id.bottom);
 		lin_top = (LinearLayout) findViewById(R.id.lin_top);
 		shade = (RelativeLayout) findViewById(R.id.shade);
 		listView.setDeleteListioner(this);
 		listView.setSingleTapUpListenner(this);
+		
 		// 声明动画
 		resetTransition();
 		final TranslateAnimation translate = new TranslateAnimation(
@@ -236,15 +264,13 @@ public class YouthActivity extends BaseActivity {
 
 		Animation.RELATIVE_TO_SELF, 0.1f, Animation.RELATIVE_TO_SELF, 0);
 		translate.setDuration(300);
-		@SuppressWarnings("unused")
 		final TranslateAnimation translat = new TranslateAnimation(
 
 		Animation.RELATIVE_TO_SELF, 0, Animation.RELATIVE_TO_SELF, 0,
 
 		Animation.RELATIVE_TO_SELF, 0.1f, Animation.RELATIVE_TO_SELF, 0);
 		translate.setDuration(300);
-		// TranslateAnimation M=new TranslateAnimation( , fromXValue, toXType,
-		// toXValue, fromYType, fromYValue, toYType, toYValue)
+//		TranslateAnimation M=new TranslateAnimation(  , fromXValue, toXType, toXValue, fromYType, fromYValue, toYType, toYValue)
 		// 初始化动画
 		initAnim();
 		listView.setOnItemClickListener(new ListView.OnItemClickListener() {
@@ -254,9 +280,15 @@ public class YouthActivity extends BaseActivity {
 				// try {
 				TextView nc = (TextView) arg1.findViewById(R.id.nc);
 				bundle.putString("name", nc.getText().toString());
+				// bundle.putString("name",
+				// jsonList.get(position).getString("nc"));
 				intent.setClass(YouthActivity.this, ChatMainActivity.class)
 						.putExtras(bundle);
 				startActivity(intent);
+				// } catch (JSONException e) {
+				// TODO Auto-generated catch block
+				// e.printStackTrace();
+				// }
 
 			}
 		});
@@ -346,92 +378,106 @@ public class YouthActivity extends BaseActivity {
 				startActivity(intent);
 			}
 		});
-		initData();
+		// qc_add = (LinearLayout) view.findViewById(R.id.qc_add);
+		// qc_add.setOnClickListener(new OnClickListener() {
+		// @Override
+		// public void onClick(View arg0) {
+		// pop.dismiss();
+		// Intent intent = new Intent(YouthActivity.this,
+		// YouthAddFriendActivity.class);
+		// startActivity(intent);
+		// overridePendingTransition(R.anim.push_up_in, 0);
+		// }
+		// });
+		
 		IntentFilter filter = new IntentFilter(XmppGlobals.MESSAGE_ACTION);
 		registerReceiver(receiver, filter);
-
+		
 		IntentFilter filter1 = new IntentFilter(XmppGlobals.MODE_ACTION);
 		registerReceiver(receiver2, filter1);
-
+		
 	}
-
+	
+	@Override
+	protected void onResume() {
+		super.onResume();
+		initData();
+		
+	}
+	
+	
 	boolean hasflag = false;
 	public static int msgCount;
 	BroadcastReceiver receiver = new BroadcastReceiver() {
-
+		
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			String from = intent.getStringExtra("from");
-			String message = intent.getStringExtra("body");
-			String time = intent.getStringExtra("time");
-			String name = from.substring(0, from.indexOf("@"));
-			Dao<MessageBean, Integer> messageDao = DataHelper.getInstance(
-					YouthActivity.this).getMessageDAO();
+//			String from = intent.getStringExtra("from");
+			msgCount = 0;
 			try {
-				Where<MessageBean, Integer> query = messageDao.queryBuilder()
-						.where().eq("msgtype", "0").and().eq("readed", false);
-				List<MessageBean> list = messageDao.query(query.prepare());
+				XmppMsgBean bean = (XmppMsgBean) intent.getSerializableExtra("body");
+				String name = bean.getFromUserId();
+				String content = bean.getContent();
+				String time = bean.getTimeSend();
+				Dao<XmppMsgBean, Integer> messageDao = DataHelper.getInstance(YouthActivity.this).getXmppMsgDAO(); 
+				Where<XmppMsgBean, Integer> query = messageDao.queryBuilder().where().eq("chatTopic", name).and().eq("isReaded", false);
+				List<XmppMsgBean> list= messageDao.query(query.prepare());
 				msgCount = list.size();
-			} catch (SQLException e1) {
-				e1.printStackTrace();
-			}
-			try {
-				for (int i = 0; i < jsonList.size(); i++) {
+				for(int i=0;i<jsonList.size();i++){
 					JSONObject tmp = jsonList.get(i);
 					String curentName = tmp.get("nc").toString();
-					if (curentName.equals(name)) {
+					if(curentName.equals(name)){
 						hasflag = true;
 						jsonList.remove(i);
-						tmp.put("content", message);
+						tmp.put("content", content);
 						tmp.put("pubtime", time);
-						tmp.put("tongzhi", msgCount + "");
-						jsonList.add(0, tmp);
+						tmp.put("tongzhi", msgCount+"");
+						jsonList.add(0,tmp);
 					}
 				}
-				if (!hasflag) {
+				if(!hasflag){
 					JSONObject tmp = new JSONObject();
 					tmp.put("nc", name);
-					tmp.put("content", message);
+					tmp.put("content", content);
 					tmp.put("pubtime", time);
-					tmp.put("tongzhi", msgCount + "");
-					jsonList.add(0, tmp);
+					tmp.put("tongzhi", msgCount+"");
+					jsonList.add(0,tmp);
 				}
 				msgAdapter.notifyDataSetChanged();
 			} catch (JSONException e) {
 				e.printStackTrace();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}catch (Exception e) {
+				e.printStackTrace();
 			}
 		}
 	};
-
+	
 	BroadcastReceiver receiver2 = new BroadcastReceiver() {
-
+		
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			String from = intent.getStringExtra("from");
 			String mode = intent.getStringExtra("mode");
 			String name = from.substring(0, from.indexOf("@"));
-			if (mode.equals("online")) {
-				Toast.makeText(YouthActivity.this, name + "上线了" + mode, 2000)
-						.show();
-			} else if (mode.equals("away")) {
-				Toast.makeText(YouthActivity.this, name + "有事离开了" + mode, 2000)
-						.show();
-			} else if (mode.equals("dnd")) {
-				Toast.makeText(YouthActivity.this, name + "隐身了" + mode, 2000)
-						.show();
-			} else if (mode.equals("chat")) {
-				Toast.makeText(YouthActivity.this, name + "空闲" + mode, 2000)
-						.show();
-			} else if (mode.equals("outline")) {
-				Toast.makeText(YouthActivity.this, name + "下线了" + mode, 2000)
-						.show();
-			} else {
-				Toast.makeText(YouthActivity.this, name + "上线了" + mode, 2000)
-						.show();
+			if(mode.equals("online")){
+				Toast.makeText(YouthActivity.this,name+"上线了"+mode, 2000).show();
+			}else if(mode.equals("away")){
+				Toast.makeText(YouthActivity.this,name+"有事离开了"+mode, 2000).show();
+			}else if(mode.equals("dnd")){
+				Toast.makeText(YouthActivity.this,name+"隐身了"+mode, 2000).show();
+			}else if(mode.equals("chat")){
+				Toast.makeText(YouthActivity.this,name+"空闲"+mode, 2000).show();
+			}else if(mode.equals("outline")){
+				Toast.makeText(YouthActivity.this,name+"下线了"+mode, 2000).show();
+			}else{
+				Toast.makeText(YouthActivity.this,name+"上线了"+mode, 2000).show();
 			}
 		}
 	};
-
+	
 	@SuppressLint("NewApi")
 	private void hideSearch() {
 		InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -484,26 +530,66 @@ public class YouthActivity extends BaseActivity {
 	private void initData() {
 		jsonList.clear();
 		searchListObj.clear();
+		msgCount = 0;
+		JSONObject sms = new JSONObject();
+		JSONObject sms1 = new JSONObject();
 		try {
-			JSONObject tmp = new JSONObject();
-			tmp.put("nc", "王玮");
-			tmp.put("content", "在？");
-			tmp.put("pubtime", "5分钟前");
-			jsonList.add(tmp);
-			JSONObject tmp1 = new JSONObject();
-			tmp1.put("nc", "陈路");
-			tmp1.put("content", "收到回复");
-			tmp1.put("pubtime", "6分钟前");
-			jsonList.add(tmp1);
-			JSONObject tmp2 = new JSONObject();
-			tmp2.put("nc", "admin");
-			tmp2.put("content", "一起出来吃个饭吧");
-			tmp2.put("pubtime", "7分钟前");
-			jsonList.add(tmp2);
+			sms.put("nc", "15000000");
+			sms.put("content", "测试入口");
+			sms.put("pubtime", "2015-4-3 5:26:33");
+			sms.put("tongzhi", 0);
+			sms1.put("nc", "15071166378");
+			sms1.put("content", "测试入口");
+			sms1.put("pubtime", "2015-4-3 5:26:33");
+			sms1.put("tongzhi", 0);
+		} catch (JSONException e2) {
+			e2.printStackTrace();
+		}
+		jsonList.add(sms);
+		Dao<XmppMsgBean, Integer> messageDao = DataHelper.getInstance(YouthActivity.this).getXmppMsgDAO(); 
+		String sql = "select * from xmppMsgBean group by chatTopic order by timeSend desc";
+		try {
+			GenericRawResults<XmppMsgBean> rawResults = messageDao.queryRaw(sql, new RawRowMapper<XmppMsgBean>() {
+				@Override
+				public XmppMsgBean mapRow(String[] columnNames, String[] resultColumns) throws SQLException {
+					XmppMsgBean bean = new XmppMsgBean();
+					bean.setChatTopic(resultColumns[0]);
+					bean.setContent(resultColumns[1]);
+					bean.setFileSize(resultColumns[2]);
+					bean.setFromUserId(resultColumns[3]);
+					bean.setType(resultColumns[4]);
+					bean.setToUserId(resultColumns[5]);
+					bean.setTimeSend(resultColumns[6]);
+					bean.setTimeLen(resultColumns[7]);
+					bean.setMsgtype(Integer.parseInt(resultColumns[8]));
+					bean.setReaded(Boolean.parseBoolean(resultColumns[9]));
+					bean.setId(Integer.parseInt(resultColumns[10]));
+					return bean;
+				}
+			});
+			List<XmppMsgBean> results = rawResults.getResults();
+			if(results !=null && results.size()>0){
+				for(int i=results.size();i>0;i--){
+					
+					XmppMsgBean msg = results.get(i-1);
+					JSONObject tmp = new JSONObject();
+					tmp.put("nc", msg.getChatTopic());
+					tmp.put("content", msg.getContent());
+					tmp.put("pubtime", msg.getTimeSend());
+					//这里构造的查询应该是，chatTopic为好友的ID，且是接收到的消息，并且为未读消息
+					Where<XmppMsgBean, Integer> query = messageDao.queryBuilder().where().eq("chatTopic", msg.getFromUserId()).and().eq("isReaded", false).and().eq("msgtype", 1);
+					List<XmppMsgBean> list= messageDao.query(query.prepare());
+					msgCount = list.size();
+					tmp.put("tongzhi", msgCount);
+					jsonList.add(tmp);  
+				}
+			}
+		} catch (SQLException e1) {
+			e1.printStackTrace();
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
-		msgAdapter = new MsgAdapter(YouthActivity.this, jsonList);
+		msgAdapter = new YouthMsgAdapter(YouthActivity.this, jsonList);
 		msgAdapter.setOnDeleteListioner(YouthActivity.this);
 		listView.setAdapter(msgAdapter);
 		try {

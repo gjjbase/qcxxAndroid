@@ -1,5 +1,8 @@
 package com.yale.qcxxandroid.chat.xmpp;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.sql.SQLException;
 
@@ -10,38 +13,61 @@ import com.j256.ormlite.dao.Dao;
 import com.yale.qcxxandroid.R;
 import com.yale.qcxxandroid.bean.XmppMsgBean;
 import com.yale.qcxxandroid.util.DataHelper;
+import com.yale.qcxxandroid.util.SoundPlay;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.media.MediaPlayer;
-import android.media.MediaPlayer.OnCompletionListener;
+import android.os.Environment;
 import android.os.Vibrator;
+import android.util.Base64;
 import android.util.Log;
 
 public class MessageReciver extends BroadcastReceiver {
 	@Override
 	public void onReceive(Context context, Intent intent) {
-		String action = intent.getAction();
-		if (action.equals(XmppGlobals.MessageAction)) {
+		String intentAction = intent.getAction();
+		if (intentAction != XmppGlobals.MessageAction) {
+			return;
+		}
+		String action = intent.getStringExtra("Action");
+		if (action.equals(XmppGlobals.RECEIVE_MSGFLAG)) {
 			Log.e("MessageReciver", "获得消息，转发消息");
-			// String from = intent.getStringExtra("from");
 			String body = intent.getStringExtra("body");
 			// 消息提示
 			StartAudio(context);
-			startVIBRATE(context);
+
+			// startVIBRATE(context);
 			// 解析XMPP消息
 			XmppMsgBean xmppBean = getJsonBean(body, context);
 			// 发送广播
 			Intent msgIntent = new Intent();
-			// msgIntent.putExtra("from", from);
 			msgIntent.putExtra("body", xmppBean);
 			msgIntent.setAction(XmppGlobals.MESSAGE_ACTION);
 			context.getApplicationContext().sendBroadcast(msgIntent);
-		} else if (action.equals(XmppGlobals.PRESENCE_CHANGED)) {
+		} else if (action.equals(XmppGlobals.PRESENCE_CHANGED)) { // 好友花名册状态监听
 			String fromName = intent.getStringExtra("fromName");
 			String mode = intent.getStringExtra("mode");
 			presenceChanged(context, fromName, mode);
+		} else if (action.equals(XmppGlobals.SENDMSG_ISUCCESSED)) { // 发送消息状态监听
+			XmppMsgBean bean = (XmppMsgBean) intent
+					.getSerializableExtra("XmppMsgBean");
+			// 保存数据库
+			try {
+				if (bean.getType().equals(XmppGlobals.MessageType.sound)) {
+					bean.setContent(bean.getFileSize());
+				}
+				Dao<XmppMsgBean, Integer> mesgDao = DataHelper.getInstance(
+						context).getXmppMsgDAO();
+				mesgDao.create(bean);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			Intent msgIntent = new Intent();
+			msgIntent.putExtra("IsSuccess", bean.isReaded());
+			msgIntent.setAction(XmppGlobals.SENDMSG_ISUCCESSED);
+			context.getApplicationContext().sendBroadcast(msgIntent);
 		}
 	}
 
@@ -65,6 +91,7 @@ public class MessageReciver extends BroadcastReceiver {
 	private static long lastAudioTime = 0;
 	private volatile boolean openFlag = true;
 	private MediaPlayer mp;
+	SoundPlay play;
 
 	/**
 	 * 开始播放铃声 3秒钟内来多个消息的时候铃声只提醒一次
@@ -86,32 +113,7 @@ public class MessageReciver extends BroadcastReceiver {
 		} else {
 			lastAudioTime = System.currentTimeMillis();
 		}
-		if (mp == null) {
-			mp = MediaPlayer.create(context, R.raw.gl);
-		} else {
-			if (mp.isPlaying())
-				return;
-		}
-		try {
-			mp.setOnCompletionListener(new OnCompletionListener() {
-
-				@Override
-				public void onCompletion(MediaPlayer media) {
-					media.stop();
-					media.release();
-					openFlag = true;
-				}
-			});
-			mp.prepare();
-			mp.start();
-		} catch (IllegalStateException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
+		MediaPlayer.create(context, R.raw.gl).start();
 	}
 
 	/**
@@ -146,19 +148,69 @@ public class MessageReciver extends BroadcastReceiver {
 			String fileSize = json.getString("fileSize");
 			String timeLen = json.getString("timeLen");
 			// 存储到数据库
+			if (type.equals(XmppGlobals.MessageType.sound)) { // 语音消息处理
+			// content = fileSize;
+				//
+				byte[] bytes = Base64.decode(content, Base64.DEFAULT);
+				String filePath = Environment.getExternalStorageDirectory()
+						.getAbsolutePath().toString()
+						+ fileSize.substring(0, fileSize.lastIndexOf("/") + 1);
+				String fileName = fileSize.substring(
+						fileSize.lastIndexOf("/") + 1, fileSize.length());
+				boolean flag = byte2File(bytes, filePath, fileName);
+				content = fileSize;
+			}
 			bean = new XmppMsgBean(msgtype, chatTopic, type, timeSend, content,
 					fileSize, toUserId, fromUserId, timeLen, false);
 			Dao<XmppMsgBean, Integer> messageDao = DataHelper.getInstance(
 					context).getXmppMsgDAO();
 			messageDao.create(bean);
 			Log.e("成功", "存储数据成功！");
+
 		} catch (JSONException e) {
 			e.printStackTrace();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-
 		return bean;
+	}
+
+	public static boolean byte2File(byte[] buf, String filePath, String fileName) {
+		boolean flag = true;
+		BufferedOutputStream bos = null;
+		FileOutputStream fos = null;
+		File file = null;
+		try {
+			File dir = new File(filePath);
+			if (!dir.exists()) {
+				boolean flags = dir.mkdirs();
+				System.out.println(flags);
+			}
+			file = new File(filePath + fileName);
+			file.createNewFile();
+			fos = new FileOutputStream(file);
+			bos = new BufferedOutputStream(fos);
+			bos.write(buf);
+		} catch (Exception e) {
+			e.printStackTrace();
+			flag = false;
+		} finally {
+			if (bos != null) {
+				try {
+					bos.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+			if (fos != null) {
+				try {
+					fos.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return flag;
 	}
 
 }

@@ -47,6 +47,7 @@
         android:background="@color/bg_color"
         android:cacheColorHint="@color/transparent"
         android:divider="@null"
+        android:descendantFocusability="blocksDescendants"
         android:listSelector="@color/transparent"
         android:scrollbars="none" />
 
@@ -140,7 +141,7 @@
                     android:paddingLeft="3dp"
                     android:textSize="18sp" />
 
-                <ImageView
+                <com.yale.qcxxandroid.chat.ButtonRecorder
                     android:id="@+id/inputer"
                     android:layout_width="match_parent"
                     android:layout_height="fill_parent"

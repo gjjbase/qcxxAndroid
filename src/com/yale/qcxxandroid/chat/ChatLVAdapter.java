@@ -14,6 +14,7 @@ import com.nineoldandroids.view.ViewHelper;
 import com.yale.qcxxandroid.ImageTools;
 import com.yale.qcxxandroid.R;
 import com.yale.qcxxandroid.chat.xmpp.XmppGlobals;
+import com.yale.qcxxandroid.util.GlobalUtil;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -483,6 +484,7 @@ public class ChatLVAdapter extends BaseAdapter {
 
 		@Override
 		public void onClick(View view) {
+			GlobalUtil.toast("@@@@@@@@@@@@@@", context);
 			String tempFileName = Environment.getExternalStorageDirectory()
 					.getAbsolutePath().toString()
 					+ path;

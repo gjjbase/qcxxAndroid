@@ -9,7 +9,7 @@ public final class Globals {
 	public static final String ISLOGINAUTO = "is_login_auto";
 	/** WSDL的路径 **/
 
-	public static final String WSDL_URL = "http://202.103.1.67:8080/qcxxweservice/";
+	public static final String WSDL_URL = "http://121.41.111.107:8080/qcxxweservice/";
 	public static final String PHT_URL = "http://121.41.111.107:8080/wechat";// 27
 	// public static final String WSDL_URL =
 	// "http://121.41.111.107:8080/qcxxweservice/";
@@ -51,7 +51,7 @@ public final class Globals {
 	public static final int SHOW_AC = 2;// 活动show
 	public static final int SHOW_SX = 3;// 实习show
 	// 好友状态
-	public static final int FRIEND_REQUEST_APP = -4;//已邀请
+	public static final int FRIEND_REQUEST_APP = -4;// 已邀请
 	public static final int FRIEND_IN_SYS = -3;// 系统中已经注册
 	public static final int FRIEND_INIT = -2;// 初始化
 	public static final int FRIEND_WAIT = -1;// 等待添加
