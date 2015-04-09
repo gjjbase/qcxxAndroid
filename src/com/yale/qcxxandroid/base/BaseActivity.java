@@ -8,11 +8,13 @@ import java.util.List;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.ActivityNotFoundException;
 import android.content.AsyncQueryHandler;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -89,6 +91,17 @@ public class BaseActivity extends Activity implements OnDeleteListioner,
 					"sort_key COLLATE LOCALIZED asc");
 		} else {
 
+		}
+	}
+
+	public void startActivitySafely(Intent intent) {
+		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+		try {
+			startActivity(intent);
+		} catch (ActivityNotFoundException e) {
+			toast("null", getApplicationContext());
+		} catch (SecurityException e) {
+			toast("null", getApplicationContext());
 		}
 	}
 

@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.ImageView.ScaleType;
 
@@ -140,6 +141,7 @@ public class YouthMsgAdapter extends BaseAdapter {
 		private TextView tongzhi;
 		private TextView deleteAction;
 		private ImageView firImg;
+		private RelativeLayout a;
 	}
 
 }

@@ -9,7 +9,7 @@ public final class Globals {
 	public static final String ISLOGINAUTO = "is_login_auto";
 	/** WSDL的路径 **/
 
-	public static final String WSDL_URL = "http://121.41.111.107:8080/qcxxweservice/";
+	public static final String WSDL_URL = "http://202.103.1.43:8080/qcxxweservice/";
 	public static final String PHT_URL = "http://121.41.111.107:8080/wechat";// 27
 	// public static final String WSDL_URL =
 	// "http://121.41.111.107:8080/qcxxweservice/";

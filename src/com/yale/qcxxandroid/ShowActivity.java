@@ -9,11 +9,16 @@ import org.json.JSONObject;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.TabActivity;
+import android.content.ActivityNotFoundException;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -47,35 +52,42 @@ public class ShowActivity extends TabActivity {
 	TimerTask task;
 	int index = 0;
 	private TextView txt_myshow, txt_msg, txt_msger;
-	protected SharedPreferences sp = null;
+	public SharedPreferences sp;
 	private Editor edit;
 
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		if (keyCode == KeyEvent.KEYCODE_BACK) {
-			AlertDialog.Builder builder = new AlertDialog.Builder(
-					ShowActivity.this);
-			builder.setMessage("你确定退出吗？")
-					.setCancelable(false)
-					.setPositiveButton("确定",
-							new DialogInterface.OnClickListener() {
-								public void onClick(DialogInterface dialog,
-										int id) {
-									finish();
-									MyActivityManager.getInstance().exit();
-								}
-							})
-					.setNegativeButton("取消",
-							new DialogInterface.OnClickListener() {
-								public void onClick(DialogInterface dialog,
-										int id) {
-									dialog.cancel();
-								}
-							});
-			AlertDialog alert = builder.create();
-			alert.show();
+		PackageManager pm = getPackageManager();
+		ResolveInfo homeInfo = pm.resolveActivity(
+				new Intent(Intent.ACTION_MAIN)
+						.addCategory(Intent.CATEGORY_HOME), 0);
+		try {
+			edit.putInt("intent", 1);
+			edit.commit();
+		} catch (Exception e) {
+			// TODO: handle exception
 		}
 
-		return super.onKeyDown(keyCode, event);
+		if (keyCode == KeyEvent.KEYCODE_BACK) {
+			ActivityInfo ai = homeInfo.activityInfo;
+			Intent startIntent = new Intent(Intent.ACTION_MAIN);
+			startIntent.addCategory(Intent.CATEGORY_LAUNCHER);
+			startIntent
+					.setComponent(new ComponentName(ai.packageName, ai.name));
+			startActivitySafely(startIntent);
+			return true;
+		} else
+			return super.onKeyDown(keyCode, event);
+	}
+
+	public void startActivitySafely(Intent intent) {
+		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+		try {
+			startActivity(intent);
+		} catch (ActivityNotFoundException e) {
+			GlobalUtil.toast("null", getApplicationContext());
+		} catch (SecurityException e) {
+			GlobalUtil.toast("null", getApplicationContext());
+		}
 	}
 
 	public void xiuxiu(View v) {
@@ -108,7 +120,6 @@ public class ShowActivity extends TabActivity {
 					JSONObject jo = joA.getJSONObject(0);
 					txt_msg.setText(jo.getInt("countZitiao") + "");
 					txt_msger.setText(jo.getInt("countMyShow") + "");
-					edit = sp.edit();
 					edit.putString("msgnum", txt_msger.getText().toString());
 					edit.commit();
 					if (!sp.getString("msgnum", "").equals(
@@ -138,6 +149,7 @@ public class ShowActivity extends TabActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.show_activity);
 		sp = getSharedPreferences("qcxx", Context.MODE_PRIVATE);
+		edit = sp.edit();
 		mMarque = (MarqueTextView) findViewById(R.id.tv_marque);
 		txt_myshow = (TextView) findViewById(R.id.txt_myshow);
 		txt_msger = (TextView) findViewById(R.id.txt_msger);

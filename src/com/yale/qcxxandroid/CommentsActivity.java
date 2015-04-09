@@ -3,7 +3,6 @@ package com.yale.qcxxandroid;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -75,7 +74,7 @@ public class CommentsActivity extends BaseActivity {
 	private void init(String date) {
 		thread = new ThreadUtil(mhandler);
 		String methodStr = "[{'" + Globals.COMM_SESSION
-				+ ".CommonDataSessionBean':'saveComment'}]";
+				+ ".CommonDataSessionBean':'saveCommonAction'}]";
 
 		String jsonParamStr = "[{'user_id':" + sp.getString("userId", "")
 				+ ",'primary_id':" + getIntent().getExtras().getString("prid")
@@ -98,9 +97,14 @@ public class CommentsActivity extends BaseActivity {
 			case 1:
 				String returnJson = (String) msg.getData().getString(
 						"returnJson");
+				if (returnJson.equals(Globals.RETURN_STR_TRUE)) {
+					toast("评论成功", getApplicationContext());
+				} else {
+					toast("评论失败，请检查网络", getApplicationContext());
+				}
 				break;
 			case 2:
-
+				toast("评论失败，请检查网络", getApplicationContext());
 				break;
 
 			}
@@ -208,7 +212,7 @@ public class CommentsActivity extends BaseActivity {
 		}
 	}
 
-	private ChatInfo getChatInfoTo(String pullname, String message, String fag,
+	private ChatInfo getChatInfoTo(String pullname, String message,
 			String falg, String time) {
 		// SimpleDateFormat format = new SimpleDateFormat("yyyy年MM月dd日  HH:mm");
 		// String date = format.format(new Date());
@@ -219,30 +223,8 @@ public class CommentsActivity extends BaseActivity {
 		// time=data;
 		info.time = time;
 		// info.time = date;
-		if (fag.equals("")) {
-			info.fromOrTo = 0;
-		} else {
-			info.fromOrTo = Integer.parseInt(fag);
-		}
+		info.fromOrTo = 1;
 		return info;
-	}
-
-	private String formatTime(int t) {
-		return t >= 10 ? "" + t : "0" + t;// 三元运算符 t>10时取 ""+t
-	}
-
-	public String time() {
-		Calendar c = Calendar.getInstance();
-
-		String time = c.get(Calendar.YEAR) + "-" + // 得到年
-				formatTime(c.get(Calendar.MONTH) + 1) + "-" + // month加一 //月
-				formatTime(c.get(Calendar.DAY_OF_MONTH)) + " " + // 日
-				formatTime(c.get(Calendar.HOUR_OF_DAY));
-		// + ":" + // 时
-		// formatTime(c.get(Calendar.MINUTE)) + ":" + // 分
-		// formatTime(c.get(Calendar.SECOND)); // 秒
-		System.out.println(time); // 输出
-		return time;
 	}
 
 	private View viewPagerItem(int position) {
@@ -346,7 +328,7 @@ public class CommentsActivity extends BaseActivity {
 				// TODO Auto-generated method stub
 				if (!TextUtils.isEmpty(input_sms.getText().toString())) {
 					infos.add(getChatInfoTo("", input_sms.getText().toString(),
-							"1", XmppGlobals.MessageType.text, time()));
+							XmppGlobals.MessageType.text, GlobalUtil.time()));
 					mLvAdapter.setList(infos);
 					mLvAdapter.notifyDataSetChanged();
 					list.setSelection(infos.size() - 1);
@@ -442,20 +424,20 @@ public class CommentsActivity extends BaseActivity {
 		// chat.fromOrTo=0;
 		// infos.add(chat);getExtras();
 
-		infos.add(getChatInfoTo("", "武汉亦鸟科技", "1",
-				XmppGlobals.MessageType.text, "1987-10-28"));
-		infos.add(getChatInfoTo("", "武汉亦鸟科技", "1",
-				XmppGlobals.MessageType.text, "1987-10-27"));
-		infos.add(getChatInfoTo("", "青春秀秀", "1", XmppGlobals.MessageType.text,
+		infos.add(getChatInfoTo("", "武汉亦鸟科技", XmppGlobals.MessageType.text,
+				"1987-10-28"));
+		infos.add(getChatInfoTo("", "武汉亦鸟科技", XmppGlobals.MessageType.text,
+				"1987-10-27"));
+		infos.add(getChatInfoTo("", "青春秀秀", XmppGlobals.MessageType.text,
 				"1987-10-26"));
-		infos.add(getChatInfoTo("", "武汉亦鸟科技", "1",
-				XmppGlobals.MessageType.text, "1987-10-25"));
-		infos.add(getChatInfoTo("", "武汉亦鸟科技", "1",
-				XmppGlobals.MessageType.text, "1987-10-24"));
-		infos.add(getChatInfoTo("", "青春秀秀", "1", XmppGlobals.MessageType.text,
+		infos.add(getChatInfoTo("", "武汉亦鸟科技", XmppGlobals.MessageType.text,
+				"1987-10-25"));
+		infos.add(getChatInfoTo("", "武汉亦鸟科技", XmppGlobals.MessageType.text,
+				"1987-10-24"));
+		infos.add(getChatInfoTo("", "青春秀秀", XmppGlobals.MessageType.text,
 				"1987-10-23"));
-		infos.add(getChatInfoTo("", "武汉亦鸟科技", "1",
-				XmppGlobals.MessageType.text, "1987-10-22"));
+		infos.add(getChatInfoTo("", "武汉亦鸟科技", XmppGlobals.MessageType.text,
+				"1987-10-22"));
 		mLvAdapter = new ChatLVAdapter(CommentsActivity.this, infos);
 		list.setAdapter(mLvAdapter);
 		list.setOnTouchListener(new OnTouchListener() {

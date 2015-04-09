@@ -36,6 +36,7 @@ import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
@@ -119,7 +120,6 @@ public class ChatMainActivity extends BaseActivity {
 
 			@Override
 			public void onClick(View v) {
-				// TODO Auto-generated method stub
 				falg++;
 				if (falg % 2 == 0) {
 					left.setImageResource(R.drawable.img_chat);
@@ -800,15 +800,41 @@ public class ChatMainActivity extends BaseActivity {
 						int position, long id) {
 					// TODO Auto-generated method stub
 					try {
+						String type = XmppGlobals.MessageType.Big_face;
 						String png = ((TextView) ((LinearLayout) view)
 								.getChildAt(1)).getText().toString();
-						insert(getFace(png));
-
+						String content = getFace(png).toString();
+						infos.add(getChatInfoTo("", content, num
+								.getText().toString(),type,
+								new Date(System.currentTimeMillis())
+										.toLocaleString()));
+						mLvAdapter.setList(infos);
+						mLvAdapter.notifyDataSetChanged();
+						mListView.setSelection(infos.size() - 1);
+						// 构造消息格式
+						String fromUserId = getSharedPreferences("qcxx",
+								Context.MODE_PRIVATE).getString("phoneNum", "");
+						// String msg = getMessgeBody(content, chatName,
+						// fromUserId);
+						
+						XmppMsgBean bean = new XmppMsgBean();
+						bean.setChatTopic(chatName);
+						bean.setContent(content);
+						bean.setFileSize("0");
+						bean.setFromUserId(fromUserId);
+						bean.setMsgtype(0);
+						bean.setReaded(false);
+						bean.setTimeLen("0");
+						bean.setTimeSend(GlobalUtil.getLocalDate());
+						bean.setToUserId(chatName);
+						bean.setType(type);
+						mXmppService.sendMsg(bean);
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
 				}
 			});
+
 		} else if (fag == 3) {
 			List<String> subList = new ArrayList<String>();
 			subList.addAll(staticFacesList);
@@ -829,7 +855,27 @@ public class ChatMainActivity extends BaseActivity {
 					// TODO Auto-generated method stub
 					switch (position) {
 					case 0:
+						new AlertDialog.Builder(ChatMainActivity.this)
+						.setTitle("添加图片")
+						.setPositiveButton("相册",
+								new DialogInterface.OnClickListener() {
 
+									@Override
+									public void onClick(
+											DialogInterface dialog,
+											int which) {
+										openAlbum();
+									}
+								})
+						.setNegativeButton("拍照",
+								new DialogInterface.OnClickListener() {
+									@Override
+									public void onClick(
+											DialogInterface dialog,
+											int which) {
+										openAlbum();
+									}
+								}).create().show();
 						break;
 					case 1:
 

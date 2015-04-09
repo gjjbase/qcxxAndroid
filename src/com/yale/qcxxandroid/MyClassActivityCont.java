@@ -63,7 +63,6 @@ public class MyClassActivityCont extends BaseActivity {
 		private ViewHolder viewholder;
 		List<Shows> allList = new ArrayList<Shows>();
 		private int length;
-		@SuppressWarnings("unused")
 		private JSONArray jsoo;
 		private String[] str = { "光谷一日游", "青春秀秀合伙人", "户外徒步旅行", "爬山", "同学聚会" };
 		private List<ImageView> img;
@@ -90,6 +89,11 @@ public class MyClassActivityCont extends BaseActivity {
 				break;
 
 			}
+			try {
+			} catch (Exception e) {
+				// TODO: handle exception
+			}
+			// return jsoo.length();
 			return length;
 		}
 
@@ -395,7 +399,7 @@ public class MyClassActivityCont extends BaseActivity {
 			txt_back.setText("班级活动");
 			break;
 		case 2:
-			txt_back.setText("班级秀秀");
+			txt_back.setText("班级风采");
 			break;
 		case 4:
 			txt_back.setText("班级留言");
@@ -455,10 +459,11 @@ public class MyClassActivityCont extends BaseActivity {
 		case 1:
 
 			break;
-		case 2:// listOfshow
+		case 2:// listOfshows
 			methodStr = "[{'" + Globals.COMM_SESSION
-					+ ".CommonDataSessionBean':'listOfshow'}]";
-			jsonParamStr = "[{'pubType':" + 2 + ",'primaryId':"
+					+ ".ShowsSessionBean':'listOfshows'}]";
+			jsonParamStr = "[{'primaryId':"
+					
 					+ getIntent().getExtras().getString("classlist")
 					+ ",'orderBy':" + 4 + "}]";
 			break;
@@ -477,7 +482,6 @@ public class MyClassActivityCont extends BaseActivity {
 
 		}
 		// primaryId 班级id //commentId 根据时间的150324150302.微妙毫毛
-
 		// String methodStr =
 		// "[{'com.yale.qcxx.sessionbean.comm.impl.CommonDataSessionBean':'myClassDetail'}]";
 		//

@@ -178,5 +178,9 @@
         <item name="android:windowBackground">@drawable/round_background</item>
     </style>
     
+    <style name="DialogStyle" parent="@android:style/Theme.Dialog">
+        <item name="android:windowBackground"> @android:color/transparent </item>
+        <item name="android:backgroundDimEnabled">false</item>    
+   </style>  
 
 </resources>

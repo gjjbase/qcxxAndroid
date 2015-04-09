@@ -7,7 +7,6 @@ import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -216,7 +215,39 @@ public class DetaActivity extends BaseActivity {
 			@Override
 			public void onTextChanged(CharSequence s, int start, int before,
 					int count) {
+				List<SortModel> Sou = new ArrayList<SortModel>();
+				JSONArray jso = new JSONArray();
 
+				for (int i = 0; i < joA.length(); i++) {
+					try {
+						if (StringHelper.getPingYin(
+								joA.getJSONObject(i).getString("cdMc"))
+								.contains(hidsear.getText().toString())
+								|| joA.getJSONObject(i).getString("cdMc")
+										.contains(hidsear.getText().toString())
+								|| characterParser.getSelling(
+										joA.getJSONObject(i).getString("cdMc"))
+										.contains(
+												hidsear.getText().toString()
+														.trim())) {
+							jso.put(joA.getJSONObject(i));
+
+						}
+					} catch (JSONException e) {
+						e.printStackTrace();
+					}
+				}
+
+				try {
+					Sou = filledData(jso);
+					Collections.sort(Sou, pinyinComparator);
+					adapter = new SortAdapter(DetaActivity.this, Sou);
+					bomlist.setAdapter(adapter);
+					adapter.notifyDataSetChanged();
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 
 			@Override
@@ -229,39 +260,7 @@ public class DetaActivity extends BaseActivity {
 			@Override
 			public void afterTextChanged(Editable s) {
 				// TODO Auto-generated method stub
-				List<SortModel> Sou = new ArrayList<SortModel>();
-				JSONObject js = new JSONObject();
-				for (int i = 0; i < joA.length(); i++) {
-					try {
-						if (StringHelper.getPingYin(
-								joA.getJSONObject(i).getString("cdMc"))
-								.contains(hidsear.getText().toString())
-								|| joA.getJSONObject(i).getString("cdMc")
-										.contains(hidsear.getText().toString())
-								|| joA.getJSONObject(i).getString("cdMc")
-										.contains("yaleviewmicro")) {
-							js.put("cdMc",
-									joA.getJSONObject(i).getString("cdMc"));
-							js.put("cdId",
-									joA.getJSONObject(i).getString("cdId"));
 
-						}
-					} catch (JSONException e) {
-						e.printStackTrace();
-					}
-				}
-
-				try {
-					JSONArray jso = new JSONArray().put(js);
-					Sou = filledData(jso);
-					Collections.sort(Sou, pinyinComparator);
-					adapter = new SortAdapter(DetaActivity.this, Sou);
-					bomlist.setAdapter(adapter);
-					adapter.notifyDataSetChanged();
-				} catch (JSONException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
 			}
 
 		});

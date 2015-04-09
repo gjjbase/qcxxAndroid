@@ -5,8 +5,12 @@ import org.json.JSONObject;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -91,31 +95,22 @@ public class MyActivity extends BaseActivity {
 	}
 
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
+		PackageManager pm = getPackageManager();
+		ResolveInfo homeInfo = pm.resolveActivity(
+				new Intent(Intent.ACTION_MAIN)
+						.addCategory(Intent.CATEGORY_HOME), 0);
+		editor.putInt("intent", 3);
+		editor.commit();
 		if (keyCode == KeyEvent.KEYCODE_BACK) {
-			AlertDialog.Builder builder = new AlertDialog.Builder(
-					MyActivity.this);
-			builder.setMessage("你确定退出吗？")
-					.setCancelable(false)
-					.setPositiveButton("确定",
-							new DialogInterface.OnClickListener() {
-								public void onClick(DialogInterface dialog,
-										int id) {
-									finish();
-									MyActivityManager.getInstance().exit();
-								}
-							})
-					.setNegativeButton("取消",
-							new DialogInterface.OnClickListener() {
-								public void onClick(DialogInterface dialog,
-										int id) {
-									dialog.cancel();
-								}
-							});
-			AlertDialog alert = builder.create();
-			alert.show();
-		}
-
-		return super.onKeyDown(keyCode, event);
+			ActivityInfo ai = homeInfo.activityInfo;
+			Intent startIntent = new Intent(Intent.ACTION_MAIN);
+			startIntent.addCategory(Intent.CATEGORY_LAUNCHER);
+			startIntent
+					.setComponent(new ComponentName(ai.packageName, ai.name));
+			startActivitySafely(startIntent);
+			return true;
+		} else
+			return super.onKeyDown(keyCode, event);
 	}
 
 	public void myzhitiao(View v) {
@@ -146,13 +141,6 @@ public class MyActivity extends BaseActivity {
 		startActivity(intent);
 	}
 
-	// public void myerjifeng() {
-	// Toast.makeText(MyActivity.this, "我的积分", 3000).show();
-	// }
-	//
-	// public void myerdingdan() {
-	// Toast.makeText(MyActivity.this, "我的订单", 3000).show();
-	// }
 	public void Markonclik(View v) {
 		intent.setClass(MyActivity.this, MarkActivity.class);
 		startActivity(intent);

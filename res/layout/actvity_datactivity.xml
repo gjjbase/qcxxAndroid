@@ -156,7 +156,10 @@
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:layout_below="@id/hitrel"
-            android:background="@color/gray_font" />
+            android:background="@color/gray_font"
+            android:divider="@null"
+            android:fadingEdge="none"
+            android:scrollbars="none" />
     </RelativeLayout>
 
 </FrameLayout>

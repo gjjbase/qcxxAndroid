@@ -90,7 +90,8 @@ public class RegditActivity extends BaseActivity implements
 	private void init() {
 		thread = new ThreadUtil(handler);
 		mobile_code = (int) (Math.random() * 9000 + 1000);// 4228
-		String methodStr = "[{'com.yale.qcxx.sessionbean.member.impl.UserInfoSessionBean':'sendMsg'}]";
+		String methodStr = "[{'" + Globals.MEMBER_SESSIOM
+				+ ".UserInfoSessionBean':'sendMsg'}]";
 		String jsonParamStr = "[{'tel':" + pN + ",'param':" + mobile_code
 				+ "}]";
 		thread.doStartWebServicerequestWebService(RegditActivity.this,

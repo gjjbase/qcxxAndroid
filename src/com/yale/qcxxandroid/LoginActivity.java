@@ -173,6 +173,7 @@ public class LoginActivity extends BaseActivity {
 						editor.putString("userId", jo.get("userId").toString());
 						editor.putString("passWord", jo.get("passWord")
 								.toString());
+						editor.putString("pWord", pWord);
 						editor.putString("xxNum", jo.get("xxNum").toString());
 						editor.putString("phoneNum", jo.get("phoneNum")
 								.toString());

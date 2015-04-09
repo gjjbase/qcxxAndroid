@@ -84,7 +84,6 @@ public class CharacterParser {
 		return asc;
 	}
 
-	/** * ���ֽ��� * * @param str * @return */
 	public String convert(String str) {
 		String result = null;
 		int ascii = getChsAscii(str);

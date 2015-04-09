@@ -180,20 +180,19 @@ public class AdrebookActivity extends BaseActivity {
 				// TODO Auto-generated method stub
 				List<SortModel> Sou = new ArrayList<SortModel>();
 				JSONObject js = new JSONObject();
+				JSONArray jso = new JSONArray();
 				for (int i = 0; i < jsoo.length(); i++) {
 					try {
 						if (StringHelper.getPingYin(
-								jsoo.getJSONObject(i).getString("cdMc"))
+								jsoo.getJSONObject(i).getString("actionMemo"))
 								.contains(searcher.getText().toString()) == true
 								|| jsoo.getJSONObject(i)
-										.getString("cdMc")
+										.getString("actionMemo")
 										.contains(searcher.getText().toString())
-								|| jsoo.getJSONObject(i).getString("cdMc")
+								|| jsoo.getJSONObject(i)
+										.getString("actionMemo")
 										.contains("yaleviewmicro")) {
-							js.put("cdMc",
-									jsoo.getJSONObject(i).getString("cdMc"));
-							js.put("cdId",
-									jsoo.getJSONObject(i).getString("cdId"));
+							jso.put(jsoo.getJSONObject(i));
 
 						}
 					} catch (JSONException e) {
@@ -202,7 +201,6 @@ public class AdrebookActivity extends BaseActivity {
 				}
 
 				try {
-					JSONArray jso = new JSONArray().put(js);
 					Sou = filledData(jso);
 					Collections.sort(Sou, pinyinComparator);
 					adapter = new SortAdapter(AdrebookActivity.this, Sou);

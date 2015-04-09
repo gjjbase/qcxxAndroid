@@ -21,40 +21,54 @@ import com.yale.qcxxandroid.util.ThreadUtil;
 
 public class StartActivity extends BaseActivity {
 	private ThreadUtil threadUtil;
-	private Intent intent;
+	private Intent intent = new Intent();;
 	private Bundle bundle;
 	private PopupWindow menuWindow;
 	private boolean menu_display = false;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
 		MyActivityManager.getInstance().addActivity(StartActivity.this);
 		try {
 			if (!StringUtils.isEmpty(sp.getString("number", ""))
-					&& !StringUtils.isEmpty(sp.getString("passWord", ""))) {
-				threadUtil = new ThreadUtil(handler);
-				String methodStr = "[{'" + Globals.MEMBER_SESSIOM
-						+ ".UserInfoSessionBean':'getUserInfo'}]";
-				String jsonParamStr = "[{'number':"
-						+ sp.getString("number", "") + ",'password':"
-						+ sp.getString("passWord", "") + "}]";
-				threadUtil.doStartWebServicerequestWebService(
-						StartActivity.this, jsonParamStr, methodStr, true);
+					&& !StringUtils.isEmpty(sp.getString("pWord", ""))) {
+
+				intent.setClass(StartActivity.this, MainActivity.class);
+				startActivity(intent);
+				finish();
+
+				// threadUtil = new ThreadUtil(handler);
+				// String methodStr = "[{'" + Globals.MEMBER_SESSIOM
+				// + ".UserInfoSessionBean':'getUserInfo'}]";
+				// String jsonParamStr = "[{'number':"
+				// + sp.getString("number", "") + ",'password':"
+				// + sp.getString("pWord", "") + "}]";
+				// String methodStr = "[{'" + Globals.MEMBER_SESSIOM
+				// + ".UserInfoSessionBean':'getUserInfo'}]";
+				// String jsonParamStr = "[{'number':" + uName + ",'password':"
+				// + pWord
+				// + "}]";
+				// threadUtil.doStartWebServicerequestWebService(
+				// StartActivity.this, jsonParamStr, methodStr, true);
+			} else {
+				setContentView(R.layout.start_activity);
 			}
 		} catch (Exception e) {
 		}
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.start_activity);
+
 	}
 
 	public void toLogin(View v) {
 		Intent intent = new Intent(StartActivity.this, LoginActivity.class);
 		startActivity(intent);
+		finish();
 	}
 
 	public void toRegdit(View v) {
 		Intent intent = new Intent(StartActivity.this, RegditActivity.class);
 		startActivity(intent);
+		finish();
 	}
 
 	@SuppressLint("HandlerLeak")
@@ -70,10 +84,28 @@ public class StartActivity extends BaseActivity {
 					JSONArray joA = new JSONArray(returnJson);
 					JSONObject jo = joA.getJSONObject(0);
 					if (!StringUtils.isEmpty(jo.get("userId").toString())) {
-						intent = new Intent();
-						intent.setClass(StartActivity.this, MainActivity.class);
-						startActivity(intent);
-						finish();
+						switch (sp.getInt("intent", 0)) {
+						case 1:
+							intent.setClass(StartActivity.this,
+									ShowActivity.class);
+							startActivity(intent);
+							finish();
+							break;
+						case 2:
+							intent.setClass(StartActivity.this,
+									ClassActivity.class);
+							startActivity(intent);
+							finish();
+							break;
+						case 3:
+							intent.setClass(StartActivity.this,
+									MyActivity.class);
+							startActivity(intent);
+							finish();
+							break;
+
+						}
+
 					} else {
 						if (menu_display) {
 							menuWindow.dismiss();

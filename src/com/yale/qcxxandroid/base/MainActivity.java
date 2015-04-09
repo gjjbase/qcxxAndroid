@@ -2,14 +2,24 @@ package com.yale.qcxxandroid.base;
 
 import android.annotation.TargetApi;
 import android.app.TabActivity;
+import android.content.ActivityNotFoundException;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
+import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.TabHost;
+import android.widget.Toast;
 
 import com.yale.qcxxandroid.ClassActivity;
 import com.yale.qcxxandroid.MyActivity;
@@ -57,7 +67,6 @@ public class MainActivity extends TabActivity {
 		spec = tabHost.newTabSpec("我的").setIndicator("我的").setContent(intent);
 		tabHost.addTab(spec);
 		mMoveTab = (MoveTab) findViewById(R.id.main_tab_group);
-		tabHost.setCurrentTab(0);
 		for (int i = 0; i < button.length; i++) {
 			button[i] = (Button) mMoveTab.findViewWithTag("main_button" + i);
 			button[i].setOnClickListener(new MainOnclickListener(i));
@@ -72,6 +81,73 @@ public class MainActivity extends TabActivity {
 				.setCompoundDrawablesRelativeWithIntrinsicBounds(null,
 						getResources().getDrawable(R.drawable.img_qingchun),
 						null, null);
+		tabHost.setCurrentTab(0);
+		try {
+			SharedPreferences sp = getSharedPreferences("qcxx",
+					Context.MODE_PRIVATE);
+			tabHost.setCurrentTab(sp.getInt("intent", 0));
+			switch (sp.getInt("intent", 0)) {
+			case 0:
+				button[0].setCompoundDrawablesRelativeWithIntrinsicBounds(null,
+						getResources().getDrawable(R.drawable.img_qingchun),
+						null, null);
+				button[1].setCompoundDrawablesRelativeWithIntrinsicBounds(null,
+						getResources().getDrawable(R.drawable.img_xiuxiuer),
+						null, null);
+				button[2].setCompoundDrawablesRelativeWithIntrinsicBounds(null,
+						getResources().getDrawable(R.drawable.img_banjier),
+						null, null);
+				button[3].setCompoundDrawablesRelativeWithIntrinsicBounds(null,
+						getResources().getDrawable(R.drawable.img_wodeer),
+						null, null);
+				break;
+			case 1:
+				button[0].setCompoundDrawablesRelativeWithIntrinsicBounds(null,
+						getResources().getDrawable(R.drawable.img_qingchuner),
+						null, null);
+				button[1].setCompoundDrawablesRelativeWithIntrinsicBounds(null,
+						getResources().getDrawable(R.drawable.img_xiuxiu),
+						null, null);
+				button[2].setCompoundDrawablesRelativeWithIntrinsicBounds(null,
+						getResources().getDrawable(R.drawable.img_banjier),
+						null, null);
+				button[3].setCompoundDrawablesRelativeWithIntrinsicBounds(null,
+						getResources().getDrawable(R.drawable.img_wodeer),
+						null, null);
+				break;
+			case 2:
+				button[0].setCompoundDrawablesRelativeWithIntrinsicBounds(null,
+						getResources().getDrawable(R.drawable.img_qingchuner),
+						null, null);
+				button[1].setCompoundDrawablesRelativeWithIntrinsicBounds(null,
+						getResources().getDrawable(R.drawable.img_xiuxiuer),
+						null, null);
+				button[2].setCompoundDrawablesRelativeWithIntrinsicBounds(null,
+						getResources().getDrawable(R.drawable.img_banji), null,
+						null);
+				button[3].setCompoundDrawablesRelativeWithIntrinsicBounds(null,
+						getResources().getDrawable(R.drawable.img_wodeer),
+						null, null);
+				break;
+			case 3:
+				button[0].setCompoundDrawablesRelativeWithIntrinsicBounds(null,
+						getResources().getDrawable(R.drawable.img_qingchuner),
+						null, null);
+				button[1].setCompoundDrawablesRelativeWithIntrinsicBounds(null,
+						getResources().getDrawable(R.drawable.img_xiuxiuer),
+						null, null);
+				button[2].setCompoundDrawablesRelativeWithIntrinsicBounds(null,
+						getResources().getDrawable(R.drawable.img_banjier),
+						null, null);
+				button[3].setCompoundDrawablesRelativeWithIntrinsicBounds(null,
+						getResources().getDrawable(R.drawable.img_wode), null,
+						null);
+				break;
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+
+		}
 		Intent intent = new Intent(MainActivity.this, XmppService.class);
 		startService(intent);
 	}

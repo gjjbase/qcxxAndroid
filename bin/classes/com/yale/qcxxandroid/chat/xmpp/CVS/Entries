@@ -1,4 +1,6 @@
-/MessageReciver.java/-1.6/Thu Apr  2 19:31:27 2015//
-/XmppGlobals.java/-1.4/Wed Apr  8 02:48:25 2015//
-/XmppService.java/-1.7/Wed Apr  8 02:55:13 2015//
+/ChatException.java/1.1/Tue Mar 24 13:39:49 2015//
+/IConnectionStatusCallback.java/1.1/Tue Mar 24 13:39:49 2015//
+/MessageReciver.java/1.7/Wed Apr  8 06:16:42 2015//
+/XmppGlobals.java/1.4/Wed Apr  8 02:48:25 2015//
+/XmppService.java/1.7/Wed Apr  8 02:55:13 2015//
 D/smack////

@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-
 import com.boyaa.speech.SpeechController;
 import com.boyaa.speech.SpeechListener;
 import com.boyaa.speech.util.FileUtil;
@@ -24,6 +23,8 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.WindowManager.LayoutParams;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -41,13 +42,15 @@ public class ButtonRecorder extends Button {
 	// *录音相关 结束*/
 	private Context context;
 	float point_down_x, point_down_y; // 手指触碰的位置
-	static final double move_stop = 100.0;
+	static final double move_stop = 100.0; // 取消录音移动的位置
 	long startTime;
+	private static int SumTime = 0;
 
 	ImageView imgview; // 显示图片
 	Dialog dialog; // 显示图片的窗口
 	UiThread uit; // 根据时间来修改UI的线程
 	private boolean flag = true; // 确保取消操作只触发一次！
+	private volatile static int voiceValue = 0; // 录制的声音大小
 
 	public ButtonRecorder(Context context) {
 		super(context);
@@ -69,6 +72,7 @@ public class ButtonRecorder extends Button {
 			sendflag = true;
 			System.out.println("按下录音按键");
 			soundUrl = "";
+			SumTime = 0;
 			point_down_x = event.getX(); // 获取当前触碰到的点在屏幕坐标系中的绝对位置的X坐标
 			point_down_y = event.getY(); // 获取当前触碰到的点在屏幕坐标系中的绝对位置的Y坐标
 			// 开始录音
@@ -78,10 +82,12 @@ public class ButtonRecorder extends Button {
 			float move_y = event.getY(); // 获取当前移动到的点在屏幕坐标系中的绝对位置的Y坐标
 			if (point_down_y - move_y > move_stop && flag) { // 如果移动距离超过设定的移动距离，取消录音
 				sendflag = false;
-				Toast.makeText(getContext(), "取消", Toast.LENGTH_SHORT).show();
+				// Toast.makeText(getContext(), "取消",
+				// Toast.LENGTH_SHORT).show();
 				// 取消录音
-				stopRecorder();
-				deleteFile();
+				// stopRecorder();
+				// SumTime = 0;
+				// voiceValue = 0;
 			}
 			break;
 		case MotionEvent.ACTION_UP:
@@ -89,10 +95,21 @@ public class ButtonRecorder extends Button {
 			stopRecorder();// 结束录制
 			// 发送语音 发送一个广播到chatMainActivity
 			if (sendflag) {
-				Intent intent = new Intent(XmppGlobals.ACTION_RECORDER_SEND);
-				intent.putExtra("fileName", soundUrl);
-				context.sendBroadcast(intent);
+				if (SumTime <= 1) {
+					Toast.makeText(context, "录音时间太短！", 1000).show();
+					deleteFile();
+				} else {
+					Intent intent = new Intent(XmppGlobals.ACTION_RECORDER_SEND);
+					intent.putExtra("fileName", soundUrl);
+					context.sendBroadcast(intent);
+				}
+			} else {
+				Toast.makeText(getContext(), "确定取消录音！", Toast.LENGTH_SHORT)
+						.show();
+				deleteFile();
 			}
+			SumTime = 0;
+			voiceValue = 0;
 			break;
 		default:
 			break;
@@ -116,16 +133,26 @@ public class ButtonRecorder extends Button {
 	private void startSpeech() {
 		startTime = System.currentTimeMillis();
 		/** 界面操作開始 **/
-		dialog = new Dialog(context, R.style.like_toast_dialog_style);
-		imgview = new ImageView(context);
-		imgview.setImageResource(R.drawable.mic_2);
-		dialog.setContentView(imgview, new LayoutParams(
-				ViewGroup.LayoutParams.MATCH_PARENT,
-				ViewGroup.LayoutParams.MATCH_PARENT));
-		LayoutParams lp = dialog.getWindow().getAttributes();
-		lp.gravity = Gravity.CENTER;
-		/** 界面操作結束 **/
+
+		dialog = new Dialog(context, R.style.DialogStyle);
+		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+		dialog.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+				WindowManager.LayoutParams.FLAG_FULLSCREEN);
+		dialog.setContentView(R.layout.my_dialog);
+		imgview = (ImageView) dialog.findViewById(R.id.dialog_img);
 		dialog.show();
+
+		/*
+		 * dialog = new Dialog(context, R.style.like_toast_dialog_style);
+		 * imgview = new ImageView(context);
+		 * imgview.setImageResource(R.drawable.mic_2);
+		 * dialog.setContentView(imgview, new LayoutParams(
+		 * ViewGroup.LayoutParams.MATCH_PARENT,
+		 * ViewGroup.LayoutParams.MATCH_PARENT)); LayoutParams lp =
+		 * dialog.getWindow().getAttributes(); lp.gravity = Gravity.CENTER;
+		 */
+		/** 界面操作結束 **/
+		// dialog.show();
 		uit = new UiThread(mHandler);
 		uit.start();
 		flag = true; // 设置开始标志为true 当取消的时候改变该标志，该标志由true到false完成一次录音全过程！
@@ -154,14 +181,9 @@ public class ButtonRecorder extends Button {
 		public void run() {
 			while (flag) {
 				try {
-					if (i == 4) {
-						i = 0;
-					}
-					mHandler.sendEmptyMessage(i);
-					sleep(500);
-					i++;
+					mHandler.sendEmptyMessage(0);
+					sleep(100);
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
@@ -172,8 +194,9 @@ public class ButtonRecorder extends Button {
 			R.drawable.mic_4, R.drawable.mic_5 };
 	Handler mHandler = new Handler() {
 		public void handleMessage(android.os.Message msg) {
-			int i = msg.what;
-			imgview.setImageResource(drawables[i]);
+			// int i = msg.what;
+			// imgview.setImageResource(drawables[i]);
+			setDialogImage();
 		};
 	};
 
@@ -185,10 +208,10 @@ public class ButtonRecorder extends Button {
 			mSpeechController.setDebug(true);
 			mSpeechController.setRecordingMaxTime(25);
 			mSpeechController.setSpeechListener(new SpeechListener() {
-
 				@Override
 				public void timeConsuming(int type, int secondCount, Object tag) {
 					Log.d("CDH", "SpeechListener secondCount:" + secondCount);
+					SumTime = secondCount;
 					if (type == SpeechListener.RECORDING) {
 						// setMessage("正在录音（" + secondCount + "秒）....");
 					} else if (type == SpeechListener.PLAYING) {
@@ -212,6 +235,7 @@ public class ButtonRecorder extends Button {
 
 				@Override
 				public void recordingVolume(int volume) {
+					voiceValue = volume;
 					Log.i("CDH", "SpeechListener recordVolume(" + volume + ")");
 				}
 
@@ -225,7 +249,6 @@ public class ButtonRecorder extends Button {
 		if (TextUtils.isEmpty(fn)) {
 			spf.edit().putString("file_name", fileName); // 临时存储filename 用于后面的播放
 		}
-
 		String str = fileName;
 		boolean sdCardExist = Environment.getExternalStorageState().equals(
 				android.os.Environment.MEDIA_MOUNTED); // 判断sd卡是否存在
@@ -268,4 +291,24 @@ public class ButtonRecorder extends Button {
 		Toast.makeText(context, "删除文件！", 2000).show();
 	}
 
+	void setDialogImage() {
+		if (voiceValue == 0) {
+			imgview.setImageResource(R.drawable.record_animate_01);
+		} else if (voiceValue == 1) {
+			imgview.setImageResource(R.drawable.record_animate_02);
+		} else if (voiceValue == 2) {
+			imgview.setImageResource(R.drawable.record_animate_04);
+		} else if (voiceValue == 3) {
+			imgview.setImageResource(R.drawable.record_animate_06);
+		} else if (voiceValue == 4) {
+			imgview.setImageResource(R.drawable.record_animate_08);
+		} else if (voiceValue == 5) {
+			imgview.setImageResource(R.drawable.record_animate_10);
+		} else if (voiceValue == 6) {
+			imgview.setImageResource(R.drawable.record_animate_12);
+		} else if (voiceValue == 7) {
+			imgview.setImageResource(R.drawable.record_animate_14);
+		}
+		voiceValue = 0;
+	}
 }

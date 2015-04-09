@@ -53,6 +53,7 @@ public class SettingActivity extends BaseActivity {
 									public void onClick(DialogInterface dialog,
 											int id) {
 										MyActivityManager.getInstance().exit();
+										editor.clear();
 									}
 								})
 						.setNegativeButton("取消",

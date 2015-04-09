@@ -27,6 +27,7 @@
         </activity>
         <!-- PopwindActivity -->
 		<activity android:name=".base.BaseActivity" android:configChanges="orientation|keyboardHidden" android:theme="@android:style/Theme.NoTitleBar" android:windowSoftInputMode="adjustResize"/>
+		<activity android:name=".ZhanghaoActivity" android:configChanges="orientation|keyboardHidden" android:theme="@android:style/Theme.NoTitleBar" android:windowSoftInputMode="adjustResize"/>
 		<activity android:name=".AddnewFrdACtivity" android:configChanges="orientation|keyboardHidden" android:theme="@android:style/Theme.NoTitleBar" android:windowSoftInputMode="adjustResize"/>
 		<activity android:name=".NearActivity" android:configChanges="orientation|keyboardHidden" android:theme="@android:style/Theme.NoTitleBar" android:windowSoftInputMode="adjustResize"/>
 		<activity android:name=".FrdMesgActivity" android:configChanges="orientation|keyboardHidden" android:theme="@android:style/Theme.NoTitleBar" android:windowSoftInputMode="adjustResize"/>
